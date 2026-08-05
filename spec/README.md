@@ -11,8 +11,16 @@ of that column is the objective answer to "do we need to fork `go-tfe`?". Per-re
 (schema, wire contract, acceptance criteria) live in `spec/resources/<name>.md` and `spec/data-sources/<name>.md`. Nothing is implemented until
 the spec is reviewed and approved.
 
-- **Fork baseline:** upstream `terraform-provider-tfe` **v0.79.0** (watermark; backports merge from
-  the `upstream` remote against this point).
+- **Baseline:** upstream `terraform-provider-tfe` **v0.79.0** (the tracked watermark, and the latest
+  upstream release as of 2026-08-05).
+- **Repository strategy — clean split, not a mirror.** The repo has **its own git history** (a single
+  initial commit at the v0.79.0 baseline), so it is a first-class Stackweaver provider rather than "a
+  copy of the tfe provider with HashiCorp's history". `upstream` is a **fetch-only** remote; upstream
+  changes are synced by **targeted diff of the supported files between release tags**, applied as
+  native commits — **not** git merge. This is viable because our backport was always agent-driven
+  per-file diff (not merge), and upstream churn is dominated by new resources we `drop` — the few
+  changes to our supported resources are usually small/additive. MPL headers + this notice preserve
+  attribution independent of git history.
 - **Naming:** native `stackweaver_*` with `tfe_*` aliases (drop-in migration).
 - **Derived from:** the compat matrix `docs/internal/tfe-compatibility/README.md` and its per-resource
   detail docs (the private source of divergence facts).

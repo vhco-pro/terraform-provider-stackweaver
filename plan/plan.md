@@ -44,7 +44,7 @@ plugin-framework (`provider_next.go`, `Resources()`/`DataSources()` factory slic
   them; same pattern for `aliasDataSource`.
 - This is the **one intentional seam** vs. upstream: a single `alias.go` file plus the two edited
   registration lists. Individual `resource_tfe_*.go` files stay byte-identical to upstream, so
-  backports to them merge cleanly (minimal-diff rule).
+  the sync agent's targeted diff of them stays clean and small (minimal-diff rule).
 - **Migration path:** a TFE user swaps `required_providers { tfe = { source = "vhco-pro/stackweaver" } }`
   — the provider serves the `tfe_*` types, so existing `resource "tfe_*"` blocks keep working. Later
   they rename to `stackweaver_*` via `moved {}` blocks / `terraform state mv`. Documented in a
@@ -56,7 +56,7 @@ The `dropped` set = every upstream resource **not** in the spec matrix's impleme
 Sentinel / OPA, Stacks, no-code modules, admin/enterprise/SAML/SMTP/retention, `oauth_client`,
 `ssh_key`, provider-set, etc.). Strip = **remove them from the SDKv2 maps and the framework
 factory slices only** (the registration seam) — **keep the `resource_tfe_*.go` files** so upstream
-changes to them still merge cleanly; unregistered code is dead, not deleted. The exact list is
+changes to them still diff cleanly against upstream; unregistered code is dead, not deleted. The exact list is
 enumerated at bootstrap and recorded `dropped` in the matrix. Partial/blocked rows
 (`tfe_organization`, `tfe_team_member`, `tfe_github_app_installation`, `tfe_registry_module`) are
 also unregistered for v0.1 until their backing API is green.
@@ -126,4 +126,4 @@ foundation every resource task builds on.
 | Stripping a resource breaks a shared helper it's the only caller of | keep files (unregister only); compile after the strip |
 | Acceptance can't run in CI (no stack) | dev_overrides local gate is the source of truth; CI does build/unit; documented |
 | `tfe_*` alias collides if user also installs hashicorp/tfe | migration guide: use one provider; `moved` to `stackweaver_*` ends the ambiguity |
-| Backport conflict on the two edited registration lists | those lists are the accepted seam; resolve there, resource files stay clean |
+| Sync-diff churn on the two edited registration lists | those lists are the accepted seam; the sync agent reconciles them, resource files stay clean |
