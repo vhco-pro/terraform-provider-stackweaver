@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	tfeProviderName = "registry.terraform.io/hashicorp/tfe"
+	tfeProviderName = "registry.terraform.io/vhco-pro/stackweaver"
 )
 
 func main() {

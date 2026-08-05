@@ -56,7 +56,7 @@ func NewFrameworkProviderWithDefaultOrg(defaultOrgName string) provider.Provider
 // Resources and data sources can access this information from their request
 // objects.
 func (p *frameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, res *provider.MetadataResponse) {
-	res.TypeName = "tfe"
+	res.TypeName = "stackweaver"
 }
 
 // Schema (a Provider interface function) returns the schema for the Terraform
@@ -142,78 +142,65 @@ func (p *frameworkProvider) Actions(ctx context.Context) []func() action.Action 
 	}
 }
 
-func (p *frameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+// frameworkDataSources is the supported (kept) set of plugin-framework data
+// sources, each producing its primary stackweaver_* type name (via the
+// provider's "stackweaver" ProviderTypeName). Unsupported upstream data sources
+// are intentionally unregistered here; their source files remain in the tree so
+// upstream syncs still diff cleanly (see alias.go / plan.md §2-3).
+func (p *frameworkProvider) frameworkDataSources() []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewAdminSMTPSettingsDataSource,
 		NewCurrentUserDataSource,
-		NewHYOKCustomerKeyVersionDataSource,
-		NewHYOKEncryptedDataKeyDataSource,
-		NewIPRangesDataSource,
-		NewNoCodeModuleDataSource,
-		NewOrgMaxTokenTTLPolicyDataSource,
-		NewOrganizationAuditConfigurationDataSource,
 		NewOrganizationRunTaskDataSource,
 		NewOrganizationRunTaskGlobalSettingsDataSource,
 		NewOutputsDataSource,
 		NewProjectDataSource,
 		NewProjectsDataSource,
-		NewProviderSetDataSource,
 		NewRegistryGPGKeyDataSource,
 		NewRegistryGPGKeysDataSource,
-		NewRegistryModuleDataSource,
 		NewRegistryProviderDataSource,
 		NewRegistryProvidersDataSource,
-		NewSAMLSettingsDataSource,
 		NewVariablesDataSource,
 		NewWorkspaceRunTaskDataSource,
-		NewSCIMSettingsDataSource,
-		NewSCIMTokenDataSource,
-		NewSCIMGroupDataSource,
 	}
 }
 
-func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *frameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+	// Register each kept data source under its primary stackweaver_* name plus a
+	// tfe_* alias (aliasDataSourceFactories, defined in alias.go).
+	return append(p.frameworkDataSources(), aliasDataSourceFactories()...)
+}
+
+// frameworkResources is the supported (kept) set of plugin-framework resources.
+// See frameworkDataSources for the strip/alias rationale.
+func (p *frameworkProvider) frameworkResources() []func() resource.Resource {
 	return []func() resource.Resource{
-		NewAdminSMTPSettingsResource,
 		NewAuditTrailTokenResource,
-		NewDataRetentionPolicyResource,
-		NewOrgMaxTokenTTLPolicyResource,
 		NewOrganizationDefaultSettings,
 		NewOrganizationRunTaskGlobalSettingsResource,
 		NewOrganizationRunTaskResource,
-		NewPolicySetParameterResource,
 		NewProjectResource,
-		NewProviderSetResource,
 		NewRegistryGPGKeyResource,
 		NewRegistryProviderResource,
 		NewResourceVariable,
 		NewResourceWorkspaceSettings,
-		NewSAMLSettingsResource,
-		NewSSHKey,
-		NewStackResource,
-		NewStackVariableSetResource,
 		NewTeamNotificationConfigurationResource,
-		NewTestVariableResource,
 		NewWorkspaceRunTaskResource,
 		NewNotificationConfigurationResource,
 		NewProjectNotificationConfigurationResource,
 		NewTeamTokenResource,
 		NewProjectSettingsResource,
 		NewTerraformVersionResource,
-		NewOPAVersionResource,
-		NewsentinelVersionResource,
 		NewAWSOIDCConfigurationResource,
 		NewGCPOIDCConfigurationResource,
 		NewAzureOIDCConfigurationResource,
 		NewVaultOIDCConfigurationResource,
-		NewHYOKConfigurationResource,
-		NewTagPolicySetResource,
-		NewTagPolicySetExclusionResource,
-		NewProjectPolicySetExclusionResource,
-		NewSCIMSettingsResource,
-		NewSCIMTokenResource,
-		NewSCIMGroupMappingResource,
 	}
+}
+
+func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
+	// Register each kept resource under its primary stackweaver_* name plus a
+	// tfe_* alias (aliasResourceFactories, defined in alias.go).
+	return append(p.frameworkResources(), aliasResourceFactories()...)
 }
 
 func (p *frameworkProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {

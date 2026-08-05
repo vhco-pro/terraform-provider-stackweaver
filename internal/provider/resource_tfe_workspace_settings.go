@@ -859,8 +859,8 @@ func (r *workspaceSettings) Delete(ctx context.Context, req resource.DeleteReque
 	}
 }
 
-func (r *workspaceSettings) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "tfe_workspace_settings"
+func (r *workspaceSettings) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_workspace_settings"
 }
 
 func (r *workspaceSettings) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

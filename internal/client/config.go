@@ -23,7 +23,7 @@ import (
 
 var (
 	// TFEUserAgent is the user agent string sent with all requests made by the provider
-	TFEUserAgent = fmt.Sprintf("terraform-provider-tfe/%s", providerVersion.ProviderVersion)
+	TFEUserAgent = fmt.Sprintf("terraform-provider-stackweaver/%s", providerVersion.ProviderVersion)
 )
 
 type CredentialsMap map[string]map[string]interface{}

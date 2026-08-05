@@ -413,8 +413,8 @@ func (r *projectSettings) Delete(ctx context.Context, req resource.DeleteRequest
 	}
 }
 
-func (r *projectSettings) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "tfe_project_settings"
+func (r *projectSettings) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_project_settings"
 }
 
 func (r *projectSettings) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

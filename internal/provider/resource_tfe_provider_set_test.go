@@ -616,19 +616,17 @@ func TestTFEProviderSetNotImportableInPrepStub(t *testing.T) {
 	}
 }
 
-func TestFrameworkProviderResources_includeProviderSet(t *testing.T) {
+// tfe_provider_set is part of the dropped (unsupported) surface in
+// terraform-provider-stackweaver v0.1, so it must NOT be registered. The
+// resource file is kept in the tree for clean upstream syncs but is unregistered
+// from the framework factory list (plan.md §3). Upstream asserted the opposite.
+func TestFrameworkProviderResources_excludeProviderSet(t *testing.T) {
 	resources := (&frameworkProvider{}).Resources(context.Background())
 
-	found := false
 	for _, constructor := range resources {
 		if _, ok := constructor().(*resourceTFEProviderSet); ok {
-			found = true
-			break
+			t.Fatal("tfe_provider_set is dropped in stackweaver v0.1 but is still registered")
 		}
-	}
-
-	if !found {
-		t.Fatal("expected framework provider resources to include tfe_provider_set")
 	}
 }
 

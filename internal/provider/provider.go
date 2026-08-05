@@ -105,15 +105,14 @@ func Provider() *schema.Provider {
 			},
 		},
 
-		DataSourcesMap: map[string]*schema.Resource{
-			"tfe_organizations":           dataSourceTFEOrganizations(),
-			"tfe_organization":            dataSourceTFEOrganization(),
+		// Each supported (kept) SDKv2 data source is registered under BOTH its
+		// primary "stackweaver_*" name and a "tfe_*" alias via
+		// addStackweaverAliases (see alias.go). Unsupported upstream data
+		// sources are unregistered here (their source files stay in the tree so
+		// upstream syncs still diff cleanly — see plan.md §2-3).
+		DataSourcesMap: addStackweaverAliases(map[string]*schema.Resource{
 			"tfe_agent_pool":              dataSourceTFEAgentPool(),
-			"tfe_oauth_client":            dataSourceTFEOAuthClient(),
 			"tfe_organization_membership": dataSourceTFEOrganizationMembership(),
-			"tfe_organization_tags":       dataSourceTFEOrganizationTags(),
-			"tfe_slug":                    dataSourceTFESlug(),
-			"tfe_ssh_key":                 dataSourceTFESSHKey(),
 			"tfe_team":                    dataSourceTFETeam(),
 			"tfe_teams":                   dataSourceTFETeams(),
 			"tfe_team_access":             dataSourceTFETeamAccess(),
@@ -121,52 +120,39 @@ func Provider() *schema.Provider {
 			"tfe_workspace":               dataSourceTFEWorkspace(),
 			"tfe_workspace_ids":           dataSourceTFEWorkspaceIDs(),
 			"tfe_variable_set":            dataSourceTFEVariableSet(),
-			"tfe_policy_set":              dataSourceTFEPolicySet(),
 			"tfe_organization_members":    dataSourceTFEOrganizationMembers(),
-			"tfe_github_app_installation": dataSourceTFEGHAInstallation(),
 			// IMPORTANT:
 			// New data sources should be defined in provider_next.go using
 			// the [Plugin Framework](https://developer.hashicorp.com/terraform/plugin/framework).
-		},
+		}),
 
-		ResourcesMap: map[string]*schema.Resource{
-			"tfe_admin_organization_settings":    resourceTFEAdminOrganizationSettings(),
+		// Each supported (kept) SDKv2 resource is registered under BOTH its
+		// primary "stackweaver_*" name and a "tfe_*" alias via
+		// addStackweaverAliases (see alias.go).
+		ResourcesMap: addStackweaverAliases(map[string]*schema.Resource{
 			"tfe_agent_pool":                     resourceTFEAgentPool(),
 			"tfe_agent_pool_allowed_projects":    resourceTFEAgentPoolAllowedProjects(),
 			"tfe_agent_pool_allowed_workspaces":  resourceTFEAgentPoolAllowedWorkspaces(),
 			"tfe_agent_pool_excluded_workspaces": resourceTFEAgentPoolExcludedWorkspaces(),
 			"tfe_agent_token":                    resourceTFEAgentToken(),
-			"tfe_oauth_client":                   resourceTFEOAuthClient(),
-			"tfe_organization":                   resourceTFEOrganization(),
 			"tfe_organization_membership":        resourceTFEOrganizationMembership(),
-			"tfe_organization_module_sharing":    resourceTFEOrganizationModuleSharing(),
 			"tfe_organization_token":             resourceTFEOrganizationToken(),
-			"tfe_policy":                         resourceTFEPolicy(),
-			"tfe_policy_set":                     resourceTFEPolicySet(),
-			"tfe_project_oauth_client":           resourceTFEProjectOAuthClient(),
-			"tfe_project_policy_set":             resourceTFEProjectPolicySet(),
 			"tfe_project_variable_set":           resourceTFEProjectVariableSet(),
-			"tfe_registry_module":                resourceTFERegistryModule(),
-			"tfe_no_code_module":                 resourceTFENoCodeModule(),
 			"tfe_run_trigger":                    resourceTFERunTrigger(),
-			"tfe_sentinel_policy":                resourceTFESentinelPolicy(),
 			"tfe_team":                           resourceTFETeam(),
 			"tfe_team_access":                    resourceTFETeamAccess(),
 			"tfe_team_organization_member":       resourceTFETeamOrganizationMember(),
 			"tfe_team_organization_members":      resourceTFETeamOrganizationMembers(),
 			"tfe_team_project_access":            resourceTFETeamProjectAccess(),
-			"tfe_team_member":                    resourceTFETeamMember(),
 			"tfe_team_members":                   resourceTFETeamMembers(),
 			"tfe_workspace":                      resourceTFEWorkspace(),
 			"tfe_variable_set":                   resourceTFEVariableSet(),
-			"tfe_workspace_policy_set":           resourceTFEWorkspacePolicySet(),
-			"tfe_workspace_policy_set_exclusion": resourceTFEWorkspacePolicySetExclusion(),
 			"tfe_workspace_run":                  resourceTFEWorkspaceRun(),
 			"tfe_workspace_variable_set":         resourceTFEWorkspaceVariableSet(),
 			// IMPORTANT:
 			// New resources should be defined in provider_next.go using
 			// the [Plugin Framework](https://developer.hashicorp.com/terraform/plugin/framework).
-		},
+		}),
 		ConfigureContextFunc: configure(),
 	}
 }
@@ -211,9 +197,9 @@ func configureClient(d *schema.ResourceData) (*client.ProviderClient, error) {
 }
 
 var descriptions = map[string]string{
-	"hostname": "The Terraform Enterprise hostname to connect to. Defaults to app.terraform.io.",
-	"token": "The token used to authenticate with Terraform Enterprise. We recommend omitting\n" +
-		"the token which can be set as credentials in the CLI config file.",
+	"hostname": "The Stackweaver hostname to connect to. Defaults to app.stackweaver.io. Can also be set with the TFE_HOSTNAME environment variable.",
+	"token": "The token used to authenticate with Stackweaver. We recommend omitting\n" +
+		"the token which can be set as credentials in the CLI config file. Can also be set with the TFE_TOKEN environment variable.",
 	"ssl_skip_verify": "Whether or not to skip certificate verifications.",
 	"organization": "The organization to apply to a resource if one is not defined on\n" +
 		"the resource itself",

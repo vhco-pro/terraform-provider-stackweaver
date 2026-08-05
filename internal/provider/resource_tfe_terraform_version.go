@@ -35,7 +35,7 @@ func NewTerraformVersionResource() resource.Resource {
 }
 
 func (r *terraformVersionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "tfe_terraform_version"
+	resp.TypeName = req.ProviderTypeName + "_terraform_version"
 }
 
 type modelAdminTerraformVersion struct {

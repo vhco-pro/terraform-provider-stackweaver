@@ -21,7 +21,11 @@ import (
 )
 
 const (
-	DefaultHostname = "app.terraform.io"
+	// DefaultHostname is the fallback Stackweaver host used only when neither the
+	// provider "hostname" argument nor TFE_HOSTNAME is set. Self-hosted
+	// deployments are expected to set one of those; the go-tfe client itself is
+	// unmodified and targets whatever host is configured.
+	DefaultHostname = "app.stackweaver.io"
 )
 
 var (
