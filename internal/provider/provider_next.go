@@ -128,6 +128,7 @@ func (p *frameworkProvider) Configure(ctx context.Context, req provider.Configur
 	configuredClient := ConfiguredClient{
 		Client:       providerClient.TfeClient,
 		Organization: data.Organization.ValueString(),
+		Stackweaver:  newNativeClient(data.Hostname.ValueString(), data.Token.ValueString()),
 	}
 
 	res.DataSourceData = configuredClient
@@ -194,6 +195,11 @@ func (p *frameworkProvider) frameworkResources() []func() resource.Resource {
 		NewGCPOIDCConfigurationResource,
 		NewAzureOIDCConfigurationResource,
 		NewVaultOIDCConfigurationResource,
+		// Native resources (no terraform-provider-tfe equivalent) are served by
+		// the internal/stackweaver client and registered ONLY under their
+		// primary stackweaver_* name — they get no tfe_ alias, so they are not
+		// added to aliasResourceFactories.
+		NewAnsiblePlaybookResource,
 	}
 }
 

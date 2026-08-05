@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-provider-tfe/internal/client"
+	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
 const defaultSSLSkipVerify = false
@@ -26,6 +27,11 @@ var (
 type ConfiguredClient struct {
 	Client       *tfe.Client
 	Organization string
+	// Stackweaver is the native API client used by resources that have no
+	// terraform-provider-tfe equivalent (the Ansible surface, runners, VCS
+	// connections, ...). It is nil when the provider is unconfigured (no
+	// hostname/token), mirroring how the go-tfe client is handled.
+	Stackweaver *stackweaver.Client
 }
 
 func (c ConfiguredClient) schemaOrDefaultOrganization(resource *schema.ResourceData) (string, error) {
@@ -182,10 +188,32 @@ func configure() schema.ConfigureContextFunc {
 		}
 
 		return ConfiguredClient{
-			providerClient.TfeClient,
-			providerOrganization,
+			Client:       providerClient.TfeClient,
+			Organization: providerOrganization,
+			Stackweaver:  newNativeClient(rd.Get("hostname").(string), rd.Get("token").(string)),
 		}, diagnosticWarnings
 	}
+}
+
+// newNativeClient builds the native Stackweaver API client from the provider's
+// hostname/token arguments, resolving them through the same env-var /
+// credentials-file / default-host fallback the go-tfe client uses (so the native
+// client is configured whenever go-tfe is — provider block, TFE_HOSTNAME/
+// TFE_TOKEN, or a credentials file). Returns nil when no token can be resolved
+// (unconfigured), so plan/validate with no credentials still works.
+func newNativeClient(hostname, token string) *stackweaver.Client {
+	host, tok, err := client.ResolvedHostToken(hostname, token, false)
+	if err != nil || host == "" || tok == "" {
+		return nil
+	}
+	c, err := stackweaver.NewClient(stackweaver.Config{
+		BaseURL: "https://" + host,
+		Token:   tok,
+	})
+	if err != nil {
+		return nil
+	}
+	return c
 }
 
 func configureClient(d *schema.ResourceData) (*client.ProviderClient, error) {
