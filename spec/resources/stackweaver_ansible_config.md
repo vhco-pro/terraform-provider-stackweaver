@@ -25,11 +25,15 @@ resolution priority is Workspace > Project > Organization. Model: `core/models/a
 `native-client`. Not in `go-tfe`; served by a new `internal/stackweaver` `AnsibleConfig` service
 (Get/Upsert/Delete per scope) calling the Stackweaver Ansible-config API over HTTP.
 
-**Envelope is flat plain JSON** (verified in `handlers/ansible_config.go`): the request body is
-`{"config_content":"..."}` (single required field, `binding:"required"`) and the response is
-`{"data":{"id","type","scope","organization_id","project_id","workspace_id","config_content",
-"created_at","updated_at"}}`. This is neither the JSON:API envelope of the inventory resources nor the
-model-tag JSON of the playbook — it is a bespoke flat shape. The native client owns marshalling.
+**Envelope is standard JSON:API** (re-verified in `handlers/ansible_config.go` after monorepo #608,
+which normalized this endpoint off its older bespoke flat shape). The request body is
+`{"data":{"type":"ansible-configs","attributes":{"config-content":"..."}}}` (single required
+attribute, dasherized, `binding:"required"`) and the response is
+`{"data":{"id","type":"ansible-configs","attributes":{"scope","config-content","created-at",
+"updated-at"},"relationships":{"organization"|"project"|"workspace"}}}` — attributes are nested and
+dasherized, and the scope parent is expressed as a relationship (org/project/workspace UUID) rather
+than a flat `*_id` attribute. This matches the JSON:API envelope every other `/api/v2` write endpoint
+accepts. The native client owns marshalling.
 
 **Singleton-per-scope semantics.** The scope entity is chosen by the endpoint, not the body: PUT to the
 org endpoint upserts the single org-scoped row, PUT to the project endpoint upserts the single
@@ -55,9 +59,10 @@ scope from which endpoint is called).
 ## Wire contract
 
 - **Create/Update (upsert):**
-  - org scope: `PUT /organizations/:name/ansible-config` — body `{"config_content"}`.
-  - project scope: `PUT /projects/:id/ansible-config` — body `{"config_content"}`.
-  - Same endpoint handles both first-write and subsequent updates (no distinct POST).
+  - org scope: `PUT /organizations/:name/ansible-config` — body
+    `{"data":{"type":"ansible-configs","attributes":{"config-content":"..."}}}`.
+  - project scope: `PUT /projects/:id/ansible-config` — same JSON:API body.
+  - Same endpoint handles both first-write and subsequent updates (no distinct POST). Returns `200`.
 - **Read:**
   - org scope: `GET /organizations/:name/ansible-config`.
   - project scope: `GET /projects/:id/ansible-config`.
@@ -66,9 +71,12 @@ scope from which endpoint is called).
 - **Delete:**
   - org scope: `DELETE /organizations/:name/ansible-config`.
   - project scope: `DELETE /projects/:id/ansible-config`.
-- **Envelope:** flat plain JSON — request `{"config_content"}`, response
-  `{"data":{"id","type","scope","organization_id","project_id","workspace_id","config_content",
-  "created_at","updated_at"}}`. Native client owns marshalling.
+- **Envelope:** standard JSON:API (post-#608) — request
+  `{"data":{"type":"ansible-configs","attributes":{"config-content"}}}`, response
+  `{"data":{"id","type":"ansible-configs","attributes":{"scope","config-content","created-at",
+  "updated-at"},"relationships":{"organization"|"project"|"workspace"}}}`. The scope parent (formerly
+  flat `organization_id`/`project_id`/`workspace_id` attributes) is now a relationship carrying the
+  entity UUID. Native client owns marshalling.
 
 ## Acceptance criteria (these ARE the test)
 

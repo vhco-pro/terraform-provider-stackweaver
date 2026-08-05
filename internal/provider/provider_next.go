@@ -162,6 +162,16 @@ func (p *frameworkProvider) frameworkDataSources() []func() datasource.DataSourc
 		NewRegistryProvidersDataSource,
 		NewVariablesDataSource,
 		NewWorkspaceRunTaskDataSource,
+		// Native Stackweaver data sources (stackweaver_* only, no tfe_ alias).
+		NewRunnersDataSource,
+		NewVCSRepositoriesDataSource,
+		NewVCSRepositoryBranchesDataSource,
+		NewVCSYamlFilesDataSource,
+		NewAnsibleVCSPlaybookFilesDataSource,
+		NewAnsibleInventorySyncsDataSource,
+		NewAnsibleCollectionsDataSource,
+		NewAnsibleAdHocModulesDataSource,
+		NewWebhookEventsDataSource,
 	}
 }
 
@@ -200,6 +210,20 @@ func (p *frameworkProvider) frameworkResources() []func() resource.Resource {
 		// primary stackweaver_* name — they get no tfe_ alias, so they are not
 		// added to aliasResourceFactories.
 		NewAnsiblePlaybookResource,
+		// Native Ansible surface (stackweaver_* only, no tfe_ alias).
+		NewAnsibleInventoryResource,
+		NewAnsibleHostResource,
+		NewAnsibleGroupResource,
+		NewAnsibleCredentialResource,
+		NewAnsibleConfigResource,
+		NewAnsibleInventorySourceResource,
+		NewAnsibleJobTemplateResource,
+		NewAnsibleJobTemplateVariableResource,
+		NewAnsibleJobTemplateCredentialResource,
+		NewAnsibleNotificationTemplateResource,
+		NewAnsibleNotificationAttachmentResource,
+		NewAnsibleScheduleResource,
+		NewAnsibleJobResource,
 	}
 }
 
