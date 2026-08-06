@@ -39,6 +39,8 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      # Provider registration/alias + native client codecs. Acceptance (TestAcc*)
-      # skips without TF_ACC — it needs a live Stackweaver stack, run via dev_overrides locally.
-      - run: go test ./internal/provider/ ./internal/stackweaver/ -count=1
+      # Native client codecs (whole package) + our provider registration/alias tests.
+      # Upstream TestAcc* need a live stack + TFE_TOKEN (they build a client before the
+      # TF_ACC skip), so they run locally via dev_overrides, not in CI.
+      - run: go test ./internal/stackweaver/ -count=1
+      - run: go test ./internal/provider/ -run 'DualPrefix|KeptSurface' -count=1
