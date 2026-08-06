@@ -1,81 +1,66 @@
-<img alt="Terraform" src="https://www.datocms-assets.com/2885/1629941242-logo-terraform-main.svg" width="600px">
+<!-- Copyright (c) VH & Co BV. SPDX-License-Identifier: MPL-2.0 -->
+# Terraform Provider for Stackweaver
 
-# HCP Terraform and Terraform Enterprise Provider
+The official Terraform provider for the [Stackweaver](https://stackweaver.io) platform — manage
+workspaces, projects, teams, variables, runs, agent pools, run tasks, the registry, and the full
+Ansible/AWX surface (playbooks, inventories, credentials, job templates, schedules, notifications) as
+code.
 
-The official Terraform provider for [HCP Terraform and Terraform Enterprise](https://www.hashicorp.com/products/terraform).
+It is a standalone provider **derived from** [`hashicorp/terraform-provider-tfe`](https://github.com/hashicorp/terraform-provider-tfe)
+(MPL-2.0); see [`FORK-NOTICE.md`](./FORK-NOTICE.md). It is **not** an official HashiCorp product and is
+not affiliated with or endorsed by HashiCorp.
 
-As Terraform Enterprise is a self-hosted distribution of HCP Terraform, this
-provider supports both Cloud and Enterprise use cases. In all/most
-documentation, the platform will always be stated as 'Terraform Enterprise' -
-but a feature will be explicitly noted as only supported in one or the other, if
-applicable (rare).
+## Resource naming
 
-Note this provider is in beta and is subject to change (though it is generally
-quite stable). We will indicate any breaking changes by releasing new versions.
-Until the release of v1.0, any minor version changes will indicate possible
-breaking changes. Patch version changes will be used for both bugfixes and
-non-breaking changes.
-
-- **Documentation:** https://registry.terraform.io/providers/hashicorp/tfe/latest/docs
-- **Website**: https://registry.terraform.io/providers/hashicorp/tfe / https://www.terraform.io
-- **Discuss forum**: https://discuss.hashicorp.com/c/terraform-providers
-
-## Installation
-
-Declare the provider in your configuration and `terraform init` will automatically fetch and install the provider for you from the [Terraform Registry](https://registry.terraform.io/):
+Every TFE-compatible resource is available under a native `stackweaver_*` name **and** a `tfe_*`
+alias, so existing Terraform Cloud / Enterprise configurations are a drop-in migration:
 
 ```hcl
 terraform {
   required_providers {
-    tfe = {
-      version = "~> 0.79.0"
+    stackweaver = {
+      source = "vhco-pro/stackweaver"
     }
   }
 }
-```
 
-For production use, you should constrain the acceptable provider versions via
-configuration (as above), to ensure that new versions with breaking changes will
-not be automatically installed by `terraform init` in the future. As this provider
-is still at version zero, you should constrain the acceptable provider versions
-on the minor version.
+provider "stackweaver" {
+  hostname     = "app.stackweaver.io" # or your self-hosted host
+  token        = var.stackweaver_token
+  organization = "my-org"
+}
 
-The above snippet using `required_providers` is for Terraform 0.13+; if you are using Terraform version 0.12, you can constrain by adding the version constraint to the `provider` block instead:
-
-```hcl
-provider "tfe" {
-  version = "~> 0.79.0"
-  ...
+resource "stackweaver_project" "example" {
+  organization = "my-org"
+  name         = "example"
 }
 ```
 
-Since v0.24.0, this provider requires [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 0.12
+Migrating from `terraform-provider-tfe`? Point the `tfe` provider's `source` at
+`vhco-pro/stackweaver` — your `resource "tfe_*"` blocks keep working — then optionally rename to
+`stackweaver_*` with `moved {}` blocks.
 
-Since v0.70.0, this provider requires [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
+Stackweaver-native resources (no TFE equivalent, e.g. the Ansible surface) are exposed under
+`stackweaver_*` only.
 
-For more information on provider installation and constraining provider versions, see the [Provider Requirements documentation](https://developer.hashicorp.com/terraform/language/providers/requirements).
+## Documentation
 
-## Usage
+Per-resource docs and examples live under [`website/docs/`](./website/docs/) and
+[`examples/`](./examples/), and are published to the Terraform Registry.
 
-[Create a user or team API token in HCP Terraform or Terraform Enterprise](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens), and use the token in the provider configuration block:
+## Development
 
-```hcl
-provider "tfe" {
-  hostname = var.hostname # Optional, for use with Terraform Enterprise. Defaults to app.terraform.io.
-  token    = var.token
-}
-
-# Create an organization
-resource "tfe_organization" "org" {
-  # ...
-}
+```sh
+make build        # build the provider
+make test         # unit tests (native codecs + registration)
+make fmt vet lint # format, vet, lint
 ```
 
-There are several other ways to configure the authentication token, depending on
-your use case. For other methods, see the [Authentication documentation](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs#authentication)
+Run acceptance tests against a live Stackweaver stack with a Terraform CLI dev override
+(`~/.terraformrc` `dev_overrides` → the built binary; see the Registry docs). CI runs build + unit;
+full acceptance is driven locally because it needs a running stack.
 
-For more information on configuring providers in general, see the [Provider Configuration documentation](https://developer.hashicorp.com/terraform/language/providers/configuration).
+## License
 
-# Development
-
-We have developed some guidelines to help you learn more about compiling the provider, using it locally, and contributing suggested changes in the [contributing guide](https://hashicorp.github.io/terraform-provider-tfe/).
+[Mozilla Public License 2.0](./LICENSE). Upstream `Copyright (c) HashiCorp, Inc.` headers are
+preserved on forked files.

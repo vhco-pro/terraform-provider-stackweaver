@@ -1,69 +1,29 @@
-TEST?=$$(go list ./... |grep -v 'vendor')
-GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
-PKG_NAME=tfe
+# Copyright (c) VH & Co BV. SPDX-License-Identifier: MPL-2.0
+NAME := terraform-provider-stackweaver
 
-default: terraform-provider-tfe
+default: build
 
-build: fmtcheck
-	go install
+build:
+	go build -o $(NAME) .
 
-terraform-provider-tfe: fmtcheck
-	@go build -o terraform-provider-tfe
+install: build
+	go install .
 
-# Run unit tests
-test: fmtcheck
-	go test -v $(TEST) || exit 1
-	echo $(TEST) | \
-		xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
+test:
+	go test ./internal/stackweaver/ -count=1
+	go test ./internal/provider/ -run 'DualPrefix|KeptSurface' -count=1
 
-sweep:
-	@echo "WARNING: This will destroy infrastructure. Use only in development accounts."
-	go test ./tfe -v -timeout 60m -sweep=prod
-
-# Run acceptance tests
-testacc: fmtcheck
-	TF_ACC=1 TF_LOG_SDK_PROTO=OFF go test $(TEST) -v $(TESTARGS) -timeout 15m
-
-# This rule creates a terraform CLI config file to override the tfe provider to point to the latest
-# build in the current directory. The output of devoverride.sh is an export statement that
-# overrides the CLI config to use this build.
-devoverride: terraform-provider-tfe
-	@sh -c "'$(CURDIR)/scripts/devoverride.sh'"
-
-vet:
-	@echo "go vet ."
-	@go vet $$(go list ./... | grep -v vendor/) ; if [ $$? -eq 1 ]; then \
-		echo ""; \
-		echo "Vet found suspicious constructs. Please check the reported constructs"; \
-		echo "and fix them if necessary before submitting the code for review."; \
-		exit 1; \
-	fi
-
-lint:
-	@golangci-lint run ; if [ $$? -ne 0 ]; then \
-		echo ""; \
-		echo "golangci-lint found some code style issues."; \
-		exit 1; \
-	fi
+# Acceptance tests need a live Stackweaver stack + TFE_TOKEN (run via dev_overrides).
+testacc:
+	TF_ACC=1 go test ./internal/provider/ -v -count=1 -timeout 30m
 
 fmt:
-	gofmt -w $(GOFMT_FILES)
+	gofmt -s -w .
 
-fmtcheck:
-	@sh -c "'$(CURDIR)/scripts/gofmtcheck.sh'"
+vet:
+	go vet ./...
 
-errcheck:
-	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
+lint:
+	golangci-lint run
 
-test-compile:
-	@if [ "$(TEST)" = "./..." ]; then \
-		echo "ERROR: Set TEST to a specific package. For example,"; \
-		echo "  make test-compile TEST=./$(PKG_NAME)"; \
-		exit 1; \
-	fi
-	go test -c $(TEST) $(TESTARGS)
-
-generate:
-	@./scripts/generate-docs.sh "$(RESOURCE)"
-
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile sweep generate
+.PHONY: default build install test testacc fmt vet lint
