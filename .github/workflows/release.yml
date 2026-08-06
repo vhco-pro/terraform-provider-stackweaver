@@ -4,17 +4,10 @@ name: Release
 permissions:
   contents: write
 
+# Manual-only: run from the Actions tab when ready to cut a release (after the
+# Registry namespace is claimed + the repo is connected). Flip to a push trigger
+# to auto-release on merge to main once publishing is live.
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
-      - '.gitignore'
-      - 'website/**'
-      - 'docs/**'
-      - 'spec/**'
-      - 'plan/**'
   workflow_dispatch:
 
 jobs:
