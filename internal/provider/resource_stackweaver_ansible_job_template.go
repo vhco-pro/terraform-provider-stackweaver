@@ -229,8 +229,12 @@ func (r *resourceStackweaverAnsibleJobTemplate) Schema(_ context.Context, _ reso
 				Required:    true,
 			},
 			"credential_id": schema.StringAttribute{
-				Description: "ID of the legacy single machine credential. Multi-credential attachment is managed by stackweaver_ansible_job_template_credential.",
+				Description: "ID of the legacy single machine credential. Multi-credential attachment is managed by stackweaver_ansible_job_template_credential; because that resource sets this field server-side, it is Computed so an externally-attached credential does not cause perpetual drift.",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"agent_pool_id": schema.StringAttribute{
 				Description: "ID of the agent pool to run on. Must belong to the same organization.",
