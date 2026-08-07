@@ -1,34 +1,38 @@
 # Copyright (c) VH & Co BV. SPDX-License-Identifier: MPL-2.0
+# Standard Terraform-provider release: push a vX.Y.Z tag -> goreleaser builds,
+# GPG-signs the checksums, and publishes a GitHub release the Terraform Registry ingests.
 name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
-# Manual-only: run from the Actions tab when ready to cut a release (after the
-# Registry namespace is claimed + the repo is connected). Flip to a push trigger
-# to auto-release on merge to main once publishing is live.
-on:
-  workflow_dispatch:
-
 jobs:
-  release:
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          persist-credentials: true
-
-      - name: Tag with GitVersion
-        id: gitversion
-        uses: michielvha/gitversion-tag-action@main
+      - uses: actions/setup-go@v6
         with:
-          configFilePath: gitversion.yml
-          prefix: 'v'
-
-      - name: Build and Release
-        uses: michielvha/goreleaser-action@main
+          go-version-file: go.mod
+          cache: true
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
-          go-version: "1.26.1"
-          github-token: ${{ github.token }}
-          pgp-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
