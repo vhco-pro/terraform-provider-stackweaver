@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_project_access"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_project_access"
 description: |-
   Get information on team permissions on a project.
 ---
 
-# Data Source: tfe_team_project_access
+# Data Source: stackweaver_team_project_access
 
 Use this data source to get information about team permissions for a project.
 
 ## Example Usage
 
 ```hcl
-data "tfe_team_project_access" "test" {
+data "stackweaver_team_project_access" "test" {
   team_id    = "my-team-id"
   project_id = "my-project-id"
 }

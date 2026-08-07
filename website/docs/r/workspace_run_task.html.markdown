@@ -1,24 +1,24 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_workspace_run_task"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_workspace_run_task"
 description: |-
   Manages Workspace Run tasks.
 ---
 
-# tfe_workspace_run_task
+# stackweaver_workspace_run_task
 
-[Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks) allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle. Run tasks are reusable configurations that you can attach to any workspace in an organization.
+[Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks) allow Stackweaver to interact with external systems at specific points in the Stackweaver run lifecycle. Run tasks are reusable configurations that you can attach to any workspace in an organization.
 
-The tfe_workspace_run_task resource associates, updates and removes [Workspace Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace).
+The stackweaver_workspace_run_task resource associates, updates and removes [Workspace Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace).
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_workspace_run_task" "example" {
-  workspace_id      = resource.tfe_workspace.example.id
-  task_id           = resource.tfe_organization_run_task.example.id
+resource "stackweaver_workspace_run_task" "example" {
+  workspace_id      = resource.stackweaver_workspace.example.id
+  task_id           = resource.stackweaver_organization_run_task.example.id
   enforcement_level = "advisory"
   stages = ["pre_plan"]
 }
@@ -44,5 +44,5 @@ Run tasks can be imported; use `<ORGANIZATION>/<WORKSPACE NAME>/<TASK NAME>` as 
 import ID. For example:
 
 ```shell
-terraform import tfe_workspace_run_task.test my-org-name/workspace/task-name
+terraform import stackweaver_workspace_run_task.test my-org-name/workspace/task-name
 ```

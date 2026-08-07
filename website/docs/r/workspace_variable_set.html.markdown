@@ -1,40 +1,40 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_workspace_variable_set"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_workspace_variable_set"
 description: |-
   Add a variable set to a workspace
 ---
 
-# tfe_workspace_variable_set
+# stackweaver_workspace_variable_set
 
 Adds and removes a workspace from a variable set's scope.
 
--> **Note:** `tfe_variable_set` has a deprecated argument `workspace_ids` that should not be used alongside this resource. They attempt to manage the same attachments and are mutually exclusive.
+-> **Note:** `stackweaver_variable_set` has a deprecated argument `workspace_ids` that should not be used alongside this resource. They attempt to manage the same attachments and are mutually exclusive.
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_variable_set" "test" {
+resource "stackweaver_variable_set" "test" {
   name          = "Test Varset"
   description   = "Some description."
-  organization  = tfe_organization.test.name
+  organization  = stackweaver_organization.test.name
 }
 
-resource "tfe_workspace_variable_set" "test" {
-  variable_set_id = tfe_variable_set.test.id
-  workspace_id    = tfe_workspace.test.id
+resource "stackweaver_workspace_variable_set" "test" {
+  variable_set_id = stackweaver_variable_set.test.id
+  workspace_id    = stackweaver_workspace.test.id
 }
 ```
 
@@ -54,5 +54,5 @@ The following arguments are supported:
 Workspace Variable Sets can be imported; use `<ORGANIZATION>/<WORKSPACE NAME>/<VARIABLE SET NAME>`. For example:
 
 ```shell
-terraform import tfe_workspace_variable_set.test 'my-org-name/workspace/My Variable Set'
+terraform import stackweaver_workspace_variable_set.test 'my-org-name/workspace/My Variable Set'
 ```

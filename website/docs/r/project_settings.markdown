@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_project_settings"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_project_settings"
 description: |-
     Manage Project Settings.
 ---
 
-# tfe_project_settings
+# stackweaver_project_settings
 
 **Requires Terraform CLI version 1.0 and later**
 
@@ -18,7 +18,7 @@ Primarily, this resource allows setting default execution mode and agent pool fo
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 
@@ -26,23 +26,23 @@ resource "tfe_organization" "test" {
   default_execution_mode = "remote"
 }
 
-resource "tfe_agent_pool" "my_agents" {
+resource "stackweaver_agent_pool" "my_agents" {
   name         = "my-agent-pool"
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_project" "my_project" {
+resource "stackweaver_project" "my_project" {
   name         = "my-project"
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_project_settings" "my_project_settings" {
-  project_id             = tfe_project.my_project.id
+resource "stackweaver_project_settings" "my_project_settings" {
+  project_id             = stackweaver_project.my_project.id
 
   # workspaces in this project will use agent execution mode by default,
   # and will use the specified agent pool.
   default_execution_mode = "agent"
-  default_agent_pool_id  = tfe_agent_pool.my_agents.id
+  default_agent_pool_id  = stackweaver_agent_pool.my_agents.id
 }
 ```
 
@@ -66,5 +66,5 @@ In addition to all arguments above, the following attributes are exported:
 Project settings  can be imported; use the `<PROJECT_ID>` as the import ID. For example:
 
 ```shell
-terraform import tfe_project_settings.my_project_settings <PROJECT_ID>
+terraform import stackweaver_project_settings.my_project_settings <PROJECT_ID>
 ```

@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_organization_token"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_organization_token"
 description: |-
   Generates a new organization token, replacing any existing token.
 ---
 
-# tfe_organization_token
+# stackweaver_organization_token
 
 Generates a new organization token, replacing any existing token. This token
 can be used to act as the organization service account.
@@ -15,7 +15,7 @@ can be used to act as the organization service account.
 Basic usage:
 
 ```hcl
-resource "tfe_organization_token" "test" {
+resource "stackweaver_organization_token" "test" {
   organization = "my-org-name"
 }
 ```
@@ -40,8 +40,8 @@ resource "time_rotating" "example" {
   rotation_days = 30
 }
 
-resource "tfe_organization_token" "test" {
-  organization = data.tfe_organization.org.name
+resource "stackweaver_organization_token" "test" {
+  organization = data.stackweaver_organization.org.name
   expired_at = time_rotating.example.rotation_rfc3339
 }
 ```
@@ -57,5 +57,5 @@ Organization tokens can be imported; use `<ORGANIZATION NAME>` as the import ID.
 For example:
 
 ```shell
-terraform import tfe_organization_token.test my-org-name
+terraform import stackweaver_organization_token.test my-org-name
 ```

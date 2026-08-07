@@ -1,20 +1,20 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_workspace_task"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_workspace_task"
 description: |-
   Get information on a Workspace Run task.
 ---
 
-# Data Source: tfe_workspace_task
+# Data Source: stackweaver_workspace_task
 
-[Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks) allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle. Run tasks are reusable configurations that you can attach to any workspace in an organization.
+[Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks) allow Stackweaver to interact with external systems at specific points in the Stackweaver run lifecycle. Run tasks are reusable configurations that you can attach to any workspace in an organization.
 
 Use this data source to get information about a [Workspace Run tasks](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-tasks#associating-run-tasks-with-a-workspace).
 
 ## Example Usage
 
 ```hcl
-data "tfe_workspace_run_task" "foobar" {
+data "stackweaver_workspace_run_task" "foobar" {
   workspace_id      = "ws-abc123"
   task_id           = "task-def456"
 }

@@ -1,13 +1,13 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_run_trigger"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_run_trigger"
 description: |-
   Manages run triggers
 ---
 
-# tfe_run_trigger
+# stackweaver_run_trigger
 
-HCP Terraform provides a way to connect your workspace to one or more workspaces within your organization, 
+Stackweaver provides a way to connect your workspace to one or more workspaces within your organization, 
 known as "source workspaces". These connections, called run triggers, allow runs to queue automatically in 
 your workspace on successful apply of runs in any of the source workspaces. You can connect your workspace 
 to up to 20 source workspaces.
@@ -17,24 +17,24 @@ to up to 20 source workspaces.
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test-organization" {
+resource "stackweaver_organization" "test-organization" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test-workspace" {
+resource "stackweaver_workspace" "test-workspace" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test-organization.id
+  organization = stackweaver_organization.test-organization.id
 }
 
-resource "tfe_workspace" "test-sourceable" {
+resource "stackweaver_workspace" "test-sourceable" {
   name         = "my-sourceable-workspace-name"
-  organization = tfe_organization.test-organization.id
+  organization = stackweaver_organization.test-organization.id
 }
 
-resource "tfe_run_trigger" "test" {
-  workspace_id  = tfe_workspace.test-workspace.id
-  sourceable_id = tfe_workspace.test-sourceable.id
+resource "stackweaver_run_trigger" "test" {
+  workspace_id  = stackweaver_workspace.test-workspace.id
+  sourceable_id = stackweaver_workspace.test-sourceable.id
 }
 ```
 
@@ -55,5 +55,5 @@ The following arguments are supported:
 Run triggers can be imported; use `<RUN TRIGGER ID>` as the import ID. For example:
 
 ```shell
-terraform import tfe_run_trigger.test rt-qV9JnKRkmtMa4zcA
+terraform import stackweaver_run_trigger.test rt-qV9JnKRkmtMa4zcA
 ```

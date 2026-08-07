@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team"
 description: |-
   Get information on a team.
 ---
 
-# Data Source: tfe_team
+# Data Source: stackweaver_team
 
 Use this data source to get information about a team.
 
 ## Example Usage
 
 ```hcl
-data "tfe_team" "test" {
+data "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
@@ -31,7 +31,7 @@ In addition to all arguments above, the following attributes are exported:
 
 * `id` - The ID of the team.
 * `sso_team_id` - (Optional) The [SSO Team ID](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/single-sign-on#team-names-and-sso-team-ids) of the team, if it has been defined.
-* `scim_linked` - Whether the team is linked to a SCIM group. Only populated when SCIM is enabled on the TFE instance. If not present, SCIM is not supported or not enabled on the TFE instance.
-* `scim_group_name` - The display name of the SCIM group linked to this team. Only populated when SCIM is enabled on the TFE instance. If not present, SCIM is not supported or not enabled on the TFE instance, or the team is not linked to a SCIM group.
-* `scim_sync_paused` - Whether SCIM membership sync is paused for this team. Only populated when SCIM is enabled on the TFE instance. If not present, SCIM is not supported or not enabled on the TFE instance.
-* `scim_updated_at` - The timestamp of the last SCIM reconciliation for this team, in RFC3339 format. Only populated when SCIM is enabled on the TFE instance. If not present, SCIM is not supported or not enabled on the TFE instance, or the team is not linked to a SCIM group.
+* `scim_linked` - Whether the team is linked to a SCIM group. Only populated when SCIM is enabled on the Stackweaver instance. If not present, SCIM is not supported or not enabled on the Stackweaver instance.
+* `scim_group_name` - The display name of the SCIM group linked to this team. Only populated when SCIM is enabled on the Stackweaver instance. If not present, SCIM is not supported or not enabled on the Stackweaver instance, or the team is not linked to a SCIM group.
+* `scim_sync_paused` - Whether SCIM membership sync is paused for this team. Only populated when SCIM is enabled on the Stackweaver instance. If not present, SCIM is not supported or not enabled on the Stackweaver instance.
+* `scim_updated_at` - The timestamp of the last SCIM reconciliation for this team, in RFC3339 format. Only populated when SCIM is enabled on the Stackweaver instance. If not present, SCIM is not supported or not enabled on the Stackweaver instance, or the team is not linked to a SCIM group.

@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_registry_gpg_keys"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_registry_gpg_keys"
 description: |-
   Get information on private registry GPG keys of an organization.
 ---
 
-# Data Source: tfe_registry_gpg_key
+# Data Source: stackweaver_registry_gpg_key
 
 Use this data source to get information about all private registry GPG keys of an organization.
 
 ## Example Usage
 
 ```hcl
-data "tfe_registry_gpg_keys" "all" {
+data "stackweaver_registry_gpg_keys" "all" {
   organization = "my-org-name"
 }
 ```

@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_token"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_token"
 description: |-
   Generates a new team token and overrides existing token if one exists.
 ---
 
-# tfe_team_token
+# stackweaver_team_token
 
 Generates a new team token. If a description is not set, then it follows the legacy behavior to override
 the single team token without a description if it exists.
@@ -15,18 +15,18 @@ the single team token without a description if it exists.
 Basic usage:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
 
-resource "tfe_team_token" "test" {
-  team_id     = tfe_team.test.id
+resource "stackweaver_team_token" "test" {
+  team_id     = stackweaver_team.test.id
   description = "my team token"
 }
 
-resource "tfe_team_token" "ci" {
-  team_id     = tfe_team.test.id
+resource "stackweaver_team_token" "ci" {
+  team_id     = stackweaver_team.test.id
   description = "my second team token"
 }
 ```
@@ -49,7 +49,7 @@ format (e.g., "2024-12-31T23:59:59Z"). If no expiration date is supplied, the to
 When a token has an expiry:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
@@ -58,8 +58,8 @@ resource "time_rotating" "example" {
   rotation_days = 30
 }
 
-resource "tfe_team_token" "test" {
-  team_id = tfe_team.test.id
+resource "stackweaver_team_token" "test" {
+  team_id = stackweaver_team.test.id
   description = "my team token"
   expired_at = time_rotating.example.rotation_rfc3339
 }
@@ -78,6 +78,6 @@ legacy behavior where the imported token is the single token of the team that ha
 For example:
 
 ```shell
-terraform import tfe_team_token.test at-47qC3LmA47piVan7
-terraform import tfe_team_token.test team-47qC3LmA47piVan7
+terraform import stackweaver_team_token.test at-47qC3LmA47piVan7
+terraform import stackweaver_team_token.test team-47qC3LmA47piVan7
 ```

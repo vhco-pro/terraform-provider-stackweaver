@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_variable_set"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_variable_set"
 description: |-
   Get information on organization variable sets.
 ---
 
-# Data Source: tfe_variable_set
+# Data Source: stackweaver_variable_set
 
 This data source is used to retrieve a named variable set
 
@@ -14,7 +14,7 @@ This data source is used to retrieve a named variable set
 For workspace variables:
 
 ```hcl
-data "tfe_variable_set" "test" {
+data "stackweaver_variable_set" "test" {
   name         = "my-variable-set-name"
   organization = "my-org-name"
 }

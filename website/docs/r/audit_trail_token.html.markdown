@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_audit_trail_token"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_audit_trail_token"
 description: |-
   Generates a new audit trail token in organization, replacing any existing token.
 ---
 
-# tfe_audit_trail_token
+# stackweaver_audit_trail_token
 
 Generates a new audit trail token in organization, replacing any existing token.
 
@@ -16,7 +16,7 @@ Note that only organizations that have the [audit-logging entitlement](https://d
 Basic usage:
 
 ```hcl
-resource "tfe_audit_trail_token" "test" {
+resource "stackweaver_audit_trail_token" "test" {
   organization = "my-org-name"
 }
 ```
@@ -41,8 +41,8 @@ resource "time_rotating" "example" {
   rotation_days = 30
 }
 
-resource "tfe_audit_trail_token" "test" {
-  organization = data.tfe_organization.org.name
+resource "stackweaver_audit_trail_token" "test" {
+  organization = data.stackweaver_organization.org.name
   expired_at = time_rotating.example.rotation_rfc3339
 }
 ```
@@ -58,5 +58,5 @@ Audit trail tokens can be imported; use `<ORGANIZATION NAME>` as the import ID.
 For example:
 
 ```shell
-terraform import tfe_audit_trail_token.test my-org-name
+terraform import stackweaver_audit_trail_token.test my-org-name
 ```

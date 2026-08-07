@@ -1,22 +1,22 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_azure_oidc_configuration"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_azure_oidc_configuration"
 description: |-
   Manages Azure OIDC configurations.
 ---
 
-# tfe_azure_oidc_configuration
+# stackweaver_azure_oidc_configuration
 
 Defines an Azure OIDC configuration resource.
 
-~> **NOTE:** This resource requires using the provider with HCP Terraform on the HCP Terraform Premium edition. Refer to [HCP Terraform pricing](https://www.hashicorp.com/en/pricing?product_intent=terraform&tab=terraform) for details.
+~> **NOTE:** This resource requires using the provider with Stackweaver on the Stackweaver Premium edition. Refer to [Stackweaver pricing](https://stackweaver.io/pricing) for details.
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_azure_oidc_configuration" "example" {
+resource "stackweaver_azure_oidc_configuration" "example" {
   client_id         = "application-id1"
   subscription_id   = "subscription-id1"
   tenant_id         = "tenant-id1"
@@ -46,5 +46,5 @@ Azure OIDC configurations can be imported by ID.
 Example:
 
 ```shell
-terraform import tfe_azure_oidc_configuration.example azoidc-8DCgwEV2GbMcQjk8
+terraform import stackweaver_azure_oidc_configuration.example azoidc-8DCgwEV2GbMcQjk8
 ```

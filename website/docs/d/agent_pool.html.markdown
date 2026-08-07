@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_agent_pool"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_agent_pool"
 description: |-
   Get information on an agent pool.
 ---
 
-# Data Source: tfe_agent_pool
+# Data Source: stackweaver_agent_pool
 
 Use this data source to get information about an agent pool.
 
 ## Example Usage
 
 ```hcl
-data "tfe_agent_pool" "test" {
+data "stackweaver_agent_pool" "test" {
   name          = "my-agent-pool-name"
   organization  = "my-org-name"
 }

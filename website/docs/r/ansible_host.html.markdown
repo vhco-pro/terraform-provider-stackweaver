@@ -12,7 +12,7 @@ Manages a single host within a `stackweaver_ansible_inventory`: a named target
 with an optional distinct hostname or IP, an SSH port, per-host variables, and an
 enabled flag.
 
-This is a native Stackweaver resource with no Terraform Enterprise equivalent.
+This is a native Stackweaver resource with no Stackweaver equivalent.
 
 ## Example Usage
 

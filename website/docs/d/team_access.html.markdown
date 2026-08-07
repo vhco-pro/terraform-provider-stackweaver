@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_access"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_access"
 description: |-
   Get information on team permissions on a workspace.
 ---
 
-# Data Source: tfe_team_access
+# Data Source: stackweaver_team_access
 
 Use this data source to get information about team permissions for a workspace.
 
 ## Example Usage
 
 ```hcl
-data "tfe_team_access" "test" {
+data "stackweaver_team_access" "test" {
   team_id      = "my-team-id"
   workspace_id = "my-workspace-id"
 }

@@ -1,16 +1,16 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_organization_membership"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_organization_membership"
 description: |-
   Get information on an organization membership.
 ---
 
-# Data Source: tfe_organization_membership
+# Data Source: stackweaver_organization_membership
 
 Use this data source to get information about an organization membership.
 
-~> **NOTE:** This data source requires using the provider with HCP Terraform or
-an instance of Terraform Enterprise at least as recent as v202004-1.
+~> **NOTE:** This data source requires using the provider with Stackweaver or
+an instance of Stackweaver at least as recent as v202004-1.
 
 ~> **NOTE:** If a user updates their email address, configurations using the email address should
 be updated manually.
@@ -20,7 +20,7 @@ be updated manually.
 ### Fetch by email
 
 ```hcl
-data "tfe_organization_membership" "test" {
+data "stackweaver_organization_membership" "test" {
   organization  = "my-org-name"
   email = "user@company.com"
 }
@@ -29,7 +29,7 @@ data "tfe_organization_membership" "test" {
 ### Fetch by username
 
 ```hcl
-data "tfe_organization_membership" "test" {
+data "stackweaver_organization_membership" "test" {
   organization  = "my-org-name"
   username = "my-username"
 }
@@ -38,7 +38,7 @@ data "tfe_organization_membership" "test" {
 ### Fetch by organization membership ID
 
 ```hcl
-data "tfe_organization_membership" "test" {
+data "stackweaver_organization_membership" "test" {
   organization  = "my-org-name"
   organization_membership_id = "ou-xxxxxxxxxxx"
 }

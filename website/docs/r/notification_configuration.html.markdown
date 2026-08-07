@@ -1,13 +1,13 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_notification_configuration"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_notification_configuration"
 description: |-
   Manages notifications configurations.
 ---
 
-# tfe_notification_configuration
+# stackweaver_notification_configuration
 
-HCP Terraform can be configured to send notifications for run state transitions.
+Stackweaver can be configured to send notifications for run state transitions.
 Notification configurations allow you to specify a URL, destination type, and what events will trigger the notification.
 Each workspace can have up to 20 notification configurations, and they apply to all runs for that workspace.
 
@@ -18,102 +18,102 @@ Each workspace can have up to 20 notification configurations, and they apply to 
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_notification_configuration" "test" {
+resource "stackweaver_notification_configuration" "test" {
   name             = "my-test-notification-configuration"
   enabled          = true
   destination_type = "generic"
   triggers         = ["run:created", "run:planning", "run:errored"]
   url_wo           = "https://example.com"
-  workspace_id     = tfe_workspace.test.id
+  workspace_id     = stackweaver_workspace.test.id
 }
 ```
 
 With `destination_type` of `email`:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_organization_membership" "test" {
+resource "stackweaver_organization_membership" "test" {
   organization = "my-org-name"
   email        = "test.member@company.com"
 }
 
-resource "tfe_notification_configuration" "test" {
+resource "stackweaver_notification_configuration" "test" {
   name             = "my-test-email-notification-configuration"
   enabled          = true
   destination_type = "email"
-  email_user_ids   = [tfe_organization_membership.test.user_id]
+  email_user_ids   = [stackweaver_organization_membership.test.user_id]
   triggers         = ["run:created", "run:planning", "run:errored"]
-  workspace_id     = tfe_workspace.test.id
+  workspace_id     = stackweaver_workspace.test.id
 }
 ```
 
-(**TFE only**) With `destination_type` of `email`, using `email_addresses` list and `email_users`:
+(**Stackweaver only**) With `destination_type` of `email`, using `email_addresses` list and `email_users`:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_organization_membership" "test" {
+resource "stackweaver_organization_membership" "test" {
   organization = "my-org-name"
   email        = "test.member@company.com"
 }
 
-resource "tfe_notification_configuration" "test" {
+resource "stackweaver_notification_configuration" "test" {
   name             = "my-test-email-notification-configuration"
   enabled          = true
   destination_type = "email"
-  email_user_ids   = [tfe_organization_membership.test.user_id]
+  email_user_ids   = [stackweaver_organization_membership.test.user_id]
   email_addresses  = ["user1@company.com", "user2@company.com", "user3@company.com"]
   triggers         = ["run:created", "run:planning", "run:errored"]
-  workspace_id     = tfe_workspace.test.id
+  workspace_id     = stackweaver_workspace.test.id
 }
 ```
 
 With write-only token and URL (auto-managed, recommended):
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_notification_configuration" "test" {
+resource "stackweaver_notification_configuration" "test" {
   name             = "my-test-notification-configuration"
   destination_type = "generic"
   token_wo         = "my-secret-token"
   url_wo           = "https://example.com"
-  workspace_id     = tfe_workspace.test.id
+  workspace_id     = stackweaver_workspace.test.id
 }
 ```
 
@@ -125,10 +125,10 @@ The following arguments are supported:
 * `destination_type` - (Required) The type of notification configuration payload to send.
   Valid values are:
   * `generic`
-  * `email` available in HCP Terraform or Terraform Enterprise v202005-1 or later
+  * `email` available in Stackweaver v202005-1 or later
   * `slack`
-  * `microsoft-teams` available in HCP Terraform or Terraform Enterprise v202206-1 or later
-* `email_addresses` - (Optional) **TFE only** A list of email addresses. This value
+  * `microsoft-teams` available in Stackweaver v202206-1 or later
+* `email_addresses` - (Optional) **Stackweaver only** A list of email addresses. This value
   _must not_ be provided if `destination_type` is `generic`, `microsoft-teams`, or `slack`.
 * `email_user_ids` - (Optional) A list of user IDs. This value _must not_ be provided
   if `destination_type` is `generic`, `microsoft-teams`, or `slack`.
@@ -196,5 +196,5 @@ The following arguments are supported:
 Notification configurations can be imported; use `<NOTIFICATION CONFIGURATION ID>` as the import ID. For example:
 
 ```shell
-terraform import tfe_notification_configuration.test nc-qV9JnKRkmtMa4zcA
+terraform import stackweaver_notification_configuration.test nc-qV9JnKRkmtMa4zcA
 ```

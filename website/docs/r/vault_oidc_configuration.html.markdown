@@ -1,22 +1,22 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_vault_oidc_configuration"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_vault_oidc_configuration"
 description: |-
   Manages Vault OIDC configurations.
 ---
 
-# tfe_vault_oidc_configuration
+# stackweaver_vault_oidc_configuration
 
 Defines a Vault OIDC configuration resource.
 
-~> **NOTE:** This resource requires using the provider with HCP Terraform on the HCP Terraform Premium edition. Refer to [HCP Terraform pricing](https://www.hashicorp.com/en/pricing?product_intent=terraform&tab=terraform) for details.
+~> **NOTE:** This resource requires using the provider with Stackweaver on the Stackweaver Premium edition. Refer to [Stackweaver pricing](https://stackweaver.io/pricing) for details.
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_vault_oidc_configuration" "example" {
+resource "stackweaver_vault_oidc_configuration" "example" {
   address           = "https://my-vault-cluster-public-vault-659decf3.b8298d98.z1.hashicorp.cloud:8200"
   role_name         = "vault-role-name"
   namespace         = "admin"
@@ -50,5 +50,5 @@ Vault OIDC configurations can be imported by ID.
 Example:
 
 ```shell
-terraform import tfe_vault_oidc_configuration.example voidc-AV61VxigiRvkkvPd
+terraform import stackweaver_vault_oidc_configuration.example voidc-AV61VxigiRvkkvPd
 ```

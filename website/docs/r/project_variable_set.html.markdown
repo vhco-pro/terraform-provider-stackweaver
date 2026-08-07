@@ -1,42 +1,42 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_project_variable_set"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_project_variable_set"
 description: |-
   Add a variable set to a project
 ---
 
-# tfe_project_variable_set
+# stackweaver_project_variable_set
 
 Adds and removes a project from a variable set's scope.
 
 -> **Note:** This resource controls whether a project has access to a variable set, not whether
 a project owns the variable set. Ownership is specified by setting the `parent_project_id` on the
-`tfe_variable_set` resource.
+`stackweaver_variable_set` resource.
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_project" "test" {
+resource "stackweaver_project" "test" {
   name         = "my-project-name"
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_variable_set" "test" {
+resource "stackweaver_variable_set" "test" {
   name         = "Test Varset"
   description  = "Some description."
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_project_variable_set" "test" {
-  variable_set_id = tfe_variable_set.test.id
-  project_id      = tfe_project.test.id
+resource "stackweaver_project_variable_set" "test" {
+  variable_set_id = stackweaver_variable_set.test.id
+  project_id      = stackweaver_project.test.id
 }
 ```
 
@@ -56,5 +56,5 @@ The following arguments are supported:
 Project Variable Sets can be imported; use `<ORGANIZATION>/<PROJECT ID>/<VARIABLE SET NAME>`. For example:
 
 ```shell
-terraform import tfe_project_variable_set.test 'my-org-name/prj-F1NpdVBuCF3xc5Rp/Test Varset'
+terraform import stackweaver_project_variable_set.test 'my-org-name/prj-F1NpdVBuCF3xc5Rp/Test Varset'
 ```

@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_variables"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_variables"
 description: |-
   Get information on a workspace variables.
 ---
 
-# Data Source: tfe_variables
+# Data Source: stackweaver_variables
 
 This data source is used to retrieve all variables defined in a specified workspace
 
@@ -14,26 +14,26 @@ This data source is used to retrieve all variables defined in a specified worksp
 For workspace variables:
 
 ```hcl
-data "tfe_workspace" "test" {
+data "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
   organization = "my-org-name"
 }
 
-data "tfe_variables" "test" {
-  workspace_id = data.tfe_workspace.test.id
+data "stackweaver_variables" "test" {
+  workspace_id = data.stackweaver_workspace.test.id
 }
 ```
 
 For variable set variables:
 
 ```hcl
-data "tfe_variable_set" "test" {
+data "stackweaver_variable_set" "test" {
   name         = "my-variable-set-name"
   organization = "my-org-name"
 }
 
-data "tfe_variables" "test" {
-  variable_set_id = data.tfe_variable_set.test.id
+data "stackweaver_variables" "test" {
+  variable_set_id = data.stackweaver_variable_set.test.id
 }
 ```
 

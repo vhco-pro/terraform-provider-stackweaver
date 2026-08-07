@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_variable"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_variable"
 description: |-
   Manages variables.
 ---
 
-# tfe_variable
+# stackweaver_variable
 
 Creates, updates and destroys variables.
 
@@ -14,21 +14,21 @@ Creates, updates and destroys variables.
 Basic usage for workspaces:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_variable" "test" {
+resource "stackweaver_variable" "test" {
   key          = "my_key_name"
   value        = "my_value_name"
   category     = "terraform"
-  workspace_id = tfe_workspace.test.id
+  workspace_id = stackweaver_workspace.test.id
   description  = "a useful description"
 }
 ```
@@ -36,36 +36,36 @@ resource "tfe_variable" "test" {
 Basic usage for variable sets:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_variable_set" "test" {
+resource "stackweaver_variable_set" "test" {
   name         = "Test Varset"
   description  = "Some description."
   global       = false
-  organization = tfe_organization.test.name
+  organization = stackweaver_organization.test.name
 }
 
-resource "tfe_variable" "test-a" {
+resource "stackweaver_variable" "test-a" {
   key             = "seperate_variable"
   value           = "my_value_name"
   category        = "terraform"
   description     = "a useful description"
-  variable_set_id = tfe_variable_set.test.id
+  variable_set_id = stackweaver_variable_set.test.id
 }
 
-resource "tfe_variable" "test-b" {
+resource "stackweaver_variable" "test-b" {
   key             = "another_variable"
   value           = "my_value_name"
   category        = "env"
   description     = "an environment variable"
-  variable_set_id = tfe_variable_set.test.id
+  variable_set_id = stackweaver_variable_set.test.id
 }
 ```
 
-Basic usage for the write-only value of tfe_variable:
+Basic usage for the write-only value of stackweaver_variable:
 
 ```hcl
 variable "session_token" {
@@ -73,12 +73,12 @@ variable "session_token" {
   ephemeral = true
 }
 
-resource "tfe_variable" "test" {
+resource "stackweaver_variable" "test" {
   key              = "my_key_name"
   value_wo         = var.session_token
   value_wo_version = 1
   category         = "terraform"
-  workspace_id     = tfe_workspace.test.id
+  workspace_id     = stackweaver_workspace.test.id
   description      = "a useful description"
 }
 ```
@@ -103,12 +103,12 @@ variable is written once and not visible thereafter. Defaults to `false`.
     * `variable_set_id` - ID of the variable set that owns the variable.
 
 ~> **NOTE:** When `sensitive` is set to true, Terraform cannot detect and repair
-drift if `value` is later changed out-of-band via the HCP Terraform UI.
+drift if `value` is later changed out-of-band via the Stackweaver UI.
 Terraform will only change the value for a sensitive variable if you change
 `value` in the configuration, so that it no longer matches the last known value
 in the state.
 
--> **Note:** Write-Only argument `value_wo` is available to use in place of `value`. Write-Only arguments are supported in HashiCorp Terraform 1.11.0 and later. [Learn more](https://developer.hashicorp.com/terraform/language/v1.11.x/resources/ephemeral#write-only-arguments).
+-> **Note:** Write-Only argument `value_wo` is available to use in place of `value`. Write-Only arguments are supported in Terraform 1.11.0 and later. [Learn more](https://developer.hashicorp.com/terraform/language/v1.11.x/resources/ephemeral#write-only-arguments).
 
 ## Attributes Reference
 
@@ -123,29 +123,29 @@ The `readable_value` attribute is not sensitive, and will not be redacted; inste
 
 For example:
 ```
-resource "tfe_variable" "sensitive_var" {
+resource "stackweaver_variable" "sensitive_var" {
   key          = "sensitive_key"
   value        = "sensitive_value" // this will be redacted from plan outputs
   category     = "terraform"
-  workspace_id = tfe_workspace.workspace.id
+  workspace_id = stackweaver_workspace.workspace.id
   sensitive    = true
 }
 
-resource "tfe_variable" "visible_var" {
+resource "stackweaver_variable" "visible_var" {
   key          = "visible_key"
   value        = "visible_value" // this will be redacted from plan outputs
   category     = "terraform"
-  workspace_id = tfe_workspace.workspace.id
+  workspace_id = stackweaver_workspace.workspace.id
   sensitive    = false
 }
 
-resource "tfe_workspace" "sensitive_workspace" {
-  name = "workspace-${tfe_variable.sensitive_var.value}" // this will be redacted from plan outputs
+resource "stackweaver_workspace" "sensitive_workspace" {
+  name = "workspace-${stackweaver_variable.sensitive_var.value}" // this will be redacted from plan outputs
   organization = "organization name"
 }
 
-resource "tfe_workspace" "visible_workspace" {
-  name = "workspace-${tfe_variable.visible_var.readable_value}" // this will not be redacted from plan outputs
+resource "stackweaver_workspace" "visible_workspace" {
+  name = "workspace-${stackweaver_variable.visible_var.readable_value}" // this will not be redacted from plan outputs
   organization = "organization name"
 }
 
@@ -160,7 +160,7 @@ Variables can be imported using an identity. For example:
 
 ```hcl
 import {
-  to = tfe_variable.test
+  to = stackweaver_variable.test
   identity = {
     id              = "var-5rTwnSaRPogw6apb"
     configurable_id = "ws-66fE3LmF42piTaN2"
@@ -171,7 +171,7 @@ import {
 
 ```hcl
 import {
-  to = tfe_variable.test
+  to = stackweaver_variable.test
   identity = {
     id              = "var-5rTwnSaRPogw6apb"
     configurable_id = "varset-47qC3LmA47piVan7"
@@ -187,7 +187,7 @@ To import a variable that's part of a workspace, use
 example:
 
 ```shell
-terraform import tfe_variable.test my-org-name/my-workspace-name/var-5rTwnSaRPogw6apb
+terraform import stackweaver_variable.test my-org-name/my-workspace-name/var-5rTwnSaRPogw6apb
 ```
 
 To import a variable that's part of a variable set, use
@@ -195,5 +195,5 @@ To import a variable that's part of a variable set, use
 example:
 
 ```shell
-terraform import tfe_variable.test my-org-name/varset-47qC3LmA47piVan7/var-5rTwnSaRPogw6apb
+terraform import stackweaver_variable.test my-org-name/varset-47qC3LmA47piVan7/var-5rTwnSaRPogw6apb
 ```

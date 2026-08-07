@@ -1,29 +1,29 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_workspace"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_workspace"
 description: |-
   Manages workspaces.
 ---
 
-# tfe_workspace
+# stackweaver_workspace
 
 Provides a workspace resource.
 
-~> **NOTE:** Setting the execution mode and agent pool affinity directly on the workspace is deprecated in favor of using both [tfe_workspace_settings](workspace_settings) and [tfe_organization_default_settings](organization_default_settings), since they allow more precise control and fully support [agent_pool_allowed_workspaces](agent_pool_allowed_workspaces). Use caution when unsetting `execution_mode`, as it now leaves any prior value unmanaged instead of reverting to the old default value of `"remote"`.
+~> **NOTE:** Setting the execution mode and agent pool affinity directly on the workspace is deprecated in favor of using both [stackweaver_workspace_settings](workspace_settings) and [stackweaver_organization_default_settings](organization_default_settings), since they allow more precise control and fully support [agent_pool_allowed_workspaces](agent_pool_allowed_workspaces). Use caution when unsetting `execution_mode`, as it now leaves any prior value unmanaged instead of reverting to the old default value of `"remote"`.
 
 ## Example Usage
 
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test-organization" {
+resource "stackweaver_organization" "test-organization" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
-  organization = tfe_organization.test-organization.name
+  organization = stackweaver_organization.test-organization.name
   tags         = {
       environment = "prod"
       team_owner = "my-team"
@@ -34,27 +34,27 @@ resource "tfe_workspace" "test" {
 Usage with vcs_repo:
 
 ```hcl
-resource "tfe_organization" "test-organization" {
+resource "stackweaver_organization" "test-organization" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_oauth_client" "test" {
-  organization     = tfe_organization.test-organization.name
+resource "stackweaver_oauth_client" "test" {
+  organization     = stackweaver_organization.test-organization.name
   api_url          = "https://api.github.com"
   http_url         = "https://github.com"
   oauth_token      = "oauth_token_id"
   service_provider = "github"
 }
 
-resource "tfe_workspace" "parent" {
+resource "stackweaver_workspace" "parent" {
   name                 = "parent-ws"
-  organization         = tfe_organization.test-organization.name
+  organization         = stackweaver_organization.test-organization.name
   queue_all_runs       = false
   vcs_repo {
     branch             = "main"
     identifier         = "my-org-name/vcs-repository"
-    oauth_token_id     = tfe_oauth_client.test.oauth_token_id
+    oauth_token_id     = stackweaver_oauth_client.test.oauth_token_id
   }
 }
 ```
@@ -64,7 +64,7 @@ resource "tfe_workspace" "parent" {
 The following arguments are supported:
 
 * `name` - (Required) Name of the workspace.
-* `agent_pool_id` - (Optional) **Deprecated** The ID of an agent pool to assign to the workspace. Use [tfe_workspace_settings](workspace_settings) instead.
+* `agent_pool_id` - (Optional) **Deprecated** The ID of an agent pool to assign to the workspace. Use [stackweaver_workspace_settings](workspace_settings) instead.
 * `allow_destroy_plan` - (Optional) Whether destroy plans can be queued on the workspace.
 * `assessments_enabled` - (Optional) Whether to regularly run health assessments such as drift detection on the workspace. Defaults to `false`.
 * `auto_apply` - (Optional) Whether to automatically apply changes when a Terraform plan is successful. Defaults to `false`.
@@ -72,16 +72,16 @@ The following arguments are supported:
 * `auto_destroy_activity_duration` - (Optional) A duration string of the period of time after workspace activity to automatically schedule an auto-destroy run. Must be of the form `<number><unit>` where allowed unit values are "d" and "h". Conflicts with `auto_destroy_at`.
 * `auto_destroy_at` - (Optional) A future date/time string at which point all resources in a workspace will be scheduled for deletion. Must be a string in RFC3339 format (e.g. "2100-01-01T00:00:00Z"). Conflicts with `auto_destroy_activity_duration`.
 
-~> **NOTE:** `auto_destroy_at` is not intended for workspaces containing production resources or long-lived workspaces. Since this attribute is in-part managed by HCP Terraform, using `ignore_changes` for this attribute may be preferred.
+~> **NOTE:** `auto_destroy_at` is not intended for workspaces containing production resources or long-lived workspaces. Since this attribute is in-part managed by Stackweaver, using `ignore_changes` for this attribute may be preferred.
 
 * `description` - (Optional) A description for the workspace.
-* `execution_mode` - (Optional) **Deprecated** Which [execution mode](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#execution-mode) to use. Use [tfe_workspace_settings](workspace_settings) instead.
+* `execution_mode` - (Optional) **Deprecated** Which [execution mode](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#execution-mode) to use. Use [stackweaver_workspace_settings](workspace_settings) instead.
 * `file_triggers_enabled` - (Optional) Whether to filter runs based on the changed files
   in a VCS push. Defaults to `true`. If enabled, the working directory and
   trigger prefixes describe a set of paths which must contain changes for a
   VCS push to trigger a run. If disabled, any push will trigger a run.
 * `force_delete` - (Optional) If this attribute is present on a workspace that is being deleted through the provider, it will use the existing force delete API. If this attribute is not present or false it will safe delete the workspace.
-* `global_remote_state` - (Optional) **Deprecated** Whether the workspace allows all workspaces in the organization to access its state data during runs. Use [tfe_workspace_settings](workspace_settings) instead.
+* `global_remote_state` - (Optional) **Deprecated** Whether the workspace allows all workspaces in the organization to access its state data during runs. Use [stackweaver_workspace_settings](workspace_settings) instead.
 * `operations` - **Deprecated** Whether to use remote execution mode.
   Defaults to `true`. When set to `false`, the workspace will be used for
   state storage only. This value _must not_ be provided if `execution_mode` is
@@ -92,11 +92,11 @@ The following arguments are supported:
   automatically performing runs immediately after its creation. Defaults to
   `true`. When set to `false`, runs triggered by a webhook (such as a commit
   in VCS) will not be queued until at least one run has been manually queued.
-  **Note:** This default differs from the HCP Terraform API default, which
+  **Note:** This default differs from the Stackweaver API default, which
   is `false`. The provider uses `true` as any workspace provisioned with
   `false` would need to then have a run manually queued out-of-band before
   accepting webhooks.
-* `remote_state_consumer_ids` - (Optional) **Deprecated** The set of workspace IDs set as explicit remote state consumers for the given workspace. Use [tfe_workspace_settings](workspace_settings) instead.
+* `remote_state_consumer_ids` - (Optional) **Deprecated** The set of workspace IDs set as explicit remote state consumers for the given workspace. Use [stackweaver_workspace_settings](workspace_settings) instead.
 * `source_name` - (Optional) A friendly name for the application or client
    creating this workspace. If set, this will be displayed on the workspace as
    "Created via <SOURCE NAME>". This value cannot be updated after
@@ -110,8 +110,8 @@ The following arguments are supported:
    workspace has been created, so modifying this value will result in the
    workspace being replaced. To disable this, use an [ignore changes](https://developer.hashicorp.com/terraform/language/meta-arguments/lifecycle#ignore_changes) lifecycle meta-argument
 * `speculative_enabled` - (Optional) Whether this workspace allows speculative
-  plans. Defaults to `true`. Setting this to `false` prevents HCP Terraform
-  or the Terraform Enterprise instance from running plans on pull requests,
+  plans. Defaults to `true`. Setting this to `false` prevents Stackweaver
+  or the Stackweaver instance from running plans on pull requests,
   which can improve security if the VCS repository is public or includes
   untrusted contributors.
 * `structured_run_output_enabled` - (Optional) Whether this workspace should
@@ -137,7 +137,7 @@ will be used.
   (like `~> 1.0.0`); if you specify a constraint, the workspace will always use
   the newest release that meets that constraint. Defaults to the latest
   available version.
-* `trigger_patterns` - (Optional) List of [glob patterns](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#glob-patterns-for-automatic-run-triggering) that describe the files HCP Terraform monitors for changes. Trigger patterns are always appended to the root directory of the repository. Mutually exclusive with `trigger-prefixes`.
+* `trigger_patterns` - (Optional) List of [glob patterns](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#glob-patterns-for-automatic-run-triggering) that describe the files Stackweaver monitors for changes. Trigger patterns are always appended to the root directory of the repository. Mutually exclusive with `trigger-prefixes`.
 * `trigger_prefixes` - (Optional) List of repository-root-relative paths which describe all locations
   to be tracked for changes.
 * `vcs_repo` - (Optional) Settings for the workspace's VCS repository, enabling the [UI/VCS-driven run workflow](https://developer.hashicorp.com/terraform/cloud-docs/run/ui).
@@ -156,7 +156,7 @@ The `vcs_repo` block supports:
 * `ingress_submodules` - (Optional) Whether submodules should be fetched when
   cloning the VCS repository. Defaults to `false`.
 * `oauth_token_id` - (Optional) The VCS Connection (OAuth Connection + Token) to use.
-  This ID can be obtained from a `tfe_oauth_client` resource. This conflicts with `github_app_installation_id` and can only be used if `github_app_installation_id` is not used.
+  This ID can be obtained from a `stackweaver_oauth_client` resource. This conflicts with `github_app_installation_id` and can only be used if `github_app_installation_id` is not used.
 * `tags_regex` - (Optional) A regular expression used to trigger a Workspace run for matching Git tags. This option conflicts with `trigger_patterns` and `trigger_prefixes`. Should only set this value if the former is not being used.
 
 ## Attributes Reference
@@ -168,7 +168,7 @@ In addition to all arguments above, the following attributes are exported:
 * `html_url` - The URL to the browsable HTML overview of the workspace.
 * `inherits_project_auto_destroy` - Indicates whether this workspace inherits project auto destroy settings.
 * `effective_tags` - A map of key value tags for this workspace, including any tags inherited from the parent project.
-* `hyok_enabled` - (Available only in HCP Terraform) Whether HYOK is enabled for the workspace.
+* `hyok_enabled` - (Available only in Stackweaver) Whether HYOK is enabled for the workspace.
 
 ## Import
 
@@ -176,7 +176,7 @@ Workspaces can be imported using an identity. For example:
 
 ```hcl
 import {
-  to = tfe_workspace.test
+  to = stackweaver_workspace.test
   identity = {
     id       = "ws-CH5in3chf8RJjrVd"
     hostname = "app.terraform.io"
@@ -188,9 +188,9 @@ Workspaces can be imported; use `<WORKSPACE ID>` or `<ORGANIZATION NAME>/<WORKSP
 import ID. For example:
 
 ```shell
-terraform import tfe_workspace.test ws-CH5in3chf8RJjrVd
+terraform import stackweaver_workspace.test ws-CH5in3chf8RJjrVd
 ```
 
 ```shell
-terraform import tfe_workspace.test my-org-name/my-wkspace-name
+terraform import stackweaver_workspace.test my-org-name/my-wkspace-name
 ```

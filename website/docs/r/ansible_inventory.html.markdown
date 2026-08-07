@@ -14,7 +14,7 @@ organization- or project-scoped, of one of four types (`static`, `dynamic`,
 (`stackweaver_ansible_group`), and dynamic sources hang off an inventory, and a
 sync action refreshes dynamic, VCS, and constructed inventories.
 
-This is a native Stackweaver resource with no Terraform Enterprise equivalent.
+This is a native Stackweaver resource with no Stackweaver equivalent.
 
 ## Example Usage
 

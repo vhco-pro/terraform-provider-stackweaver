@@ -13,7 +13,7 @@ narrowed to a project) that job templates, jobs, and inventory sources attach fo
 access, vault decryption, or cloud-inventory authentication.
 
 This is a native Stackweaver resource with no `terraform-provider-tfe` equivalent. It is the intended
-home for an eventual `tfe_ssh_key`-style face over the `ssh` credential type.
+home for an eventual `stackweaver_ssh_key`-style face over the `ssh` credential type.
 
 ## Write-only secret behavior
 

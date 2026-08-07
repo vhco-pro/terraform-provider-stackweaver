@@ -9,7 +9,7 @@ description: |-
 # stackweaver_ansible_job
 
 Launches an Ansible job from a job template. This is a native Stackweaver resource with no
-`terraform-provider-tfe` equivalent; it is modeled on `tfe_workspace_run`.
+`terraform-provider-tfe` equivalent; it is modeled on `stackweaver_workspace_run`.
 
 ~> **Important:** This resource is a **launch trigger, not reconciled configuration.** Creating it has a
 **side effect** — it launches a job on Stackweaver and (by default) waits for that job to reach a terminal

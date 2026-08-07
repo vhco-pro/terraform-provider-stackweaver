@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_registry_provider"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_registry_provider"
 description: |-
   Manages public and private providers in the private registry.
 ---
 
-# tfe_registry_provider
+# stackweaver_registry_provider
 
 Manages public and private providers in the private registry.
 
@@ -14,13 +14,13 @@ Manages public and private providers in the private registry.
 Create private provider:
 
 ```hcl
-resource "tfe_organization" "example" {
+resource "stackweaver_organization" "example" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_registry_provider" "example" {
-  organization = tfe_organization.example.name
+resource "stackweaver_registry_provider" "example" {
+  organization = stackweaver_organization.example.name
 
   name = "my-provider"
 }
@@ -29,16 +29,16 @@ resource "tfe_registry_provider" "example" {
 Create public provider:
 
 ```hcl
-resource "tfe_organization" "example" {
+resource "stackweaver_organization" "example" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_registry_provider" "example" {
-  organization = tfe_organization.example.name
+resource "stackweaver_registry_provider" "example" {
+  organization = stackweaver_organization.example.name
 
   registry_name = "public"
-  namespace     = "hashicorp"
+  namespace     = "vhco-pro"
   name          = "aws"
 }
 ```
@@ -64,7 +64,7 @@ Providers can be imported using an identity. For example:
 
 ```hcl
 import {
-  to = tfe_registry_provider.test
+  to = stackweaver_registry_provider.test
   identity = {
     id            = "prov-kwt1cBiX2SdDz38w"
     organization  = "my-org-name"
@@ -81,11 +81,11 @@ Providers can be imported using the Terraform CLI; use `<ORGANIZATION>/<REGISTRY
 For example a private provider:
 
 ```shell
-terraform import tfe_registry_provider.example my-org-name/private/my-org-name/my-provider
+terraform import stackweaver_registry_provider.example my-org-name/private/my-org-name/my-provider
 ```
 
 Or a public provider:
 
 ```shell
-terraform import tfe_registry_provider.example my-org-name/public/hashicorp/aws
+terraform import stackweaver_registry_provider.example my-org-name/public/hashicorp/aws
 ```

@@ -1,32 +1,32 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_current_user"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_current_user"
 description: |-
   Get information on the current user associated with the API token.
 ---
 
-# Data Source: tfe_current_user
+# Data Source: stackweaver_current_user
 
-Use this data source to get information about the current user associated with the API token used to configure the provider. When authenticated with a team or organization token, HCP Terraform returns a synthetic service user rather than a real user account, so attributes like `email` and `username` will not reflect a real person.
+Use this data source to get information about the current user associated with the API token used to configure the provider. When authenticated with a team or organization token, Stackweaver returns a synthetic service user rather than a real user account, so attributes like `email` and `username` will not reflect a real person.
 
 ## Example Usage
 
 ```hcl
-data "tfe_current_user" "current" {}
+data "stackweaver_current_user" "current" {}
 
 output "email" {
-  value = data.tfe_current_user.current.email
+  value = data.stackweaver_current_user.current.email
 }
 ```
 
 A common use case is dynamically referencing the invoking user, for example when bootstrapping organization membership to avoid a conflict with the implicit owner:
 
 ```hcl
-data "tfe_current_user" "current" {}
+data "stackweaver_current_user" "current" {}
 
-resource "tfe_organization_membership" "owner" {
+resource "stackweaver_organization_membership" "owner" {
   organization = "my-org"
-  email        = data.tfe_current_user.current.email
+  email        = data.stackweaver_current_user.current.email
 }
 ```
 

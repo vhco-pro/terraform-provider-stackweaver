@@ -1,20 +1,20 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_workspace"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_workspace"
 description: |-
   Get information on a workspace.
 ---
 
-# Data Source: tfe_workspace
+# Data Source: stackweaver_workspace
 
 Use this data source to get information about a workspace.
 
-~> **NOTE:** Using `global_remote_state` or `remote_state_consumer_ids` requires using the provider with HCP Terraform or an instance of Terraform Enterprise at least as recent as v202104-1.
+~> **NOTE:** Using `global_remote_state` or `remote_state_consumer_ids` requires using the provider with Stackweaver or an instance of Stackweaver at least as recent as v202104-1.
 
 ## Example Usage
 
 ```hcl
-data "tfe_workspace" "test" {
+data "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
   organization = "my-org-name"
 }
@@ -34,7 +34,7 @@ In addition to all arguments above, the following attributes are exported:
 * `id` - The workspace ID.
 * `allow_destroy_plan` - Indicates whether destroy plans can be queued on the workspace.
 * `apply_duration_average` - The average duration of applies for this workspace.
-* `assessments_enabled` - (Available only in HCP Terraform) Indicates whether health assessments such as drift detection are enabled for the workspace.
+* `assessments_enabled` - (Available only in Stackweaver) Indicates whether health assessments such as drift detection are enabled for the workspace.
 * `auto_apply` - Indicates whether to automatically apply changes when a Terraform plan is successful.
 * `auto_apply_run_trigger` - Whether the workspace will automatically apply changes for runs that were created by run triggers from another workspace.
 * `auto_destroy_activity_duration` - A duration string representing time after workspace activity when an auto-destroy run will be triggered.
@@ -67,13 +67,13 @@ In addition to all arguments above, the following attributes are exported:
 * `effective_tags` - A map of key-value tags associated with the workspace, including any inherited tags from the parent project.
 * `tag_names` - The names of tags added to this workspace.
 * `terraform_version` - The version (or version constraint) of Terraform used for this workspace.
-* `trigger_prefixes` - List of trigger prefixes that describe the paths HCP Terraform monitors for changes, in addition to the working directory. Trigger prefixes are always appended to the root directory of the repository.
-  HCP Terraform or Terraform Enterprise will start a run when files are changed in any directory path matching the provided set of prefixes.
-* `trigger_patterns` - List of [glob patterns](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#glob-patterns-for-automatic-run-triggering) that describe the files HCP Terraform monitors for changes. Trigger patterns are always appended to the root directory of the repository.
+* `trigger_prefixes` - List of trigger prefixes that describe the paths Stackweaver monitors for changes, in addition to the working directory. Trigger prefixes are always appended to the root directory of the repository.
+  Stackweaver will start a run when files are changed in any directory path matching the provided set of prefixes.
+* `trigger_patterns` - List of [glob patterns](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#glob-patterns-for-automatic-run-triggering) that describe the files Stackweaver monitors for changes. Trigger patterns are always appended to the root directory of the repository.
 * `updated_at` - The time when the workspace was last updated.
 * `vcs_repo` - Settings for the workspace's VCS repository.
 * `working_directory` - A relative path that Terraform will execute within.
-* `execution_mode` - Indicates the [execution mode](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#execution-mode) of the workspace. **Note:** This value might be derived from an organization-level default or set on the workspace itself; see the [`tfe_workspace_settings` resource](tfe_workspace_settings) for details.
+* `execution_mode` - Indicates the [execution mode](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#execution-mode) of the workspace. **Note:** This value might be derived from an organization-level default or set on the workspace itself; see the [`stackweaver_workspace_settings` resource](stackweaver_workspace_settings) for details.
 * `html_url` - The URL to the browsable HTML overview of the workspace
 * `setting_overwrites` - Settings that are overwritten for this workspace.
 * `permissions` - The permissions for the current user on this workspace.

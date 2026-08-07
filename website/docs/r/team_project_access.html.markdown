@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_project_access"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_project_access"
 description: |-
   Associate a team to permissions on a project.
 ---
 
-# tfe_team_project_access
+# stackweaver_team_project_access
 
 Associate a team to permissions on a project.
 
@@ -14,20 +14,20 @@ Associate a team to permissions on a project.
 Basic usage:
 
 ```hcl
-resource "tfe_team" "admin" {
+resource "stackweaver_team" "admin" {
   name         = "my-admin-team"
   organization = "my-org-name"
 }
 
-resource "tfe_project" "test" {
+resource "stackweaver_project" "test" {
   name         = "myproject"
   organization = "my-org-name"
 }
 
-resource "tfe_team_project_access" "admin" {
+resource "stackweaver_team_project_access" "admin" {
   access       = "admin"
-  team_id      = tfe_team.admin.id
-  project_id   = tfe_project.test.id
+  team_id      = stackweaver_team.admin.id
+  project_id   = stackweaver_project.test.id
 }
 ```
 
@@ -75,20 +75,20 @@ The following permissions apply to all workspaces (and future workspaces) in the
 ## Example Usage with Custom Project Permissions
 
 ```hcl
-resource "tfe_team" "dev" {
+resource "stackweaver_team" "dev" {
   name         = "my-dev-team"
   organization = "my-org-name"
 }
 
-resource "tfe_project" "test" {
+resource "stackweaver_project" "test" {
   name         = "myproject"
   organization = "my-org-name"
 }
 
-resource "tfe_team_project_access" "custom" {
+resource "stackweaver_team_project_access" "custom" {
   access       = "custom"
-  team_id      = tfe_team.dev.id
-  project_id   = tfe_project.test.id
+  team_id      = stackweaver_team.dev.id
+  project_id   = stackweaver_project.test.id
 
   project_access {
     settings      = "read"
@@ -120,5 +120,5 @@ Team project accesses can be imported; use the project team access ID as the imp
 example:
 
 ```shell
-terraform import tfe_team_project_access.admin tprj-2pmtXpZa4YzVMTPi
+terraform import stackweaver_team_project_access.admin tprj-2pmtXpZa4YzVMTPi
 ```

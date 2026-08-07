@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team"
 description: |-
   Manages teams.
 ---
 
-# tfe_team
+# stackweaver_team
 
 Manages teams.
 
@@ -14,7 +14,7 @@ Manages teams.
 Basic usage:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
@@ -23,7 +23,7 @@ resource "tfe_team" "test" {
 Organization Permission usage:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
   organization_access {
@@ -72,7 +72,7 @@ Teams can be imported using an identity. For example:
 
 ```hcl
 import {
-  to = tfe_team.test
+  to = stackweaver_team.test
   identity = {
     id           = "team-uomQZysH9ou42ZYY"
     organization = "my-org-name"
@@ -85,9 +85,9 @@ Teams can be imported using the Terraform CLI; use `<ORGANIZATION NAME>/<TEAM ID
 example:
 
 ```shell
-terraform import tfe_team.test my-org-name/team-uomQZysH9ou42ZYY
+terraform import stackweaver_team.test my-org-name/team-uomQZysH9ou42ZYY
 ```
 or
 ```shell
-terraform import tfe_team.test my-org-name/my-team-name
+terraform import stackweaver_team.test my-org-name/my-team-name
 ```

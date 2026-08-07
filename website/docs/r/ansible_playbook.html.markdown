@@ -12,7 +12,7 @@ Registers an Ansible playbook: a named pointer, within a project, at a playbook
 file in a VCS repository. Job templates and jobs reference the playbook, and a
 sync action pulls the repository at the pinned branch and path.
 
-This is a native Stackweaver resource with no Terraform Enterprise equivalent.
+This is a native Stackweaver resource with no Stackweaver equivalent.
 
 ## Example Usage
 

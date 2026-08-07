@@ -1,13 +1,13 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_notification_configuration"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_notification_configuration"
 description: |-
   Manages team notifications configurations.
 ---
 
-# tfe_team_notification_configuration
+# stackweaver_team_notification_configuration
 
-HCP Terraform can be configured to send notifications to a team for certain events.
+Stackweaver can be configured to send notifications to a team for certain events.
 Team notification configurations allow you to specify a URL, destination type, and what events will trigger the notification.
 Each team can have up to 20 notification configurations, and they apply to configured events for all workspaces that the configured team has access to.
 
@@ -16,23 +16,23 @@ Each team can have up to 20 notification configurations, and they apply to confi
 Basic usage:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_team_notification_configuration" "test" {
+resource "stackweaver_team_notification_configuration" "test" {
   name             = "my-test-notification-configuration"
   enabled          = true
   destination_type = "generic"
   triggers         = ["change_request:created"]
   url              = "https://example.com"
-  team_id          = tfe_team.test.id
+  team_id          = stackweaver_team.test.id
 }
 ```
 
@@ -44,17 +44,17 @@ variable "notification_token" {
   ephemeral = true
 }
 
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-resource "tfe_team_notification_configuration" "test" {
+resource "stackweaver_team_notification_configuration" "test" {
   name             = "my-test-notification-configuration"
   enabled          = true
   destination_type = "generic"
@@ -62,74 +62,74 @@ resource "tfe_team_notification_configuration" "test" {
   token_wo_version = 1
   triggers         = ["change_request:created"]
   url              = "https://example.com"
-  team_id          = tfe_team.test.id
+  team_id          = stackweaver_team.test.id
 }
 ```
 
 With `destination_type` of `email`:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-data "tfe_organization_membership" "test" {
-  organization = tfe_organization.test.name
+data "stackweaver_organization_membership" "test" {
+  organization = stackweaver_organization.test.name
   email        = "example@example.com"
 }
 
-resource "tfe_team_organization_member" "test" {
-  team_id                    = tfe_team.test.id
-  organization_membership_id = data.tfe_organization_membership.test.id
+resource "stackweaver_team_organization_member" "test" {
+  team_id                    = stackweaver_team.test.id
+  organization_membership_id = data.stackweaver_organization_membership.test.id
 }
 
-resource "tfe_team_notification_configuration" "test" {
+resource "stackweaver_team_notification_configuration" "test" {
   name             = "my-test-email-notification-configuration"
   enabled          = true
   destination_type = "email"
-  email_user_ids   = [tfe_organization_membership.test.user_id]
+  email_user_ids   = [stackweaver_organization_membership.test.user_id]
   triggers         = ["change_request:created"]
-  team_id          = tfe_team.test.id
+  team_id          = stackweaver_team.test.id
 }
 ```
 
-(**TFE only**) With `destination_type` of `email`, using `email_addresses` list and `email_users`:
+(**Stackweaver only**) With `destination_type` of `email`, using `email_addresses` list and `email_users`:
 
 ```hcl
-resource "tfe_organization" "test" {
+resource "stackweaver_organization" "test" {
   name  = "my-org-name"
   email = "admin@company.com"
 }
 
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
-  organization = tfe_organization.test.id
+  organization = stackweaver_organization.test.id
 }
 
-data "tfe_organization_membership" "test" {
-  organization = tfe_organization.test.name
+data "stackweaver_organization_membership" "test" {
+  organization = stackweaver_organization.test.name
   email        = "example@example.com"
 }
 
-resource "tfe_team_organization_member" "test" {
-  team_id                    = tfe_team.test.id
-  organization_membership_id = data.tfe_organization_membership.test.id
+resource "stackweaver_team_organization_member" "test" {
+  team_id                    = stackweaver_team.test.id
+  organization_membership_id = data.stackweaver_organization_membership.test.id
 }
 
-resource "tfe_team_notification_configuration" "test" {
+resource "stackweaver_team_notification_configuration" "test" {
   name             = "my-test-email-notification-configuration"
   enabled          = true
   destination_type = "email"
-  email_user_ids   = [tfe_organization_membership.test.user_id]
+  email_user_ids   = [stackweaver_organization_membership.test.user_id]
   email_addresses  = ["user1@company.com", "user2@company.com", "user3@company.com"]
   triggers         = ["change_request:created"]
-  team_id          = tfe_team.test.id
+  team_id          = stackweaver_team.test.id
 }
 ```
 
@@ -141,12 +141,12 @@ The following arguments are supported:
 - `destination_type` - (Required) The type of notification configuration payload to send.
   Valid values are:
   - `generic`
-  - `email` available in HCP Terraform or Terraform Enterprise v202005-1 or later
+  - `email` available in Stackweaver v202005-1 or later
   - `slack`
-  - `microsoft-teams` available in HCP Terraform or Terraform Enterprise v202206-1 or later
+  - `microsoft-teams` available in Stackweaver v202206-1 or later
 - `team_id` - (Required) The ID of the team that owns the notification configuration.
 - `url` - (Required if `destination_type` is `generic`, `microsoft-teams`, or `slack`) The HTTP or HTTPS URL of the notification configuration where notification requests will be made. This value _must not_ be provided if `destination_type` is `email`.
-- `email_addresses` - (Optional) **TFE only** A list of email addresses. This value
+- `email_addresses` - (Optional) **Stackweaver only** A list of email addresses. This value
   _must not_ be provided if `destination_type` is `generic`, `microsoft-teams`, or `slack`.
 - `email_user_ids` - (Optional) A list of user IDs. This value _must not_ be provided
   if `destination_type` is `generic`, `microsoft-teams`, or `slack`.
@@ -167,6 +167,6 @@ The following arguments are supported:
 Team notification configurations can be imported; use `<NOTIFICATION CONFIGURATION ID>` as the import ID. For example:
 
 ```shell
-terraform import tfe_team_notification_configuration.test nc-qV9JnKRkmtMa4zcA
+terraform import stackweaver_team_notification_configuration.test nc-qV9JnKRkmtMa4zcA
 ```
-> **Note:** Write-Only argument `token_wo` is available to use in place of `token`. Write-Only arguments are supported in HashiCorp Terraform 1.11.0 and later. [Learn more](https://developer.hashicorp.com/terraform/language/v1.11.x/resources/ephemeral#write-only-arguments).
+> **Note:** Write-Only argument `token_wo` is available to use in place of `token`. Write-Only arguments are supported in Terraform 1.11.0 and later. [Learn more](https://developer.hashicorp.com/terraform/language/v1.11.x/resources/ephemeral#write-only-arguments).

@@ -11,7 +11,7 @@ description: |-
 Manages a group within a `stackweaver_ansible_inventory`: a named grouping of
 hosts with group-level variables, optionally nested under a parent group.
 
-This is a native Stackweaver resource with no Terraform Enterprise equivalent.
+This is a native Stackweaver resource with no Stackweaver equivalent.
 
 ## Example Usage
 

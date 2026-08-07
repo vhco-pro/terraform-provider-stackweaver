@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_access"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_access"
 description: |-
   Associate a team to permissions on a workspace.
 ---
 
-# tfe_team_access
+# stackweaver_team_access
 
 Associate a team to permissions on a workspace.
 
@@ -14,19 +14,19 @@ Associate a team to permissions on a workspace.
 Basic usage:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
 
-resource "tfe_workspace" "test" {
+resource "stackweaver_workspace" "test" {
   name         = "my-workspace-name"
   organization = "my-org-name"
 }
 
-resource "tfe_team_access" "test" {
-  team_id      = tfe_team.test.id
-  workspace_id = tfe_workspace.test.id
+resource "stackweaver_team_access" "test" {
+  team_id      = stackweaver_team.test.id
+  workspace_id = stackweaver_workspace.test.id
 
   permissions {
     runs              = "plan"
@@ -72,5 +72,5 @@ Team accesses can be imported; use
 example:
 
 ```shell
-terraform import tfe_team_access.test my-org-name/my-workspace-name/tws-8S5wnRbRpogw6apb
+terraform import stackweaver_team_access.test my-org-name/my-workspace-name/tws-8S5wnRbRpogw6apb
 ```

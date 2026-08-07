@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_registry_gpg_key"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_registry_gpg_key"
 description: |-
   Manages private registry GPG keys.
 ---
 
-# tfe_registry_gpg_key
+# stackweaver_registry_gpg_key
 
 Manages a public key of the GPG key pair used to sign releases of private providers in the private registry.
 
@@ -15,7 +15,7 @@ The provided GPG key must be ASCII-armored, i.e. starting with:
 ## Example Usage
 
 ```hcl
-resource "tfe_registry_gpg_key" "example" {
+resource "stackweaver_registry_gpg_key" "example" {
   organization = "my-org-name"
   ascii_armor  = file("my-public-key.asc")
 }
@@ -40,5 +40,5 @@ Keys can be imported; use `<ORGANIZATION NAME>/<KEY ID>` as the import ID. For
 example:
 
 ```shell
-terraform import tfe_registry_gpg_key.example my-org-name/34365D9472D7468F
+terraform import stackweaver_registry_gpg_key.example my-org-name/34365D9472D7468F
 ```

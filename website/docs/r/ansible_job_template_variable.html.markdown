@@ -10,7 +10,7 @@ description: |-
 
 Native Stackweaver resource — there is no `terraform-provider-tfe` equivalent.
 
-Provides a single variable scoped to one Ansible job template (the AWX/TFE analogue of a
+Provides a single variable scoped to one Ansible job template (the AWX/Stackweaver analogue of a
 workspace variable). Each variable is a key/value pair with a category (`env` or
 `terraform`) and an optional `sensitive` flag. When `sensitive` is `true`, the value is
 write-only: the server encrypts it at rest and masks it on read, so the configured value
@@ -57,7 +57,7 @@ The following arguments are supported:
 * `value` - (Required) Variable value. When `sensitive` is `true`, the value is write-only and is retained in state because the API masks it on read.
 * `description` - (Optional) Human-readable description of the variable.
 * `category` - (Optional) Variable category, either `env` (default) or `terraform`.
-* `hcl` - (Optional) Whether the value is HCL. Carried for TFE compatibility; not used for Ansible execution. Defaults to `false`.
+* `hcl` - (Optional) Whether the value is HCL. Carried for Stackweaver compatibility; not used for Ansible execution. Defaults to `false`.
 * `sensitive` - (Optional) Whether the value is sensitive. When `true`, the server encrypts it at rest and masks it on read. Defaults to `false`.
 
 ## Attributes Reference

@@ -1,20 +1,20 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_team_members"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_team_members"
 description: |-
   Manages users in a team.
 ---
 
-# tfe_team_members
+# stackweaver_team_members
 
 Manages users in a team.
 
 ~> **NOTE** on managing team memberships: Terraform currently provides four
 resources for managing team memberships.
-The [tfe_team_organization_member](team_organization_member.html) and [tfe_team_organization_members](team_organization_members.html) resources are
-the preferred way. The [tfe_team_member](team_member.html)
+The [stackweaver_team_organization_member](team_organization_member.html) and [stackweaver_team_organization_members](team_organization_members.html) resources are
+the preferred way. The [stackweaver_team_member](team_member.html)
 resource can be used multiple times as it manages the team membership for a
-single user.  The [tfe_team_members](team_members.html) resource, on the other
+single user.  The [stackweaver_team_members](team_members.html) resource, on the other
 hand, is used to manage all team memberships for a specific team and can only be
 used once. All four resources cannot be used for the same team simultaneously.
 
@@ -23,13 +23,13 @@ used once. All four resources cannot be used for the same team simultaneously.
 Basic usage:
 
 ```hcl
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
 
-resource "tfe_team_members" "test" {
-  team_id   = tfe_team.test.id
+resource "stackweaver_team_members" "test" {
+  team_id   = stackweaver_team.test.id
   usernames = ["admin", "sander"]
 }
 ```
@@ -44,13 +44,13 @@ locals {
   ])
 }
 
-resource "tfe_team" "test" {
+resource "stackweaver_team" "test" {
   name         = "my-team-name"
   organization = "my-org-name"
 }
 
-resource "tfe_team_members" "test" {
-  team_id   = tfe_team.test.id
+resource "stackweaver_team_members" "test" {
+  team_id   = stackweaver_team.test.id
   usernames = [for user in local.all_usernames : user]
 }
 ```
@@ -71,5 +71,5 @@ The following arguments are supported:
 Team members can be imported; use `<TEAM ID>` as the import ID. For example:
 
 ```shell
-terraform import tfe_team_members.test team-47qC3LmA47piVan7
+terraform import stackweaver_team_members.test team-47qC3LmA47piVan7
 ```

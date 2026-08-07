@@ -1,16 +1,16 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_organization_membership"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_organization_membership"
 description: |-
   Add or remove a user from an organization.
 ---
 
-# tfe_organization_membership
+# stackweaver_organization_membership
 
 Add or remove a user from an organization.
 
-~> **NOTE:** This resource requires using the provider with HCP Terraform or
-an instance of Terraform Enterprise at least as recent as v202004-1.
+~> **NOTE:** This resource requires using the provider with Stackweaver or
+an instance of Stackweaver at least as recent as v202004-1.
 
 ~> **NOTE:** This resource cannot be used to update an existing user's email address
 since users themselves are the only ones permitted to update their email address.
@@ -22,7 +22,7 @@ be updated manually.
 Basic usage:
 
 ```hcl
-resource "tfe_organization_membership" "test" {
+resource "stackweaver_organization_membership" "test" {
   organization  = "my-org-name"
   email = "user@company.com"
 }
@@ -49,7 +49,7 @@ Organization memberships can be imported using an identity. For example:
 
 ```hcl
 import {
-  to = tfe_organization_membership.test
+  to = stackweaver_organization_membership.test
   identity = {
     id       = "ou-12345678"
     hostname = "app.terraform.io"
@@ -61,9 +61,9 @@ Organization memberships can be imported using `<ORGANIZATION>/<USER EMAIL>` or 
 example:
 
 ```shell
-terraform import tfe_organization_membership.test my-org-name/user@example.com
+terraform import stackweaver_organization_membership.test my-org-name/user@example.com
 ```
 
 ```shell
-terraform import tfe_organization_membership.test ou-wAs3zYmWAhYK7peR
+terraform import stackweaver_organization_membership.test ou-wAs3zYmWAhYK7peR
 ```

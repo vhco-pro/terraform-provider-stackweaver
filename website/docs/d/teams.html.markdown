@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_teams"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_teams"
 description: |-
   Get information on Teams.
 ---
 
-# Data Source: tfe_teams
+# Data Source: stackweaver_teams
 
 Use this data source to get a list of Teams in an Organization and a map of their IDs. The Teams returned may be a subset of all teams in an Organization based on the permissions of the API token.
 
 ## Example Usage
 
 ```hcl
-data "tfe_teams" "foo" {
+data "stackweaver_teams" "foo" {
   organization = "my-org-name"
 }
 ```

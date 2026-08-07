@@ -1,24 +1,24 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_organization_members"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_organization_members"
 description: |-
   Get information on an Organization members.
 ---
 
-# Data Source: tfe_organization_members
+# Data Source: stackweaver_organization_members
 
 Use this data source to get information about members of an organization.
 
 ## Example Usage
 
 ```hcl
-resource "tfe_organization" "bar" {
+resource "stackweaver_organization" "bar" {
    name = "org-bar"
-   email = "user@hashicorp.com"
+   email = "user@example.com"
 }
 
-data "tfe_organization_members" "foo" {
-  organization = tfe_organization.bar.name
+data "stackweaver_organization_members" "foo" {
+  organization = stackweaver_organization.bar.name
 }
 ```
 

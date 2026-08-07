@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_registry_providers"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_registry_providers"
 description: |-
   Get information on public and private providers in the private registry.
 ---
 
-# Data Source: tfe_registry_providers
+# Data Source: stackweaver_registry_providers
 
 Use this data source to get information about public and private providers in the private registry.
 
@@ -14,7 +14,7 @@ Use this data source to get information about public and private providers in th
 All providers:
 
 ```hcl
-data "tfe_registry_providers" "all" {
+data "stackweaver_registry_providers" "all" {
   organization = "my-org-name"
 }
 ```
@@ -22,7 +22,7 @@ data "tfe_registry_providers" "all" {
 All private providers:
 
 ```hcl
-data "tfe_registry_providers" "private" {
+data "stackweaver_registry_providers" "private" {
   organization  = "my-org-name"
   registry_name = "private"
 }
@@ -31,9 +31,9 @@ data "tfe_registry_providers" "private" {
 Providers with "hashicorp" in their namespace or name:
 
 ```hcl
-data "tfe_registry_providers" "hashicorp" {
+data "stackweaver_registry_providers" "hashicorp" {
   organization  = "my-org-name"
-  search        = "hashicorp"
+  search        = "vhco-pro"
 }
 ```
 

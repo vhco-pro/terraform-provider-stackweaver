@@ -1,18 +1,18 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_projects"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_projects"
 description: |-
   Get information on projects in an organization.
 ---
 
-# Data Source: tfe_projects
+# Data Source: stackweaver_projects
 
 Use this data source to get information about all projects in an organization.
 
 ## Example Usage
 
 ```hcl
-data "tfe_projects" "all" {
+data "stackweaver_projects" "all" {
   organization = "my-org-name"
 }
 ```
