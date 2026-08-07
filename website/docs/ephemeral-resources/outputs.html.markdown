@@ -1,12 +1,12 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: Ephemeral: tfe_outputs"
+layout: "stackweaver"
+page_title: "Stackweaver: Ephemeral: stackweaver_outputs"
 description: |-
   Get output values from another organization/workspace without writing
   sensitive data to state.
 ---
 
-# Ephemeral: tfe_outputs
+# Ephemeral: stackweaver_outputs
 
 This ephemeral resource is used to retrieve the state outputs for a given workspace.
 It enables output values in one Terraform configuration to be used in another.
@@ -22,12 +22,12 @@ resource are both treated as sensitive.
 
 ## Example Usage
 
-Using the `tfe_outputs` ephemeral resource, the outputs `vault_role_id` and `vault_secret_id` can be used to configure a vault provider instance as seen below:
+Using the `stackweaver_outputs` ephemeral resource, the outputs `vault_role_id` and `vault_secret_id` can be used to configure a vault provider instance as seen below:
 
 In the example below, assume we have outputs defined in a `my-org/my-workspace`:
 
 ```hcl
-ephemeral "tfe_outputs" "foo" {
+ephemeral "stackweaver_outputs" "foo" {
   organization = "my-org"
   workspace = "my-workspace"
 }

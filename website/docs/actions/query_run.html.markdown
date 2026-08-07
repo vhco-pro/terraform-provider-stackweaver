@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: tfe_query_run"
+layout: "stackweaver"
+page_title: "Stackweaver: stackweaver_query_run"
 description: |-
-  Creates a query run in a HCP Terraform or Terraform Enterprise workspace.
+  Creates a query run in a Stackweaver workspace.
 ---
 
-# Action: tfe_query_run
+# Action: stackweaver_query_run
 
 Initiates a query run within a specified workspace. This action allows you to execute a query on a workspace either against a specific configuration version or by waiting for the latest configuration version to be available.
 
@@ -14,29 +14,29 @@ Initiates a query run within a specified workspace. This action allows you to ex
 ### Using a Specific Configuration Version ID
 
 ```terraform
-resource "tfe_workspace" "example" {
+resource "stackweaver_workspace" "example" {
   name         = "example-workspace"
   organization = "my-organization"
 }
 
-resource "tfe_variable" "example" {
+resource "stackweaver_variable" "example" {
   key          = "my_key"
   value        = "my_value"
   category     = "terraform"
-  workspace_id = tfe_workspace.example.id
+  workspace_id = stackweaver_workspace.example.id
 
   # Trigger the query run after the variable is created or updated
   lifecycle {
     action_trigger {
       events  = [after_create, after_update]
-      actions = [action.tfe_query_run.with_cv_id]
+      actions = [action.stackweaver_query_run.with_cv_id]
     }
   }
 }
 
-action "tfe_query_run" "with_cv_id" {
+action "stackweaver_query_run" "with_cv_id" {
   config {
-    workspace_id             = tfe_workspace.example.id
+    workspace_id             = stackweaver_workspace.example.id
     configuration_version_id = "cv-ntv3HbhJqvFzamy7"
 
     variables = {
@@ -49,28 +49,28 @@ action "tfe_query_run" "with_cv_id" {
 ### Wait for the Latest Configuration Version
 
 ```terraform
-resource "tfe_workspace" "example" {
+resource "stackweaver_workspace" "example" {
   name         = "example-workspace"
   organization = "my-organization"
 }
 
-resource "tfe_variable" "example" {
+resource "stackweaver_variable" "example" {
   key          = "my_key"
   value        = "my_value"
   category     = "terraform"
-  workspace_id = tfe_workspace.example.id
+  workspace_id = stackweaver_workspace.example.id
 
   lifecycle {
     action_trigger {
       events  = [after_create, after_update]
-      actions = [action.tfe_query_run.wait_for_latest]
+      actions = [action.stackweaver_query_run.wait_for_latest]
     }
   }
 }
 
-action "tfe_query_run" "wait_for_latest" {
+action "stackweaver_query_run" "wait_for_latest" {
   config {
-    workspace_id                  = tfe_workspace.example.id
+    workspace_id                  = stackweaver_workspace.example.id
     wait_for_latest_configuration = true
 
     variables = {
@@ -83,7 +83,7 @@ action "tfe_query_run" "wait_for_latest" {
 ### Invoking the action directly
 
 ```sh
-terraform apply -invoke=action.tfe_query_run.wait_for_latest
+terraform apply -invoke=action.stackweaver_query_run.wait_for_latest
 ```
 
 ## Argument Reference

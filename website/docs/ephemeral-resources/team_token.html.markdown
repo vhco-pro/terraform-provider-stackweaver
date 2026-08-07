@@ -1,11 +1,11 @@
 ---
-layout: "tfe"
-page_title: "Terraform Enterprise: Ephemeral: tfe_team_token"
+layout: "stackweaver"
+page_title: "Stackweaver: Ephemeral: stackweaver_team_token"
 description: |-
   Generates an ephemeral team token.
 ---
 
-# Ephemeral: tfe_team_token
+# Ephemeral: stackweaver_team_token
 
 Generates an ephemeral team token for use during a Terraform run.
 
@@ -16,7 +16,7 @@ Ephemeral resources are provisioned during the plan phase of a run as well as
 the apply phase.
 
 If you need the team token to remain valid for long-lived use, consider using the
-`tfe_team_token` managed resource instead.
+`stackweaver_team_token` managed resource instead.
 
 ~> **NOTE:** Ephemeral resources are a new feature and may evolve as we continue to explore their most effective uses. [Learn more](https://developer.hashicorp.com/terraform/language/v1.10.x/resources/ephemeral).
 
@@ -27,13 +27,13 @@ If you need the team token to remain valid for long-lived use, consider using th
 This will invalidate any existing team token.
 
 ```hcl
-resource "tfe_team" "example" {
+resource "stackweaver_team" "example" {
   organization = "my-org-name"
   name = "my-team-name"
 }
 
-ephemeral "tfe_team_token" "example" {
-  team_id = tfe_team.example.id
+ephemeral "stackweaver_team_token" "example" {
+  team_id = stackweaver_team.example.id
 }
 ```
 
