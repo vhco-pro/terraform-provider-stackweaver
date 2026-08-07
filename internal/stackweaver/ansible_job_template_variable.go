@@ -11,7 +11,7 @@ import (
 )
 
 // jobTemplateVariableResourceType is the JSON:API `type` member for a job
-// template variable. It mirrors TFE variables — the handler
+// template variable. It mirrors TFE variables - the handler
 // (handlers/ansible/job_template_variables.go) validates the request type is
 // exactly "vars".
 const jobTemplateVariableResourceType = "vars"

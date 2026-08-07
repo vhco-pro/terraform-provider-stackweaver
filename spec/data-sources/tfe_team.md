@@ -22,7 +22,7 @@ plus `sso_team_id` and the SCIM attributes for use elsewhere in a config.
 
 `go-tfe-clean`. The data source calls the stock `go-tfe` `Teams` service (`Teams.List` with a `Names`
 filter) and consumes the stock `Team` JSON:API shape unchanged; no wrapper. No compatibility detail doc
-exists yet (`docs/internal/tfe-compatibility/data-sources/teams/tfe_team.md` is absent) — this spec is
+exists yet (`docs/internal/tfe-compatibility/data-sources/teams/tfe_team.md` is absent) - this spec is
 the source of record. The divergence below is value-level (fields left unpopulated), not a wire-shape
 change, so it does not force a wrapper.
 
@@ -30,21 +30,21 @@ change, so it does not force a wrapper.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | team name to look up; exact match within the org |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to the provider's default org |
-| `id` | string | Computed | — | — | no | `teams` JSON:API primary id of the matched team |
-| `sso_team_id` | string | Computed | — | — | no | SSO team id (`sso-team-id`) |
-| `scim_linked` | bool | Computed | — | — | no | **DIVERGENCE — not populated** (see below) |
-| `scim_group_name` | string | Computed | — | — | no | **DIVERGENCE — not populated** (see below) |
-| `scim_sync_paused` | bool | Computed | — | — | no | **DIVERGENCE — not populated** (see below) |
-| `scim_updated_at` | string | Computed | — | — | no | **DIVERGENCE — not populated** (see below), RFC3339 |
+| `name` | string | Required | - | - | no | team name to look up; exact match within the org |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to the provider's default org |
+| `id` | string | Computed | - | - | no | `teams` JSON:API primary id of the matched team |
+| `sso_team_id` | string | Computed | - | - | no | SSO team id (`sso-team-id`) |
+| `scim_linked` | bool | Computed | - | - | no | **DIVERGENCE - not populated** (see below) |
+| `scim_group_name` | string | Computed | - | - | no | **DIVERGENCE - not populated** (see below) |
+| `scim_sync_paused` | bool | Computed | - | - | no | **DIVERGENCE - not populated** (see below) |
+| `scim_updated_at` | string | Computed | - | - | no | **DIVERGENCE - not populated** (see below), RFC3339 |
 
 ## Wire contract
 
 - **Read (lookup):** `Teams.List(org, TeamListOptions{Names: [name]})` → `GET
   /organizations/:org/teams?filter[names]=:name`. Paginates until a `Team` with an exact `Name` match
   is found; sets `id` to that team's id and copies `sso_team_id` and the SCIM fields into state.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `teams`. SCIM attributes (`scim-linked`, `scim-group-name`, `scim-sync-paused`,
   `scim-updated-at`) are read via nil-guards on the go-tfe pointers; on Stackweaver they are not emitted
   by the backend and therefore stay at their zero values in state.
@@ -69,15 +69,15 @@ runtime side effect of its own.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/team.md` — arguments (`name`, `organization`), computed
+- Provider docs page: `docs/data-sources/team.md` - arguments (`name`, `organization`), computed
   attributes (`id`, `sso_team_id`, and the SCIM attributes with a note that they are unpopulated on
   Stackweaver).
-- Example: `examples/data-sources/stackweaver_team/data-source.tf` — look up a team by name in an org
+- Example: `examples/data-sources/stackweaver_team/data-source.tf` - look up a team by name in an org
   and reference `data.stackweaver_team.x.id`.
 
 ## Divergences from upstream / TFE
 
 **Value-level divergence (documented):** the SCIM attributes `scim_linked`, `scim_group_name`,
-`scim_sync_paused`, and `scim_updated_at` are not populated by Stackweaver — SCIM group linkage is a
+`scim_sync_paused`, and `scim_updated_at` are not populated by Stackweaver - SCIM group linkage is a
 Zitadel concern and is not surfaced through this API, so these Computed fields stay at their zero
 values. The schema and wire shape are otherwise a drop-in for `tfe_team`.

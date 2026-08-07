@@ -108,8 +108,8 @@ data "tfe_team" "sso_team" {
 // enabled with a group linked.
 //
 // FLAKE ALERT: SCIM settings are a singleton resource shared by the entire TFE
-// instance. Running all SCIM cases inside one function — without calling
-// t.Parallel in any sub-test — prevents concurrent tests from racing over the
+// instance. Running all SCIM cases inside one function - without calling
+// t.Parallel in any sub-test - prevents concurrent tests from racing over the
 // same singleton state.
 //
 // Should this test name ever change, you will also need to update the regex in ci.yml.

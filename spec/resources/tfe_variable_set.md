@@ -14,14 +14,14 @@ compat_doc: docs/internal/tfe-compatibility/resources/variables/tfe_variable_set
 ---
 # stackweaver_variable_set
 
-Manages a variable set — a named, reusable bundle of variables — with a scope: `global` (all workspaces
+Manages a variable set - a named, reusable bundle of variables - with a scope: `global` (all workspaces
 in the org), organization-owned but attached to specific workspaces/projects, or project-owned (via
 `parent_project_id`). Maps onto Stackweaver's variable set (`core/models/variable_set.go`).
 
 ## Client approach
 
 `go-tfe-clean`. The upstream resource (SDKv2 legacy,
-`internal/provider/resource_tfe_variable_set.go:24`) drives the `go-tfe` `VariableSets` service —
+`internal/provider/resource_tfe_variable_set.go:24`) drives the `go-tfe` `VariableSets` service -
 `Create`/`Read`/`Update`/`Delete`, plus `UpdateWorkspaces`/`UpdateStacks` for the deprecated inline id
 lists. Stackweaver serves the stock `varsets` JSON:API shape (`name`, `description`, `global`,
 `priority`, `parent` polyrelation) unchanged; the `global` wire attr round-trips. The Stackweaver
@@ -32,15 +32,15 @@ not new bytes. No wrapper.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `varsets` primary id (`varset-…`) |
-| `name` | string | Required | no | — | no | |
-| `description` | string | Optional | no | — | no | |
+| `id` | string | Computed | - | - | no | `varsets` primary id (`varset-…`) |
+| `name` | string | Required | no | - | no | |
+| `description` | string | Optional | no | - | no | |
 | `global` | bool | Optional | no | `false` | no | `ConflictsWith` `workspace_ids`; applies to all org workspaces |
 | `priority` | bool | Optional | no | `false` | no | set overrides more-specific scopes / CLI |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name |
-| `workspace_ids` | set(string) | Optional+Computed | no | — | no | **deprecated** — prefer `stackweaver_workspace_variable_set` |
-| `stack_ids` | set(string) | Optional+Computed | no | — | no | stacks the set is applied to (TFE-version gated on read) |
-| `parent_project_id` | string | Optional+Computed | yes | — | no | project-owned set; `global` must be `false` (validated in CustomizeDiff) |
+| `workspace_ids` | set(string) | Optional+Computed | no | - | no | **deprecated** - prefer `stackweaver_workspace_variable_set` |
+| `stack_ids` | set(string) | Optional+Computed | no | - | no | stacks the set is applied to (TFE-version gated on read) |
+| `parent_project_id` | string | Optional+Computed | yes | - | no | project-owned set; `global` must be `false` (validated in CustomizeDiff) |
 
 ## Wire contract
 
@@ -80,15 +80,15 @@ assembly on both runner paths (proven by `TestListByWorkspace_AUD150_OwnershipAn
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/variable_set.md` — arguments (name/description/global/priority/
+- Provider docs page: `docs/resources/variable_set.md` - arguments (name/description/global/priority/
   organization/parent_project_id), the deprecation of `workspace_ids` in favor of
   `stackweaver_workspace_variable_set`, and the `global` ⨯ `parent_project_id` mutual exclusivity.
-- Example: `examples/resources/stackweaver_variable_set/resource.tf` — a global org set and a
+- Example: `examples/resources/stackweaver_variable_set/resource.tf` - a global org set and a
   project-owned set attached to a workspace via `stackweaver_workspace_variable_set`.
 
 ## Divergences from upstream / TFE
 
-None on the wire — the `global` attr and the `varsets` shape round-trip unchanged. Stackweaver's
+None on the wire - the `global` attr and the `varsets` shape round-trip unchanged. Stackweaver's
 `scope`/`organization_id`/`project_id` are **internal-field mappings** for the same wire shape, and
 `workspace_ids` is the **deprecated** inline-id form (upstream deprecated it in 0.33.0; prefer
 `stackweaver_workspace_variable_set`). `stack_ids` read is gated on a minimum TFE version include and is

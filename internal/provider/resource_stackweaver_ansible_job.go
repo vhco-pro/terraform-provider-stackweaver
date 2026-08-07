@@ -20,7 +20,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent; modeled on
+// Native resource - no terraform-provider-tfe equivalent; modeled on
 // tfe_workspace_run. A lifecycle TRIGGER: create launches a job from a template
 // and (by default) waits for a terminal status; update is a no-op (launch inputs
 // are ForceNew); delete removes the resource from state without undoing the run.

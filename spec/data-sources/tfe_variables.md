@@ -24,25 +24,25 @@ resolves the full variable listing.
 `go-tfe-clean`. Plugin-framework data source. When `workspace_id` is set it pages `Variables.List`;
 when `variable_set_id` is set it pages `VariableSetVariables.List`. Both consume the stock go-tfe
 `Variable` / `VariableSetVariable` JSON:API shapes unchanged; no wrapper. No compatibility detail doc
-exists yet (`docs/internal/tfe-compatibility/data-sources/variables/tfe_variables.md` is absent) — this
+exists yet (`docs/internal/tfe-compatibility/data-sources/variables/tfe_variables.md` is absent) - this
 spec is the source of record.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `workspace_id` | string | Optional | — | — | no | source workspace; conflicts with `variable_set_id` |
-| `variable_set_id` | string | Optional | — | — | no | source variable set; conflicts with `workspace_id` |
-| `id` | string | Computed | — | — | no | synthetic id `variables/<workspace_id or variable_set_id>` |
-| `env` | list(object) | Computed | — | — | no | variables with `category = env` |
-| `terraform` | list(object) | Computed | — | — | no | variables with `category = terraform` |
-| `variables` | list(object) | Computed | — | — | no | all variables (env + terraform) |
-| `<list>.id` | string | Computed | — | — | no | variable `vars` primary id |
-| `<list>.name` | string | Computed | — | — | no | variable key |
-| `<list>.value` | string | Computed | — | — | no | variable value (empty for sensitive variables) |
-| `<list>.category` | string | Computed | — | — | no | `terraform` or `env` |
-| `<list>.hcl` | bool | Computed | — | — | no | value evaluated as HCL |
-| `<list>.sensitive` | bool | Computed | — | — | no | whether the variable is sensitive |
+| `workspace_id` | string | Optional | - | - | no | source workspace; conflicts with `variable_set_id` |
+| `variable_set_id` | string | Optional | - | - | no | source variable set; conflicts with `workspace_id` |
+| `id` | string | Computed | - | - | no | synthetic id `variables/<workspace_id or variable_set_id>` |
+| `env` | list(object) | Computed | - | - | no | variables with `category = env` |
+| `terraform` | list(object) | Computed | - | - | no | variables with `category = terraform` |
+| `variables` | list(object) | Computed | - | - | no | all variables (env + terraform) |
+| `<list>.id` | string | Computed | - | - | no | variable `vars` primary id |
+| `<list>.name` | string | Computed | - | - | no | variable key |
+| `<list>.value` | string | Computed | - | - | no | variable value (empty for sensitive variables) |
+| `<list>.category` | string | Computed | - | - | no | `terraform` or `env` |
+| `<list>.hcl` | bool | Computed | - | - | no | value evaluated as HCL |
+| `<list>.sensitive` | bool | Computed | - | - | no | whether the variable is sensitive |
 
 ## Wire contract
 
@@ -53,7 +53,7 @@ spec is the source of record.
   VariableSetVariableListOptions{})` → `GET /varsets/:id/relationships/vars`, paged; same bucketing.
 - Exactly one of `workspace_id` / `variable_set_id` is provided (enforced by a `ConflictsWith`
   validator); the synthetic `id` is `variables/<that id>`.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `vars`. Each object exposes `id`, `name` (from `key`), `value`, `category`, `hcl`,
   `sensitive`. Sensitive variable values are not echoed by the API and surface as empty strings.
 
@@ -78,10 +78,10 @@ category) so a config can reference or export those variables. No runtime side e
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/variables.md` — arguments (`workspace_id`, `variable_set_id`,
+- Provider docs page: `docs/data-sources/variables.md` - arguments (`workspace_id`, `variable_set_id`,
   mutually exclusive), computed attributes (`id`, `env`, `terraform`, `variables` and their object
   fields).
-- Example: `examples/data-sources/stackweaver_variables/data-source.tf` — read a workspace's variables
+- Example: `examples/data-sources/stackweaver_variables/data-source.tf` - read a workspace's variables
   and reference `data.stackweaver_variables.x.terraform`.
 
 ## Divergences from upstream / TFE

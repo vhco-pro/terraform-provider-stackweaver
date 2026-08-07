@@ -22,24 +22,24 @@ resolve any team's id by name.
 
 `go-tfe-clean`. Calls the stock `go-tfe` `Teams.List` service, paging through all results, and consumes
 the stock `Team` JSON:API shape unchanged; no wrapper. No compatibility detail doc exists yet
-(`docs/internal/tfe-compatibility/data-sources/teams/tfe_teams.md` is absent) — this spec is the source
+(`docs/internal/tfe-compatibility/data-sources/teams/tfe_teams.md` is absent) - this spec is the source
 of record.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional | — | provider default | no | org name; falls back to the provider's default org |
-| `id` | string | Computed | — | — | no | set to the organization name (synthetic id) |
-| `names` | list(string) | Computed | — | — | no | names of all teams in the org |
-| `ids` | map(string) | Computed | — | — | no | team name → `teams` primary id |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to the provider's default org |
+| `id` | string | Computed | - | - | no | set to the organization name (synthetic id) |
+| `names` | list(string) | Computed | - | - | no | names of all teams in the org |
+| `ids` | map(string) | Computed | - | - | no | team name → `teams` primary id |
 
 ## Wire contract
 
 - **Read (lookup):** `Teams.List(org, TeamListOptions{})` → `GET /organizations/:org/teams`. Paginates
   through every page, accumulating `names` (each team's `Name`) and `ids` (`Name` → `ID`). Sets the
   synthetic `id` to the organization name.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `teams`. Only `name` and the primary `id` of each team are consumed; no divergent
   fields.
 
@@ -61,9 +61,9 @@ reference teams by name. No runtime side effect of its own.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/teams.md` — argument (`organization`), computed attributes
+- Provider docs page: `docs/data-sources/teams.md` - argument (`organization`), computed attributes
   (`id`, `names`, `ids`).
-- Example: `examples/data-sources/stackweaver_teams/data-source.tf` — list org teams and reference
+- Example: `examples/data-sources/stackweaver_teams/data-source.tf` - list org teams and reference
   `data.stackweaver_teams.x.ids["<name>"]`.
 
 ## Divergences from upstream / TFE

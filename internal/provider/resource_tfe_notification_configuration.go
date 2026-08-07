@@ -431,7 +431,7 @@ func (r *resourceTFENotificationConfiguration) modifyPlanWOVersion(
 	resp *resource.ModifyPlanResponse,
 	woAttr, versionAttr, hashKey string,
 ) {
-	// If version is explicitly set in config, use manual mode — skip auto-detection
+	// If version is explicitly set in config, use manual mode - skip auto-detection
 	var configVersion types.Int64
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root(versionAttr), &configVersion)...)
 	if resp.Diagnostics.HasError() {
@@ -449,7 +449,7 @@ func (r *resourceTFENotificationConfiguration) modifyPlanWOVersion(
 	}
 
 	if woValue.IsNull() || woValue.IsUnknown() {
-		// Write-only value not set — clear the version
+		// Write-only value not set - clear the version
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(versionAttr), types.Int64Null())...)
 		return
 	}
@@ -478,7 +478,7 @@ func (r *resourceTFENotificationConfiguration) modifyPlanWOVersion(
 	}
 
 	if !bytes.Equal([]byte(newHash), []byte(storedHash)) {
-		// Hash changed — increment version
+		// Hash changed - increment version
 		var stateVersion types.Int64
 		resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root(versionAttr), &stateVersion)...)
 		if resp.Diagnostics.HasError() {

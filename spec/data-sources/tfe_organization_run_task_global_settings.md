@@ -14,7 +14,7 @@ compat_doc: docs/internal/tfe-compatibility/data-sources/run-tasks/tfe_organizat
 ---
 # stackweaver_organization_run_task_global_settings
 
-Reads the global run-task settings of an existing organization run task by `task_id` — whether the task
+Reads the global run-task settings of an existing organization run task by `task_id` - whether the task
 runs globally, its enforcement level, and which run stages it applies to. Read-only lookup companion to
 `stackweaver_organization_run_task_global_settings`.
 
@@ -31,11 +31,11 @@ runs globally, its enforcement level, and which run stages it applies to. Read-o
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `task_id` | string | Required | — | — | no | lookup key; the id of the run task to read |
-| `id` | string | Computed | — | — | no | `tasks` JSON:API primary id (set to the task id on read) |
-| `enabled` | bool | Optional (plan-null quirk) | — | — | no | from `global-configuration.enabled` |
-| `enforcement_level` | string | Optional (plan-null quirk) | — | — | no | from `global-configuration.enforcement-level` |
-| `stages` | list(string) | Optional (plan-null quirk) | — | — | no | from `global-configuration.stages` |
+| `task_id` | string | Required | - | - | no | lookup key; the id of the run task to read |
+| `id` | string | Computed | - | - | no | `tasks` JSON:API primary id (set to the task id on read) |
+| `enabled` | bool | Optional (plan-null quirk) | - | - | no | from `global-configuration.enabled` |
+| `enforcement_level` | string | Optional (plan-null quirk) | - | - | no | from `global-configuration.enforcement-level` |
+| `stages` | list(string) | Optional (plan-null quirk) | - | - | no | from `global-configuration.stages` |
 
 ## Wire contract
 
@@ -68,10 +68,10 @@ effect.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/organization_run_task_global_settings.md` — argument
+- Provider docs page: `docs/data-sources/organization_run_task_global_settings.md` - argument
   (`task_id`), computed `id`, and `enabled`/`enforcement_level`/`stages` outputs (with the plan-null
   caveat).
-- Example: `examples/data-sources/stackweaver_organization_run_task_global_settings/data-source.tf` —
+- Example: `examples/data-sources/stackweaver_organization_run_task_global_settings/data-source.tf` -
   read a task's global settings by `task_id`.
 
 ## Divergences from upstream / TFE

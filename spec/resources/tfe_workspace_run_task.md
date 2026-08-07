@@ -26,16 +26,16 @@ mandatory enforcement. Maps onto Stackweaver's `workspace_task` (join of a works
 validation at create) and the stock `WorkspaceRunTask` JSON:API shape (`workspace-tasks`, kebab-case).
 Stackweaver returns that shape unchanged; no wrapper. The one deliberate subtlety is wire-compat: the
 response carries **both** the deprecated singular `stage` and the plural `stages`, and a write with only
-`stage` is normalized into a one-element `stages` — exactly what go-tfe expects, so no client change.
+`stage` is normalized into a one-element `stages` - exactly what go-tfe expects, so no client change.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `wstask-` + 16 alphanumerics |
-| `workspace_id` | string | Required | yes | — | no | the workspace to attach to |
-| `task_id` | string | Required | yes | — | no | the `task-*` id; must belong to the workspace's org (cross-org → 404) |
-| `enforcement_level` | string | Required | no | — | no | `advisory` or `mandatory` (validated `OneOf`) |
+| `id` | string | Computed | - | - | no | `wstask-` + 16 alphanumerics |
+| `workspace_id` | string | Required | yes | - | no | the workspace to attach to |
+| `task_id` | string | Required | yes | - | no | the `task-*` id; must belong to the workspace's org (cross-org → 404) |
+| `enforcement_level` | string | Required | no | - | no | `advisory` or `mandatory` (validated `OneOf`) |
 | `stage` | string | Optional+Computed | no | server default | no | **deprecated** upstream; prefer `stages`; `OneOf` the four stages |
 | `stages` | list(string) | Optional+Computed | no | server default (`["post_plan"]`) | no | ≥1 unique of `pre_plan`/`post_plan`/`pre_apply`/`post_apply` |
 
@@ -43,7 +43,7 @@ response carries **both** the deprecated singular `stage` and the plural `stages
 
 - **Create:** `WorkspaceRunTasks.Create(workspace_id, WorkspaceRunTaskCreateOptions)` →
   `POST /workspaces/:id/tasks`. Attrs: `enforcement-level`, `task` relation, and `stage?`/`stages?`
-  (the provider's `extractStageAndStages` picks `stages` when the server supports it — Stackweaver
+  (the provider's `extractStageAndStages` picks `stages` when the server supports it - Stackweaver
   advertises `X-TFE-Version 202501-1`, past the `v202404-1` gate). `task_id` and `workspace_id` are
   validated by a `RunTasks.Read` + `Workspaces.ReadByID` first.
 - **Read:** `WorkspaceRunTasks.Read(workspace_id, id)` → `GET /workspaces/:id/tasks/:tid`.
@@ -65,7 +65,7 @@ response carries **both** the deprecated singular `stage` and the plural `stages
    consistently.
 4. Updating `enforcement_level` or `stages` applies **in place**; changing `workspace_id` or `task_id`
    **recreates** (ForceNew).
-5. `task_id` from another organization returns **404** (not 403 — no tenant disclosure).
+5. `task_id` from another organization returns **404** (not 403 - no tenant disclosure).
 6. `stages` rejects duplicates, empty, and out-of-set values.
 7. `destroy` removes the attachment; a subsequent `WorkspaceRunTasks.Read(...)` returns 404.
 
@@ -79,10 +79,10 @@ by `scripts/tfe-compat/runtime/run_tasks_runtime.sh`. Not CRUD-only.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/workspace_run_task.md` — arguments (workspace_id/task_id/
+- Provider docs page: `docs/resources/workspace_run_task.md` - arguments (workspace_id/task_id/
   enforcement_level/stages), the `stage` deprecation notice (prefer `stages`), computed `id`, import by
   `<org>/<workspace_name>/<task_name>`.
-- Example: `examples/resources/stackweaver_workspace_run_task/resource.tf` — attaches a
+- Example: `examples/resources/stackweaver_workspace_run_task/resource.tf` - attaches a
   `stackweaver_organization_run_task` to a `stackweaver_workspace`, `stages = ["post_plan","pre_apply"]`,
   `enforcement_level = "mandatory"`.
 

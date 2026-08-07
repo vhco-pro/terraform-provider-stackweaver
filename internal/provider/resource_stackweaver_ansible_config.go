@@ -19,10 +19,10 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Manages the
+// Native resource - no terraform-provider-tfe equivalent. Manages the
 // ansible.cfg content for a scope. There is one config per scope entity
 // (singleton), upserted via PUT: create = first PUT, update = subsequent PUT.
-// The scope selector (organization or project_id) is ForceNew — changing it
+// The scope selector (organization or project_id) is ForceNew - changing it
 // targets a different singleton. Only org and project scopes have REST routes;
 // workspace scope is Computed-only (see the spec divergences).
 var (
@@ -134,7 +134,7 @@ func (r *resourceStackweaverAnsibleConfig) Schema(_ context.Context, _ resource.
 				Computed:    true,
 			},
 			"workspace_id": schema.StringAttribute{
-				Description: "Workspace ID when the config is workspace-scoped. Computed only — there is no workspace route to set it via this resource.",
+				Description: "Workspace ID when the config is workspace-scoped. Computed only - there is no workspace route to set it via this resource.",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{

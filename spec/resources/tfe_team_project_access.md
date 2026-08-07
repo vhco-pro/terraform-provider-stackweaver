@@ -14,7 +14,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/teams/tfe_team_project_acc
 ---
 # stackweaver_team_project_access
 
-Grants a team a level of access to a **project** — either a fixed level (`read`/`write`/`maintain`/
+Grants a team a level of access to a **project** - either a fixed level (`read`/`write`/`maintain`/
 `admin`) or `custom`, in which case explicit project-level and workspace-level permission blocks apply
 to the project and all workspaces within it. Maps onto Stackweaver's `team-projects` access record.
 
@@ -23,7 +23,7 @@ to the project and all workspaces within it. Maps onto Stackweaver's `team-proje
 `go-tfe-clean`. The upstream resource (legacy SDKv2 with context CRUD, `Schema()` at
 `internal/provider/resource_tfe_team_project_access.go:23`) drives the stock `go-tfe`
 `TeamProjectAccess` service (`Add/Read/Update/Remove`) against the `team-projects` endpoint. Stackweaver
-accepts and returns the stock `team-projects` JSON:API shape unchanged — no wrapper. A `CustomizeDiff`
+accepts and returns the stock `team-projects` JSON:API shape unchanged - no wrapper. A `CustomizeDiff`
 (`checkForCustomPermissions`) rejects permission blocks when `access != "custom"` provider-side; no
 extra wire bytes.
 
@@ -31,10 +31,10 @@ extra wire bytes.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `team-projects` primary id |
-| `team_id` | string | Required | yes | — | no | `team-*` id |
-| `project_id` | string | Required | yes | — | no | `prj-*` id |
-| `access` | string | Required | no | — | no | `admin`/`write`/`maintain`/`read`/`custom` |
+| `id` | string | Computed | - | - | no | `team-projects` primary id |
+| `team_id` | string | Required | yes | - | no | `team-*` id |
+| `project_id` | string | Required | yes | - | no | `prj-*` id |
+| `access` | string | Required | no | - | no | `admin`/`write`/`maintain`/`read`/`custom` |
 | `project_access` | block (list) | Optional+Computed | no | server | no | only with `access="custom"` (below) |
 | `workspace_access` | block (list) | Optional+Computed | no | server | no | only with `access="custom"` (below) |
 
@@ -73,7 +73,7 @@ Wire attrs use the same names with `state-versions`/`sentinel-mocks`/`run-tasks`
 4. Setting a `project_access`/`workspace_access` block with `access != "custom"` is rejected at plan by
    the `checkForCustomPermissions` diff.
 5. Updating `access` (fixed→fixed, or a custom permission value) applies in place without recreate.
-6. `team_id` and `project_id` are ForceNew — changing either recreates the record.
+6. `team_id` and `project_id` are ForceNew - changing either recreates the record.
 7. `destroy` removes it; a subsequent `TeamProjectAccess.Read(id)` returns 404.
 
 ## Runtime criterion
@@ -85,9 +85,9 @@ as a team member. Not config-only.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/team_project_access.md` — the fixed-vs-custom rule, both
+- Provider docs page: `docs/resources/team_project_access.md` - the fixed-vs-custom rule, both
   permission-value tables, import by id.
-- Example: `examples/resources/stackweaver_team_project_access/resource.tf` — one fixed-level grant and
+- Example: `examples/resources/stackweaver_team_project_access/resource.tf` - one fixed-level grant and
   one `custom` grant with both permission blocks.
 
 ## Divergences from upstream / TFE

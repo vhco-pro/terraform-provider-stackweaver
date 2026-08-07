@@ -30,11 +30,11 @@ shape unchanged, so no wrapper
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Required | — | — | no | lookup key; the GPG key id |
-| `organization` | string | Optional+Computed | — | provider default | no | org name (the key namespace); defaults to provider config |
-| `ascii_armor` | string | Computed | — | — | no | ASCII-armored representation of the key |
-| `created_at` | string | Computed | — | — | no | ISO8601 create time |
-| `updated_at` | string | Computed | — | — | no | ISO8601 update time |
+| `id` | string | Required | - | - | no | lookup key; the GPG key id |
+| `organization` | string | Optional+Computed | - | provider default | no | org name (the key namespace); defaults to provider config |
+| `ascii_armor` | string | Computed | - | - | no | ASCII-armored representation of the key |
+| `created_at` | string | Computed | - | - | no | ISO8601 create time |
+| `updated_at` | string | Computed | - | - | no | ISO8601 update time |
 
 ## Wire contract
 
@@ -60,9 +60,9 @@ so other config can reference the key without hardcoding its material. No mutati
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/registry_gpg_key.md` — arguments (`id`, `organization`),
+- Provider docs page: `docs/data-sources/registry_gpg_key.md` - arguments (`id`, `organization`),
   computed `ascii_armor`, `created_at`, `updated_at`.
-- Example: `examples/data-sources/stackweaver_registry_gpg_key/data-source.tf` — read a GPG key by id.
+- Example: `examples/data-sources/stackweaver_registry_gpg_key/data-source.tf` - read a GPG key by id.
 
 ## Divergences from upstream / TFE
 

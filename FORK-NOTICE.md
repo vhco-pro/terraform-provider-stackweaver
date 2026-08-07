@@ -10,12 +10,12 @@ official HashiCorp product and is not affiliated with or endorsed by HashiCorp.
   [`LICENSE`](./LICENSE).
 - **Baseline:** upstream release **v0.79.0** (the tracked watermark).
 - **Standalone history, diff-based sync.** This repository has **its own git history** (a single
-  initial commit at the v0.79.0 baseline) — it is not a mirror of upstream's history. `upstream`
+  initial commit at the v0.79.0 baseline) - it is not a mirror of upstream's history. `upstream`
   (`hashicorp/terraform-provider-tfe`) is a **fetch-only** remote used only for comparison: relevant
   upstream changes are found by **targeted diff** of the supported files between release tags and
-  applied as native commits by the sync agent — **never** by `git merge`. This keeps the provider a
+  applied as native commits by the sync agent - **never** by `git merge`. This keeps the provider a
   first-class Stackweaver project while staying fully compatible with upstream.
-- **Status:** work in progress. Built spec-first — the specification under `spec/` (and plan under
+- **Status:** work in progress. Built spec-first - the specification under `spec/` (and plan under
   `plan/`) is written and reviewed before implementation.
 
 The provider targets Stackweaver's TFE-compatible API. It exposes `stackweaver_*` resources with

@@ -43,7 +43,7 @@ The following arguments are supported:
 
 In addition to all arguments above, the following attributes are exported:
 
-* `id` - Synthetic identifier — the organization name.
+* `id` - Synthetic identifier - the organization name.
 * `runners` - The runner fleet matching the filters. Each element documented below.
 * `stats` - Fleet summary counts, documented below.
 

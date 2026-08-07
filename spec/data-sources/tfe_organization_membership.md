@@ -32,12 +32,12 @@ directly, the list step is skipped and the id is read straight. Stackweaver retu
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `email` | string | Optional+Computed | — | — | no | lookup key; set from the read if resolved by another key |
-| `username` | string | Optional+Computed | — | — | no | lookup key; set from the read's `user` relation |
-| `organization` | string | Optional+Computed | — | provider default | no | org name; falls back to the provider default; set from the read |
-| `organization_membership_id` | string | Optional+Computed | — | — | no | explicit lookup id; `AtLeastOneOf(email, username)`; **stays null on an email/username lookup** (see quirk) |
-| `user_id` | string | Computed | — | — | no | `users` id from the `user` relation |
-| `id` | string | Computed | — | — | no | the resolved `organization-memberships` id (SetId) |
+| `email` | string | Optional+Computed | - | - | no | lookup key; set from the read if resolved by another key |
+| `username` | string | Optional+Computed | - | - | no | lookup key; set from the read's `user` relation |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; falls back to the provider default; set from the read |
+| `organization_membership_id` | string | Optional+Computed | - | - | no | explicit lookup id; `AtLeastOneOf(email, username)`; **stays null on an email/username lookup** (see quirk) |
+| `user_id` | string | Computed | - | - | no | `users` id from the `user` relation |
+| `id` | string | Computed | - | - | no | the resolved `organization-memberships` id (SetId) |
 
 ## Wire contract
 
@@ -46,7 +46,7 @@ directly, the list step is skipped and the id is read straight. Stackweaver retu
   `GET /organizations/:org/organization-memberships?filter[email]=…&q=…&include=user` to resolve the id,
   then `OrganizationMemberships.ReadWithOptions(id, {Include: user})` →
   `GET /organization-memberships/:id?include=user`. When the id is supplied, only the Read runs.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `organization-memberships`; `email` on the resource, `user_id`/`username` from the
   embedded `user` relation, `organization` from the `organization` relation. `ErrResourceNotFound` on
   the read clears state (`SetId("")`). No divergence from stock go-tfe.
@@ -59,7 +59,7 @@ directly, the list step is skipped and the id is read straight. Stackweaver retu
 3. `user_id` and `username` are non-empty (populated from the `user` relation).
 4. Re-`plan` after apply shows **no drift**.
 5. **Provider quirk (do not assert before the read):** on an email/username lookup the provider sets the
-   data source's `id` (SetId), **not** the `organization_membership_id` attribute — that attribute is
+   data source's `id` (SetId), **not** the `organization_membership_id` attribute - that attribute is
    Optional-not-set and stays known-null. Assert `.id` (and `email`), never `organization_membership_id`.
 
 ## Runtime criterion
@@ -69,13 +69,13 @@ effect beyond the lookup/read.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/organization_membership.md` — arguments `email`/`username`/
+- Provider docs page: `docs/data-sources/organization_membership.md` - arguments `email`/`username`/
   `organization`/`organization_membership_id`; computed `user_id`, `id`; note the id-vs-attribute quirk.
-- Example: `examples/data-sources/stackweaver_organization_membership/data-source.tf` — look up a
+- Example: `examples/data-sources/stackweaver_organization_membership/data-source.tf` - look up a
   membership by email.
 
 ## Divergences from upstream / TFE
 
 None at the wire level. Behavioral note (upstream provider quirk, not a Stackweaver divergence): resolving
 by `email`/`username` populates the data source `id` via `SetId`, leaving the
-`organization_membership_id` attribute unset — compare `.id`.
+`organization_membership_id` attribute unset - compare `.id`.

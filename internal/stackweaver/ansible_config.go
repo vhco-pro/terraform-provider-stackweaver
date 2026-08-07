@@ -21,7 +21,7 @@ const ansibleConfigResourceType = "ansible-configs"
 // AnsibleConfigService is the native service for the per-scope ansible.cfg
 // singleton. There is exactly one config per scope entity; PUT is upsert
 // (create-or-update, no separate POST). Only org and project scopes have REST
-// routes — workspace scope is echoed but not manageable. Wire contract (all
+// routes - workspace scope is echoed but not manageable. Wire contract (all
 // paths relative to /api/v2):
 //
 //	Get:    GET    /organizations/:name/ansible-config  |  /projects/:id/ansible-config

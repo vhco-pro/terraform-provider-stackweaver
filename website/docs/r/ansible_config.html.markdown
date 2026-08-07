@@ -18,7 +18,7 @@ directly changes Ansible behavior (host key checking, callback plugins, forks, a
 
 The config is upserted via PUT: the first apply creates the row and subsequent applies update it in
 place. Exactly one of `organization` or `project_id` must be set, and the scope selector is immutable
-— changing it targets a different singleton and forces a new resource.
+- changing it targets a different singleton and forces a new resource.
 
 Workspace scope is not manageable through this resource. The API echoes `workspace_id` in its
 response, but exposes no workspace route to set it, so `workspace_id` and `scope` are read-only here
@@ -71,7 +71,7 @@ In addition to all arguments above, the following attributes are exported:
 
 * `id` - The config ID.
 * `scope` - Server-returned scope of the config: `organization`, `project`, or `workspace`.
-* `workspace_id` - Workspace ID when the config is workspace-scoped. Computed only — there is no
+* `workspace_id` - Workspace ID when the config is workspace-scoped. Computed only - there is no
   workspace route to set it via this resource.
 * `created_at` - Timestamp when the config was created.
 * `updated_at` - Timestamp when the config was last updated.

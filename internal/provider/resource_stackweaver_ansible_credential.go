@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Served by the native
+// Native resource - no terraform-provider-tfe equivalent. Served by the native
 // internal/stackweaver client and registered only under its primary
 // "stackweaver_ansible_credential" name (native resources get NO tfe_ alias).
 //
@@ -54,7 +54,7 @@ type modelStackweaverAnsibleCredential struct {
 	SSHPort        types.Int64  `tfsdk:"ssh_port"`
 	SSHBecomeUser  types.String `tfsdk:"ssh_become_user"`
 
-	// Write-only secrets — never read back from the API.
+	// Write-only secrets - never read back from the API.
 	SSHPrivateKey      types.String `tfsdk:"ssh_private_key"`
 	SSHPassphrase      types.String `tfsdk:"ssh_passphrase"`
 	Password           types.String `tfsdk:"password"`
@@ -115,7 +115,7 @@ func (r *resourceStackweaverAnsibleCredential) Metadata(_ context.Context, req r
 // Schema implements resource.Resource.
 func (r *resourceStackweaverAnsibleCredential) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages an Ansible credential: a named, typed secret bundle scoped to an organization (optionally a project) for host access, SCM access, vault decryption, or cloud-inventory auth. Secret material is write-only — accepted on write and never read back.",
+		Description: "Manages an Ansible credential: a named, typed secret bundle scoped to an organization (optionally a project) for host access, SCM access, vault decryption, or cloud-inventory auth. Secret material is write-only - accepted on write and never read back.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Service-generated identifier for the credential.",
@@ -145,7 +145,7 @@ func (r *resourceStackweaverAnsibleCredential) Schema(_ context.Context, _ resou
 				Computed:    true,
 			},
 			"credential_type": schema.StringAttribute{
-				Description: "Credential type: one of ssh, scm, vault, machine-ssh, aws, azure, gcp, vmware. Immutable — changing it forces a new credential.",
+				Description: "Credential type: one of ssh, scm, vault, machine-ssh, aws, azure, gcp, vmware. Immutable - changing it forces a new credential.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -177,7 +177,7 @@ func (r *resourceStackweaverAnsibleCredential) Schema(_ context.Context, _ resou
 				Computed:    true,
 			},
 			"ssh_private_key": schema.StringAttribute{
-				Description: "SSH private key (write-only — never read back).",
+				Description: "SSH private key (write-only - never read back).",
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -202,22 +202,22 @@ func (r *resourceStackweaverAnsibleCredential) Schema(_ context.Context, _ resou
 				Sensitive:   true,
 			},
 			"aws_access_key_id": schema.StringAttribute{
-				Description: "AWS access key ID (write-only — no presence readback).",
+				Description: "AWS access key ID (write-only - no presence readback).",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"aws_secret_access_key": schema.StringAttribute{
-				Description: "AWS secret access key (write-only — no presence readback).",
+				Description: "AWS secret access key (write-only - no presence readback).",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"azure_client_secret": schema.StringAttribute{
-				Description: "Azure client secret (write-only — no presence readback).",
+				Description: "Azure client secret (write-only - no presence readback).",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"gcp_service_account": schema.StringAttribute{
-				Description: "GCP service account JSON (write-only — no presence readback).",
+				Description: "GCP service account JSON (write-only - no presence readback).",
 				Optional:    true,
 				Sensitive:   true,
 			},

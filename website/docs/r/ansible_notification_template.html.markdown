@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_ansible_notification_template
 
-Provides an Ansible notification template — an org-scoped notification channel (AWX-style) that can be
+Provides an Ansible notification template - an org-scoped notification channel (AWX-style) that can be
 attached to job templates and workflows through a `stackweaver_ansible_notification_attachment`. The
 delivery channel is a `webhook`, `email`, or `teams` channel; channel-specific non-secret settings live in
 `config`, and the single sensitive value (webhook basic-auth password / SMTP password) is a **write-only**
@@ -19,7 +19,7 @@ taken from the provider configuration; it is not an argument on this resource.
 
 ## Example Usage
 
-Basic usage — a webhook notification template:
+Basic usage - a webhook notification template:
 
 ```hcl
 provider "stackweaver" {
@@ -57,11 +57,11 @@ The following arguments are supported:
 * `description` - (Optional) A human-readable description of the template.
 * `config` - (Optional) Channel-specific non-secret settings as a JSON object string (use `jsonencode`).
   The expected keys depend on `type`:
-    * `webhook` — `url`, `method`, `headers` (map), `username`, `skip_tls_verify` (the password goes in
+    * `webhook` - `url`, `method`, `headers` (map), `username`, `skip_tls_verify` (the password goes in
       `secret`).
-    * `email` — `host`, `port`, `username`, `from`, `to` (list), `use_tls` (the SMTP password goes in
+    * `email` - `host`, `port`, `username`, `from`, `to` (list), `use_tls` (the SMTP password goes in
       `secret`).
-    * `teams` — `url`.
+    * `teams` - `url`.
 * `secret` - (Optional, Write-only) The channel's single sensitive value (webhook basic-auth password /
   SMTP password). It is encrypted at rest and sent on create/update, but is **never read back** from the
   API, so it does not appear in state refreshed from the server and Terraform will not report drift on it.

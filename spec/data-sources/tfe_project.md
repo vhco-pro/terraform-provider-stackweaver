@@ -32,14 +32,14 @@ JSON:API shape (`docs/internal/tfe-compatibility/data-sources/projects/tfe_proje
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | project name (lookup key; case-insensitive match) |
-| `organization` | string | Optional+Computed | — | provider default | no | org name; falls back to the provider default |
-| `id` | string | Computed | — | — | no | `projects` id |
-| `description` | string | Computed | — | — | no | |
-| `auto_destroy_activity_duration` | string | Computed | — | — | no | nullable on the wire; set only when specified |
-| `workspace_ids` | set(string) | Computed | — | — | no | ids of the project's workspaces |
-| `workspace_names` | set(string) | Computed | — | — | no | names of the project's workspaces |
-| `effective_tags` | map(string) | Computed | — | — | no | project's effective tag bindings (key→value) |
+| `name` | string | Required | - | - | no | project name (lookup key; case-insensitive match) |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; falls back to the provider default |
+| `id` | string | Computed | - | - | no | `projects` id |
+| `description` | string | Computed | - | - | no | |
+| `auto_destroy_activity_duration` | string | Computed | - | - | no | nullable on the wire; set only when specified |
+| `workspace_ids` | set(string) | Computed | - | - | no | ids of the project's workspaces |
+| `workspace_names` | set(string) | Computed | - | - | no | names of the project's workspaces |
+| `effective_tags` | map(string) | Computed | - | - | no | project's effective tag bindings (key→value) |
 
 ## Wire contract
 
@@ -48,7 +48,7 @@ JSON:API shape (`docs/internal/tfe-compatibility/data-sources/projects/tfe_proje
   `workspace_ids`/`workspace_names`, and `Projects.ListEffectiveTagBindings(id)` →
   `GET /projects/:id/effective-tag-bindings` for `effective_tags`. Not-found → an explicit
   "Could not find project" diagnostic.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `projects`; effective tags via the `effective-tag-bindings` collection.
   `auto-destroy-activity-duration` is nullable on the wire. No divergence from stock go-tfe.
 
@@ -59,7 +59,7 @@ JSON:API shape (`docs/internal/tfe-compatibility/data-sources/projects/tfe_proje
 2. The data source's computed `id` equals the created project's id.
 3. `effective_tags["env"]` and `effective_tags["team"]` round-trip the tags set on the project.
 4. Re-`plan` after apply shows **no drift**.
-5. `id`, `description`, `effective_tags`, `workspace_ids`/`workspace_names` are all Computed — assert on
+5. `id`, `description`, `effective_tags`, `workspace_ids`/`workspace_names` are all Computed - assert on
    those; `auto_destroy_activity_duration` is set only when specified, so do not assert it unless the
    fixture sets it.
 
@@ -70,9 +70,9 @@ tags; no runtime side effect beyond the reads.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/project.md` — arguments `name`/`organization`; computed `id`,
+- Provider docs page: `docs/data-sources/project.md` - arguments `name`/`organization`; computed `id`,
   `description`, `auto_destroy_activity_duration`, `workspace_ids`, `workspace_names`, `effective_tags`.
-- Example: `examples/data-sources/stackweaver_project/data-source.tf` — read a project by name.
+- Example: `examples/data-sources/stackweaver_project/data-source.tf` - read a project by name.
 
 ## Divergences from upstream / TFE
 

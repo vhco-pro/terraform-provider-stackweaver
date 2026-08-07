@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_ansible_job_template
 
-Native Stackweaver resource — there is no `terraform-provider-tfe` equivalent.
+Native Stackweaver resource - there is no `terraform-provider-tfe` equivalent.
 
 Provides an Ansible job template: the central, AWX-style reusable run configuration.
 A job template binds a playbook, an inventory, and (optionally) a credential together

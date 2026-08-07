@@ -33,20 +33,20 @@ state auto-detection) is entirely provider-side and does not change the wire.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `notification-configurations` primary id |
-| `name` | string | Required | no | — | no | |
-| `destination_type` | string | Required | yes | — | no | `email`/`generic`/`slack`/`microsoft-teams` (validated `OneOf`) |
-| `email_addresses` | set(string) | Optional+Computed | no | — | no | only for `email`; conflicts with generic/slack/teams |
-| `email_user_ids` | set(string) | Optional+Computed | no | — | no | only for `email`; conflicts with generic/slack/teams |
+| `id` | string | Computed | - | - | no | `notification-configurations` primary id |
+| `name` | string | Required | no | - | no | |
+| `destination_type` | string | Required | yes | - | no | `email`/`generic`/`slack`/`microsoft-teams` (validated `OneOf`) |
+| `email_addresses` | set(string) | Optional+Computed | no | - | no | only for `email`; conflicts with generic/slack/teams |
+| `email_user_ids` | set(string) | Optional+Computed | no | - | no | only for `email`; conflicts with generic/slack/teams |
 | `enabled` | bool | Optional+Computed | no | `false` | no | disabled configs send nothing |
-| `token` | string | Optional | no | — | **yes** | HMAC secret for `generic`; write-only on the wire; conflicts with `token_wo` |
-| `token_wo` | string | Optional (write-only) | no | — | **yes** | write-only alternative; changes tracked via hash in private state |
-| `token_wo_version` | int64 | Optional+Computed | no | — | no | auto-incremented on `token_wo` change, or set manually |
-| `triggers` | set(string) | Optional | no | — | no | `run:*` (+ assessment / auto_destroy accepted) |
-| `url` | string | Optional | no | — | **yes** | webhook URL for generic/slack/teams; conflicts with email + `url_wo` |
-| `url_wo` | string | Optional (write-only) | no | — | **yes** | write-only URL; changes tracked via hash in private state |
-| `url_wo_version` | int64 | Optional+Computed | no | — | no | auto-incremented on `url_wo` change, or set manually |
-| `workspace_id` | string | Required | yes | — | no | owning workspace |
+| `token` | string | Optional | no | - | **yes** | HMAC secret for `generic`; write-only on the wire; conflicts with `token_wo` |
+| `token_wo` | string | Optional (write-only) | no | - | **yes** | write-only alternative; changes tracked via hash in private state |
+| `token_wo_version` | int64 | Optional+Computed | no | - | no | auto-incremented on `token_wo` change, or set manually |
+| `triggers` | set(string) | Optional | no | - | no | `run:*` (+ assessment / auto_destroy accepted) |
+| `url` | string | Optional | no | - | **yes** | webhook URL for generic/slack/teams; conflicts with email + `url_wo` |
+| `url_wo` | string | Optional (write-only) | no | - | **yes** | write-only URL; changes tracked via hash in private state |
+| `url_wo_version` | int64 | Optional+Computed | no | - | no | auto-incremented on `url_wo` change, or set manually |
+| `workspace_id` | string | Required | yes | - | no | owning workspace |
 
 ## Wire contract
 
@@ -89,16 +89,16 @@ metadata blocked at dial time on the resolved IP). Proven via a local receiver +
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/notification_configuration.md` — arguments (workspace_id/name/
+- Provider docs page: `docs/resources/notification_configuration.md` - arguments (workspace_id/name/
   destination_type/url[/_wo/_wo_version]/token[/_wo/_wo_version]/triggers/enabled/email_addresses/
   email_user_ids), computed `id`, the destination-type conflict matrix, write-only token/url guidance,
   import by id. **Document that `email` is accepted but not delivered on Stackweaver.**
-- Example: `examples/resources/stackweaver_notification_configuration/resource.tf` — a `generic`
+- Example: `examples/resources/stackweaver_notification_configuration/resource.tf` - a `generic`
   webhook with `url`, variable-sourced `token`, and `triggers = ["run:completed","run:errored"]`.
 
 ## Divergences from upstream / TFE
 
-None at the wire level — all attributes round-trip (bytes match go-tfe). **Behavioral (documented)
+None at the wire level - all attributes round-trip (bytes match go-tfe). **Behavioral (documented)
 deferrals**, not shape divergences: `email` destinations are accepted and round-trip but **not
 delivered**; `assessment:*` and `workspace:auto_destroy_*` triggers are accepted but not fired (no
 backing feature); `email_user_ids` is exposed for round-trip but not modelled on the backend, and

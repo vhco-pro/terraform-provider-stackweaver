@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Attaches a dynamic
+// Native resource - no terraform-provider-tfe equivalent. Attaches a dynamic
 // inventory source to an existing Ansible inventory. Served by the native
 // internal/stackweaver client and registered only under its primary
 // "stackweaver_ansible_inventory_source" name (no tfe_ alias).
@@ -151,7 +151,7 @@ func (r *resourceStackweaverAnsibleInventorySource) Schema(_ context.Context, _ 
 				Computed:    true,
 			},
 			"source_type": schema.StringAttribute{
-				Description: "Source type: one of aws, azure, gcp, vmware, custom. Immutable — changing it forces a new source.",
+				Description: "Source type: one of aws, azure, gcp, vmware, custom. Immutable - changing it forces a new source.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

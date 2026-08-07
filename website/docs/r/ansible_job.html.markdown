@@ -12,11 +12,11 @@ Launches an Ansible job from a job template. This is a native Stackweaver resour
 `terraform-provider-tfe` equivalent; it is modeled on `stackweaver_workspace_run`.
 
 ~> **Important:** This resource is a **launch trigger, not reconciled configuration.** Creating it has a
-**side effect** — it launches a job on Stackweaver and (by default) waits for that job to reach a terminal
+**side effect** - it launches a job on Stackweaver and (by default) waits for that job to reach a terminal
 status. It records a single point-in-time execution; it does not manage the job's ongoing state. All launch
 inputs are `ForceNew`, so changing them **launches a new job** (replacement) rather than editing the
 existing one, and a no-op re-plan does **not** re-launch. Destroying the resource removes it from state
-without undoing the run — a completed job is immutable history.
+without undoing the run - a completed job is immutable history.
 
 ## Example Usage
 

@@ -27,7 +27,7 @@ that `stackweaver_workspace_run_task` attaches to workspaces and
 Stackweaver returns that shape unchanged
 (`docs/internal/tfe-compatibility/resources/run-tasks/tfe_organization_run_task.md`); no wrapper. The
 one shape subtlety is deliberate and go-tfe-compatible: the `global-configuration` sub-object is
-**always emitted** with a boolean `enabled` — go-tfe only decodes the sub-object when that key is a JSON
+**always emitted** with a boolean `enabled` - go-tfe only decodes the sub-object when that key is a JSON
 bool, so emitting it as a minimum `{"enabled": false}` is exactly what the decode quirk requires (and
 `stackweaver_organization_run_task_global_settings` depends on it).
 
@@ -35,14 +35,14 @@ bool, so emitting it as a minimum `{"enabled": false}` is exactly what the decod
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `task-` + 16 alphanumerics |
-| `name` | string | Required | no | — | no | unique per org |
+| `id` | string | Computed | - | - | no | `task-` + 16 alphanumerics |
+| `name` | string | Required | no | - | no | unique per org |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name |
-| `url` | string | Required | no | — | no | validated http/https; verified at create/update |
+| `url` | string | Required | no | - | no | validated http/https; verified at create/update |
 | `category` | string | Optional+Computed | no | `"task"` | no | must be `task` |
 | `hmac_key` | string | Optional+Computed | no | `""` | **yes** | write-only on the wire (never echoed); conflicts with `hmac_key_wo` |
-| `hmac_key_wo` | string | Optional (write-only) | no | — | **yes** | provider-side write-only variant; requires `hmac_key_wo_version`; conflicts with `hmac_key` |
-| `hmac_key_wo_version` | int64 | Optional | no | — | no | bump to trigger an `hmac_key_wo` update |
+| `hmac_key_wo` | string | Optional (write-only) | no | - | **yes** | provider-side write-only variant; requires `hmac_key_wo_version`; conflicts with `hmac_key` |
+| `hmac_key_wo_version` | int64 | Optional | no | - | no | bump to trigger an `hmac_key_wo` update |
 | `enabled` | bool | Optional+Computed | no | `true` | no | disabled tasks are skipped at stage materialization |
 | `description` | string | Optional+Computed | no | `""` | no | null stored as `""` |
 
@@ -87,10 +87,10 @@ Run tasks drive external webhook gates at run time. When a run reaches a stage t
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/organization_run_task.md` — arguments (organization/name/url/
+- Provider docs page: `docs/resources/organization_run_task.md` - arguments (organization/name/url/
   category/enabled/description/hmac_key[/_wo/_wo_version]), computed `id`, the write-only HMAC key
   guidance, import by `<org>/<task_name>`.
-- Example: `examples/resources/stackweaver_organization_run_task/resource.tf` — a task with url + a
+- Example: `examples/resources/stackweaver_organization_run_task/resource.tf` - a task with url + a
   variable-sourced `hmac_key`.
 
 ## Divergences from upstream / TFE

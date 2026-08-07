@@ -32,14 +32,14 @@ output "branch_names" {
 The following arguments are supported:
 
 * `vcs_connection_id` - (Required) ID of the VCS connection.
-* `owner` - (Required) Repository owner (org/user/project — the left half of `owner/repo`).
+* `owner` - (Required) Repository owner (org/user/project - the left half of `owner/repo`).
 * `repo` - (Required) Repository name (the right half of `owner/repo`).
 
 ## Attributes Reference
 
 In addition to all arguments above, the following attributes are exported:
 
-* `id` - Synthetic identifier — `<connection_id>/<owner>/<repo>`.
+* `id` - Synthetic identifier - `<connection_id>/<owner>/<repo>`.
 * `branches` - The branches of the repository. Each element documented below.
 
 The `branches` block contains:

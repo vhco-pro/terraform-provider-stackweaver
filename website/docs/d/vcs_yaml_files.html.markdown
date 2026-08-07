@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_vcs_yaml_files (Data Source)
 
-Use this data source to list candidate YAML file paths — or, in inventory mode, inventory file paths —
+Use this data source to list candidate YAML file paths - or, in inventory mode, inventory file paths -
 inside a repository reachable through a Stackweaver VCS connection. A single data source covers both file
 sets via `file_type`, since they differ only in the server-side extension filter.
 
@@ -45,5 +45,5 @@ The following arguments are supported:
 
 In addition to all arguments above, the following attributes are exported:
 
-* `id` - Synthetic identifier — `<connection_id>/<owner>/<repo>/<file_type>@<ref>`.
+* `id` - Synthetic identifier - `<connection_id>/<owner>/<repo>/<file_type>@<ref>`.
 * `paths` - Repo-relative paths of the matching files.

@@ -20,7 +20,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. A declarative cron
+// Native resource - no terraform-provider-tfe equivalent. A declarative cron
 // schedule that periodically triggers an Ansible target. Registered only under
 // "stackweaver_ansible_schedule" (no tfe_ alias).
 var (

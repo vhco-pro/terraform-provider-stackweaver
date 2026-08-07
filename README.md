@@ -1,7 +1,7 @@
 <!-- Copyright (c) VH & Co BV. SPDX-License-Identifier: MPL-2.0 -->
 # Terraform Provider for Stackweaver
 
-The official Terraform provider for the [Stackweaver](https://stackweaver.io) platform — manage
+The official Terraform provider for the [Stackweaver](https://stackweaver.io) platform - manage
 workspaces, projects, teams, variables, runs, agent pools, run tasks, the registry, and the full
 Ansible/AWX surface (playbooks, inventories, credentials, job templates, schedules, notifications) as
 code.
@@ -37,7 +37,7 @@ resource "stackweaver_project" "example" {
 ```
 
 Migrating from `terraform-provider-tfe`? Point the `tfe` provider's `source` at
-`vhco-pro/stackweaver` — your `resource "tfe_*"` blocks keep working — then optionally rename to
+`vhco-pro/stackweaver` - your `resource "tfe_*"` blocks keep working - then optionally rename to
 `stackweaver_*` with `moved {}` blocks.
 
 Stackweaver-native resources (no TFE equivalent, e.g. the Ansible surface) are exposed under

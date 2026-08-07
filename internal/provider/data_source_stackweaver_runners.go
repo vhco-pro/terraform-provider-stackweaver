@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Read-only
+// Native data source - no terraform-provider-tfe equivalent. Read-only
 // observability view over an organization's self-hosted runner fleet, served by
 // the native internal/stackweaver client (not go-tfe). There is deliberately no
 // stackweaver_runner resource: Terraform never creates or owns a runner.
@@ -123,7 +123,7 @@ func (d *dataSourceStackweaverRunners) Schema(_ context.Context, _ datasource.Sc
 				Optional:    true,
 			},
 			"id": schema.StringAttribute{
-				Description: "Synthetic identifier — the organization name.",
+				Description: "Synthetic identifier - the organization name.",
 				Computed:    true,
 			},
 			"runners": schema.ListNestedAttribute{

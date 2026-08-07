@@ -32,9 +32,9 @@ workspaces` endpoints and the `?include=workspaces` read unchanged
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | composite `{workspace_id}_{variable_set_id}` (provider-side; no server row id) |
-| `variable_set_id` | string | Required | yes | — | no | `varset-…`; the set being attached |
-| `workspace_id` | string | Required | yes | — | no | `ws-…`; the target workspace |
+| `id` | string | Computed | - | - | no | composite `{workspace_id}_{variable_set_id}` (provider-side; no server row id) |
+| `variable_set_id` | string | Required | yes | - | no | `varset-…`; the set being attached |
+| `workspace_id` | string | Required | yes | - | no | `ws-…`; the target workspace |
 
 ## Wire contract
 
@@ -44,7 +44,7 @@ workspaces` endpoints and the `?include=workspaces` read unchanged
 - **Read:** `VariableSets.Read(variable_set_id, {Include:[workspaces]})` →
   `GET /varsets/:id?include=workspaces`. The provider scans `relationships.workspaces` for
   `workspace_id`; if absent (or the set is gone) it drops the resource from state.
-- **Update:** none — both attributes are ForceNew, so any change recreates.
+- **Update:** none - both attributes are ForceNew, so any change recreates.
 - **Delete:** `VariableSets.RemoveFromWorkspaces(variable_set_id, {Workspaces})` →
   `DELETE /varsets/:id/relationships/workspaces`, same body shape.
 - **JSON:API type:** `workspaces` (relationship data). No write-only fields; no divergence from stock
@@ -56,7 +56,7 @@ workspaces` endpoints and the `?include=workspaces` read unchanged
    `{workspace_id}_{variable_set_id}` and both ids round-trip.
 2. Re-`plan` after apply shows **no drift**; on read the workspace appears in the set's
    `relationships.workspaces`.
-3. Changing either `variable_set_id` or `workspace_id` recreates (both ForceNew) — the old attachment
+3. Changing either `variable_set_id` or `workspace_id` recreates (both ForceNew) - the old attachment
    is removed and the new one applied.
 4. If the attachment is removed out-of-band (workspace no longer in the set's workspaces), the next
    read drops the resource from state (planning a re-create) rather than erroring.
@@ -70,10 +70,10 @@ a run in `workspace_id` sees the variables from `variable_set_id` (resolved by
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/workspace_variable_set.md` — arguments (variable_set_id,
+- Provider docs page: `docs/resources/workspace_variable_set.md` - arguments (variable_set_id,
   workspace_id), the composite `id`, and a note preferring this resource over the deprecated
   `variable_set.workspace_ids`.
-- Example: `examples/resources/stackweaver_workspace_variable_set/resource.tf` — a variable set + a
+- Example: `examples/resources/stackweaver_workspace_variable_set/resource.tf` - a variable set + a
   workspace joined by this resource.
 
 ## Divergences from upstream / TFE

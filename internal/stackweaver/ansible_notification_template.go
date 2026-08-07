@@ -23,7 +23,7 @@ const notificationTemplateResourceType = "ansible-notification-templates"
 // Envelope is MIXED: requests are plain JSON ({name, description, type, config,
 // secret}); responses are a JSON:API-ish envelope ({"data":{id,type,attributes}})
 // whose attribute keys are hyphenated (notification-type, has-secret). The
-// sensitive secret is write-only — the backend returns only has-secret, never the
+// sensitive secret is write-only - the backend returns only has-secret, never the
 // value.
 //
 // Read gap: there is NO GET-by-id route. The only read surface is the org-scoped

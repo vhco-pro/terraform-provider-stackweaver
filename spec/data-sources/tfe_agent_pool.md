@@ -24,20 +24,20 @@ concept; read-only lookup companion to `stackweaver_agent_pool`.
 (`internal/provider/data_source_agent_pool.go:15`) whose read calls the `fetchAgentPool` helper
 (`internal/provider/agent_pool_helpers.go:12`), which lists via `AgentPools.List(org)` and matches on
 `name`. Stackweaver's `GET /organizations/:org/agent-pools` returns the stock go-tfe `AgentPool`
-JSON:API shape — including `organization-scoped` and the allowed/excluded relations (preloaded) — so no
+JSON:API shape - including `organization-scoped` and the allowed/excluded relations (preloaded) - so no
 wrapper is needed (`docs/internal/tfe-compatibility/data-sources/agent-pools/tfe_agent_pool.md`).
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | lookup key; matched against the org agent-pool list |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to provider default |
-| `id` | string | Computed | — | — | no | `agent-pools` JSON:API primary id of the matched pool |
-| `organization_scoped` | bool | Computed | — | — | no | whether the pool is available org-wide |
-| `allowed_workspace_ids` | set(string) | Computed | — | — | no | ids from the `allowed-workspaces` relation |
-| `allowed_project_ids` | set(string) | Computed | — | — | no | ids from the `allowed-projects` relation |
-| `excluded_workspace_ids` | set(string) | Computed | — | — | no | ids from the `excluded-workspaces` relation |
+| `name` | string | Required | - | - | no | lookup key; matched against the org agent-pool list |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to provider default |
+| `id` | string | Computed | - | - | no | `agent-pools` JSON:API primary id of the matched pool |
+| `organization_scoped` | bool | Computed | - | - | no | whether the pool is available org-wide |
+| `allowed_workspace_ids` | set(string) | Computed | - | - | no | ids from the `allowed-workspaces` relation |
+| `allowed_project_ids` | set(string) | Computed | - | - | no | ids from the `allowed-projects` relation |
+| `excluded_workspace_ids` | set(string) | Computed | - | - | no | ids from the `excluded-workspaces` relation |
 
 ## Wire contract
 
@@ -67,10 +67,10 @@ bindings so other config can reference the pool without hardcoding its id. No mu
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/agent_pool.md` — arguments (`name`, `organization`), computed
+- Provider docs page: `docs/data-sources/agent_pool.md` - arguments (`name`, `organization`), computed
   attributes (`id`, `organization_scoped`, `allowed_workspace_ids`, `allowed_project_ids`,
   `excluded_workspace_ids`).
-- Example: `examples/data-sources/stackweaver_agent_pool/data-source.tf` — look up a pool by name and
+- Example: `examples/data-sources/stackweaver_agent_pool/data-source.tf` - look up a pool by name and
   reference `data.stackweaver_agent_pool.this.id`.
 
 ## Divergences from upstream / TFE

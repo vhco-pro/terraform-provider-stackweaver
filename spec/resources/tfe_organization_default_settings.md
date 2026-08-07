@@ -14,8 +14,8 @@ compat_doc: docs/internal/tfe-compatibility/resources/organizations/tfe_organiza
 ---
 # stackweaver_organization_default_settings
 
-The organization-wide default workspace execution settings — default execution mode and default agent
-pool — that sit at the top of the `workspace -> project -> organization` inheritance chain. A workspace
+The organization-wide default workspace execution settings - default execution mode and default agent
+pool - that sit at the top of the `workspace -> project -> organization` inheritance chain. A workspace
 (or project) that expresses no preference of its own resolves these at run time. Maps onto Stackweaver's
 `Organization.DefaultExecutionMode` / `DefaultAgentPoolID`.
 
@@ -34,8 +34,8 @@ wrapper and no new routes.
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
 | `organization` | string | Optional+Computed | yes | provider default | no | `RequiresReplace`; the URL segment `:name` |
-| `default_execution_mode` | string | Required | yes | — | no | `RequiresReplace`; one of `remote`/`agent`/`local` |
-| `default_agent_pool_id` | string | Optional | yes | — | no | `RequiresReplace`; required when mode is `agent`, forbidden otherwise |
+| `default_execution_mode` | string | Required | yes | - | no | `RequiresReplace`; one of `remote`/`agent`/`local` |
+| `default_agent_pool_id` | string | Optional | yes | - | no | `RequiresReplace`; required when mode is `agent`, forbidden otherwise |
 
 ## Wire contract
 
@@ -43,14 +43,14 @@ wrapper and no new routes.
   → `PATCH /organizations/:name`.
 - **Read:** `Organizations.Read(org)` → `GET /organizations/:name`; reads back `DefaultExecutionMode`
   and, if present, `DefaultAgentPool.ID`.
-- **Update:** never happens in place — every attribute is `RequiresReplace`, so a change destroys +
+- **Update:** never happens in place - every attribute is `RequiresReplace`, so a change destroys +
   recreates (which is still two `Organizations.Update` calls under the hood).
 - **Delete:** `Organizations.Update(org, {DefaultExecutionMode: "remote", DefaultAgentPool: nil})` →
   resets the org to system defaults. There is **no** by-id object to remove.
 - **JSON:API type:** `organizations`. **Asymmetric carriage (do not "tidy"):** on
   `OrganizationUpdateOptions` (`go-tfe/v1.go:8380,8383`) `default_execution_mode` is an **attribute**
   (`attr,default-execution-mode,omitempty`) but `default_agent_pool_id` is a **relationship**
-  (`relation,default-agent-pool,omitempty`) — unlike `stackweaver_project`, which carries
+  (`relation,default-agent-pool,omitempty`) - unlike `stackweaver_project`, which carries
   `default-agent-pool-id` as a plain attribute. An unset mode **must** read back as `remote`, never
   `""`, or the provider sees drift on the next plan.
 
@@ -64,12 +64,12 @@ wrapper and no new routes.
    applied, `GET /organizations/:name` reports the setting present; after `destroy` the org reports
    `default_execution_mode = remote` and no default agent pool (assert effect-present → effect-reverted,
    **not** a 404).
-4. Changing `default_execution_mode` (or `organization`, or `default_agent_pool_id`) recreates — every
+4. Changing `default_execution_mode` (or `organization`, or `default_agent_pool_id`) recreates - every
    attribute is `RequiresReplace`.
 5. Setting `default_agent_pool_id` without `default_execution_mode = "agent"` fails validation
    (provider `ValidateConfig`: "Default execution mode must be set to 'agent' when
    default_agent_pool_id is set"); the server independently 422s the same invalid combination.
-6. A pool that does not exist or belongs to another organization is rejected (422) — tenant safety.
+6. A pool that does not exist or belongs to another organization is rejected (422) - tenant safety.
 
 ## Runtime criterion
 
@@ -83,14 +83,14 @@ through to the org agent default.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/organization_default_settings.md` — arguments
+- Provider docs page: `docs/resources/organization_default_settings.md` - arguments
   (`organization`, `default_execution_mode`, `default_agent_pool_id`), the agent-mode/pool constraint,
   the "view onto the organization / no object of its own" note, and import by organization name.
-- Example: `examples/resources/stackweaver_organization_default_settings/resource.tf` — org defaulting
+- Example: `examples/resources/stackweaver_organization_default_settings/resource.tf` - org defaulting
   to `agent` with an agent pool.
 
 ## Divergences from upstream / TFE
 
 None on the attributes. TFE also exposes org-level assessment/session settings on the organization that
-this resource does not cover — and neither do we, so there is no gap relative to the provider's
+this resource does not cover - and neither do we, so there is no gap relative to the provider's
 `tfe_organization_default_settings` surface. Drop-in.

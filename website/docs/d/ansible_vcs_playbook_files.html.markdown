@@ -46,7 +46,7 @@ The following arguments are supported:
 
 In addition to all arguments above, the following attributes are exported:
 
-* `id` - Synthesized identifier — `organization/connection/repository/branch`.
+* `id` - Synthesized identifier - `organization/connection/repository/branch`.
 * `files` - Discovered playbook candidate files. Each element documented below.
 
 The `files` block contains:

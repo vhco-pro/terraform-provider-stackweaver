@@ -30,7 +30,7 @@ type modelTFESCIMToken struct {
 
 // scimTokenExpiredAtUserSetKey records, in private state, whether the user
 // explicitly set expired_at on the last Create. Without this marker we can't
-// tell "user removed expired_at" from "user never set it" at plan time —
+// tell "user removed expired_at" from "user never set it" at plan time -
 // both look like ConfigValue=null with a non-null Computed state.
 const scimTokenExpiredAtUserSetKey = "expired_at_user_set"
 

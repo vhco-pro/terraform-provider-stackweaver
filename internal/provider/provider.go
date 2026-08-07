@@ -115,7 +115,7 @@ func Provider() *schema.Provider {
 		// primary "stackweaver_*" name and a "tfe_*" alias via
 		// addStackweaverAliases (see alias.go). Unsupported upstream data
 		// sources are unregistered here (their source files stay in the tree so
-		// upstream syncs still diff cleanly — see plan.md §2-3).
+		// upstream syncs still diff cleanly - see plan.md §2-3).
 		DataSourcesMap: addStackweaverAliases(map[string]*schema.Resource{
 			"tfe_agent_pool":              dataSourceTFEAgentPool(),
 			"tfe_organization_membership": dataSourceTFEOrganizationMembership(),
@@ -198,7 +198,7 @@ func configure() schema.ConfigureContextFunc {
 // newNativeClient builds the native Stackweaver API client from the provider's
 // hostname/token arguments, resolving them through the same env-var /
 // credentials-file / default-host fallback the go-tfe client uses (so the native
-// client is configured whenever go-tfe is — provider block, TFE_HOSTNAME/
+// client is configured whenever go-tfe is - provider block, TFE_HOSTNAME/
 // TFE_TOKEN, or a credentials file). Returns nil when no token can be resolved
 // (unconfigured), so plan/validate with no credentials still works.
 func newNativeClient(hostname, token string) *stackweaver.Client {

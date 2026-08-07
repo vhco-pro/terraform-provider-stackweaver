@@ -31,9 +31,9 @@ the `go-tfe` `RunTriggers` service verbatim (`Create`, `ReadWithOptions`, `Delet
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `run-triggers` JSON:API primary id (`rt-…`) |
-| `workspace_id` | string | Required | yes | — | no | the **target**: workspace whose runs get queued; also the create-path workspace |
-| `sourceable_id` | string | Required | yes | — | no | the **source**: workspace whose applies fire the trigger; must be in the same org |
+| `id` | string | Computed | - | - | no | `run-triggers` JSON:API primary id (`rt-…`) |
+| `workspace_id` | string | Required | yes | - | no | the **target**: workspace whose runs get queued; also the create-path workspace |
+| `sourceable_id` | string | Required | yes | - | no | the **source**: workspace whose applies fire the trigger; must be in the same org |
 
 ## Wire contract
 
@@ -43,7 +43,7 @@ the `go-tfe` `RunTriggers` service verbatim (`Create`, `ReadWithOptions`, `Delet
   1-minute retry on the "Run Trigger creation locked" transient error (upstream behavior).
 - **Read:** `RunTriggers.ReadWithOptions(id, {Include: [workspace, sourceable]})` → `GET /run-triggers/:id`;
   sets `workspace_id` from the `workspace` relation and `sourceable_id` from the `sourceable` relation.
-- **Update:** none — both attributes are ForceNew, so any change recreates.
+- **Update:** none - both attributes are ForceNew, so any change recreates.
 - **Delete:** `RunTriggers.Delete(id)` → `DELETE /run-triggers/:id` (idempotent; a 404 is treated as
   already gone).
 - **JSON:API type:** `run-triggers`. Computed convenience attrs `workspace-name` / `sourceable-name` and
@@ -51,14 +51,14 @@ the `go-tfe` `RunTriggers` service verbatim (`Create`, `ReadWithOptions`, `Delet
 
 ## Acceptance criteria (these ARE the test)
 
-Concrete, testable — the `implement` pipeline generates fixture assertions from these.
+Concrete, testable - the `implement` pipeline generates fixture assertions from these.
 
 1. `apply` of a fixture with two workspaces + `{workspace_id (target), sourceable_id (source)}` creates
    the trigger; `id` (`rt-…`), `workspace_id`, and `sourceable_id` round-trip into state.
 2. Re-`plan` after apply shows **no drift**.
 3. On read, the source appears in the target's **inbound** run-triggers list
    (`GET /workspaces/:target/run-triggers?filter[run-trigger][type]=inbound`).
-4. Changing `workspace_id` or `sourceable_id` recreates (both ForceNew) — plan shows destroy+create,
+4. Changing `workspace_id` or `sourceable_id` recreates (both ForceNew) - plan shows destroy+create,
    not in-place update.
 5. `destroy` removes it; a subsequent `RunTriggers.Read(id)` returns 404 and the source is absent from
    the target's inbound list.
@@ -67,7 +67,7 @@ Concrete, testable — the `implement` pipeline generates fixture assertions fro
 
 ## Runtime criterion
 
-The trigger fires — this is the feature, not CRUD. With a source→target trigger in place, applying a
+The trigger fires - this is the feature, not CRUD. With a source→target trigger in place, applying a
 run in the **source** causes the orchestrator (`backend/cmd/orchestrator/main.go` `processRunTriggers`,
 ~10s tick) to queue a **plan-and-apply** run in the **target** within one worker tick, using the
 target's latest configuration version and respecting the target's `auto_apply`. Each applied source run
@@ -77,13 +77,13 @@ applied the source.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/run_trigger.md` — arguments `workspace_id` (target) and
+- Provider docs page: `docs/resources/run_trigger.md` - arguments `workspace_id` (target) and
   `sourceable_id` (source), computed `id`, the same-org constraint, import by id, and the cycle caveat.
-- Example: `examples/resources/stackweaver_run_trigger/resource.tf` — two workspaces and a
+- Example: `examples/resources/stackweaver_run_trigger/resource.tf` - two workspaces and a
   `stackweaver_run_trigger` wiring source→target.
 
 ## Divergences from upstream / TFE
 
-None. Drop-in with `tfe_run_trigger`. **Cycle caveat (matches TFE):** A↔B mutual triggers can loop —
+None. Drop-in with `tfe_run_trigger`. **Cycle caveat (matches TFE):** A↔B mutual triggers can loop -
 each apply fires once, but the triggered run in B will itself trigger A. TFE has the identical footgun;
 avoid trigger cycles. This is shared behavior, not a Stackweaver divergence.

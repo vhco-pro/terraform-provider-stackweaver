@@ -29,14 +29,14 @@ go-tfe `RegistryProvider` list shape unchanged, so no wrapper
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional+Computed | — | provider default | no | org name; defaults to provider config |
-| `registry_name` | string | Optional | — | — | no | filter: `public` or `private`; validated (OneOf) |
-| `search` | string | Optional | — | — | no | fuzzy search over provider name + namespace |
-| `id` | string | Computed | — | — | no | set to the organization name |
-| `providers` | list(object) | Computed | — | — | no | one object per provider (fields below) |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; defaults to provider config |
+| `registry_name` | string | Optional | - | - | no | filter: `public` or `private`; validated (OneOf) |
+| `search` | string | Optional | - | - | no | fuzzy search over provider name + namespace |
+| `id` | string | Computed | - | - | no | set to the organization name |
+| `providers` | list(object) | Computed | - | - | no | one object per provider (fields below) |
 
 Each `providers[*]` object: `id`, `organization`, `registry_name`, `namespace`, `name`, `created_at`,
-`updated_at` (all strings) — the same fields as `stackweaver_registry_provider`.
+`updated_at` (all strings) - the same fields as `stackweaver_registry_provider`.
 
 ## Wire contract
 
@@ -63,9 +63,9 @@ discover providers without knowing their ids up front. No mutating runtime effec
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/registry_providers.md` — arguments (`organization`,
+- Provider docs page: `docs/data-sources/registry_providers.md` - arguments (`organization`,
   `registry_name`, `search`), computed `id` and `providers` list (with the nested object attributes).
-- Example: `examples/data-sources/stackweaver_registry_providers/data-source.tf` — list private
+- Example: `examples/data-sources/stackweaver_registry_providers/data-source.tf` - list private
   providers in an org.
 
 ## Divergences from upstream / TFE

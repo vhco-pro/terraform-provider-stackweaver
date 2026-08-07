@@ -33,9 +33,9 @@ wrapper.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | set to `agent_pool_id` |
-| `agent_pool_id` | string | Required | yes | — | no | `agent-pools` id; changing it recreates |
-| `excluded_workspace_ids` | set(string) | Required | no | — | no | authoritative set of `ws-*` ids |
+| `id` | string | Computed | - | - | no | set to `agent_pool_id` |
+| `agent_pool_id` | string | Required | yes | - | no | `agent-pools` id; changing it recreates |
+| `excluded_workspace_ids` | set(string) | Required | no | - | no | authoritative set of `ws-*` ids |
 
 ## Wire contract
 
@@ -45,7 +45,7 @@ wrapper.
 - **Read:** `AgentPools.Read(pool_id)` → `GET /agent-pools/:id`; stores `excluded-workspaces`
   relationship ids back into `excluded_workspace_ids`. 404 → resource removed from state.
 - **Update:** diff the set → `UpdateExcludedWorkspaces` with the full new list (send-whole-set).
-- **Delete:** `UpdateExcludedWorkspaces(pool_id, {ExcludedWorkspaces: []})` — clears the relationship;
+- **Delete:** `UpdateExcludedWorkspaces(pool_id, {ExcludedWorkspaces: []})` - clears the relationship;
   the pool itself is untouched.
 - **JSON:API type:** `agent-pools` (relationship members are `workspaces`). No write-only fields.
   `excluded-workspaces` is sent **without** `omitempty`, so an empty list clears the set.
@@ -57,7 +57,7 @@ wrapper.
 2. Re-`plan` after apply shows **no drift**.
 3. Removing `ws_b` and re-`apply` leaves exactly `[ws_a]` excluded (set remove).
 4. Adding `ws_c` and re-`apply` yields exactly `[ws_a, ws_c]` excluded (set add), order-insensitive.
-5. `agent_pool_id` is ForceNew — changing it recreates.
+5. `agent_pool_id` is ForceNew - changing it recreates.
 6. `destroy` clears the pool's `excluded-workspaces` to empty; a subsequent read shows no exclusions,
    and the parent pool still exists.
 
@@ -65,16 +65,16 @@ wrapper.
 
 Not `CRUD-only`. The exclusion list negatively gates run routing: on an org-scoped pool a workspace in
 `excluded_workspace_ids` is denied run dispatch even though it would otherwise inherit access.
-Verified indirectly — an excluded workspace's agent-mode run is refused while a non-excluded workspace
+Verified indirectly - an excluded workspace's agent-mode run is refused while a non-excluded workspace
 in the same org is picked up. The resource itself is CRUD over the relationship set.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/agent_pool_excluded_workspaces.md` — arguments
+- Provider docs page: `docs/resources/agent_pool_excluded_workspaces.md` - arguments
   (agent_pool_id/excluded_workspace_ids), note that it only has effect when the pool is
   `organization_scoped = true`, that exclusions take precedence over project-level allowlists, and
   that an empty list clears the exclusions.
-- Example: `examples/resources/stackweaver_agent_pool_excluded_workspaces/resource.tf` — an
+- Example: `examples/resources/stackweaver_agent_pool_excluded_workspaces/resource.tf` - an
   org-scoped pool plus an exclusion of two workspaces.
 
 ## Divergences from upstream / TFE

@@ -14,7 +14,7 @@ import (
 // the backend handler (handlers/ansible/playbooks.go formatPlaybookResponse).
 const playbookResourceType = "ansible-playbooks"
 
-// AnsiblePlaybooksService is the reference native service — the template every
+// AnsiblePlaybooksService is the reference native service - the template every
 // other native resource family follows. ansible_playbook is a JSON:API resource
 // (its project and vcs-connection are relationships), so its methods use the
 // JSON:API envelope. Wire contract (all paths relative to /api/v2):

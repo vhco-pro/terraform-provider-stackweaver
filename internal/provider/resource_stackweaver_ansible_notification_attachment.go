@@ -21,7 +21,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native relationship resource — no terraform-provider-tfe equivalent. It binds a
+// Native relationship resource - no terraform-provider-tfe equivalent. It binds a
 // notification template to exactly one target (job template OR workflow) with the
 // per-trigger flags. Create/delete only: every attribute is ForceNew (no update).
 // Registered only under "stackweaver_ansible_notification_attachment" (no alias).
@@ -73,7 +73,7 @@ func (r *resourceStackweaverAnsibleNotificationAttachment) Metadata(_ context.Co
 
 func (r *resourceStackweaverAnsibleNotificationAttachment) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Binds an Ansible notification template to exactly one target (a job template or a workflow) with per-trigger flags. Create/delete only — every attribute forces replacement. The organization is taken from the provider configuration.",
+		Description: "Binds an Ansible notification template to exactly one target (a job template or a workflow) with per-trigger flags. Create/delete only - every attribute forces replacement. The organization is taken from the provider configuration.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Service-generated identifier for the attachment.",
@@ -196,7 +196,7 @@ func (r *resourceStackweaverAnsibleNotificationAttachment) Read(ctx context.Cont
 		return
 	}
 
-	// Workflow-target attachments have no listing route — there is no server read
+	// Workflow-target attachments have no listing route - there is no server read
 	// path, so keep prior state (can't detect out-of-band drift).
 	if state.JobTemplateID.IsNull() || state.JobTemplateID.ValueString() == "" {
 		return

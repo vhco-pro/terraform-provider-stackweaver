@@ -1,5 +1,5 @@
 <!-- Copyright (c) VH & Co BV. SPDX-License-Identifier: MPL-2.0 -->
-# Implementation plan — terraform-provider-stackweaver
+# Implementation plan - terraform-provider-stackweaver
 
 The **HOW**, decided and reviewed once, before the fan-out. Pairs with the **WHAT** in `spec/`
 (per-resource schema, wire contract, acceptance criteria) and the ordered worklist in
@@ -8,10 +8,10 @@ plan is approved.
 
 ## Key realization (reframes the effort)
 
-The forked resources are **already implemented** — the resource logic is upstream
+The forked resources are **already implemented** - the resource logic is upstream
 `terraform-provider-tfe` code, forked at v0.79.0 and driving stock `go-tfe`, which the spec verdict
 confirmed works unchanged against Stackweaver's API. So for the 39 v0.1 resources, "implement" is
-**not codegen** — it is: register the resource under the `stackweaver_*` + `tfe_*` names, generate an
+**not codegen** - it is: register the resource under the `stackweaver_*` + `tfe_*` names, generate an
 acceptance fixture from the spec's criteria, run it against the dev stack, write docs, open a PR. The
 only genuinely new Go code in v0.1 is **provider-level** (done once): the provider rename, the client
 host default, the alias layer, and the strip of unsupported resources. Heavy codegen is deferred to
@@ -25,7 +25,7 @@ task + 61 register-verify-document tasks", which is far smaller and lower-risk t
 - **Address:** `main.go:22` `tfeProviderName = "registry.terraform.io/hashicorp/tfe"` →
   `"registry.terraform.io/vhco-pro/stackweaver"`. Primary provider type name becomes `stackweaver`.
 - **Client host:** the provider configures a `go-tfe` client from the `hostname`/`token` provider
-  args (and `TFE_HOSTNAME`/`TFE_TOKEN`). No client change — it already targets an arbitrary host;
+  args (and `TFE_HOSTNAME`/`TFE_TOKEN`). No client change - it already targets an arbitrary host;
   we only update defaults/docs/UA string to Stackweaver. `go-tfe` stays an unmodified dependency.
 
 ## 2. Alias mechanism (`stackweaver_*` primary + `tfe_*` alias)
@@ -34,19 +34,19 @@ The provider is **muxed**: SDKv2 (`provider.go`, `ResourcesMap`/`DataSourcesMap`
 plugin-framework (`provider_next.go`, `Resources()`/`DataSources()` factory slices; each resource's
 `Metadata` sets `resp.TypeName = req.ProviderTypeName + "_<name>"`). Both must expose both prefixes.
 
-- **SDKv2:** in the maps, register each supported resource under **both** keys —
+- **SDKv2:** in the maps, register each supported resource under **both** keys -
   `"stackweaver_<name>"` and `"tfe_<name>"` → the same factory. Trivial, one line each.
 - **Framework:** set the framework provider `Metadata` `TypeName = "stackweaver"` (so real resources
   are `stackweaver_*`). For each supported framework resource, also register a thin **alias wrapper**
   that embeds the real `resource.Resource` and overrides **only** `Metadata` to emit
-  `"tfe_<name>"` — every other method (Schema/Create/Read/Update/Delete/ImportState) delegates to the
+  `"tfe_<name>"` - every other method (Schema/Create/Read/Update/Delete/ImportState) delegates to the
   embedded resource. One tiny generic wrapper type (`aliasResource{inner, typeName}`) covers all of
   them; same pattern for `aliasDataSource`.
 - This is the **one intentional seam** vs. upstream: a single `alias.go` file plus the two edited
   registration lists. Individual `resource_tfe_*.go` files stay byte-identical to upstream, so
   the sync agent's targeted diff of them stays clean and small (minimal-diff rule).
 - **Migration path:** a TFE user swaps `required_providers { tfe = { source = "vhco-pro/stackweaver" } }`
-  — the provider serves the `tfe_*` types, so existing `resource "tfe_*"` blocks keep working. Later
+  - the provider serves the `tfe_*` types, so existing `resource "tfe_*"` blocks keep working. Later
   they rename to `stackweaver_*` via `moved {}` blocks / `terraform state mv`. Documented in a
   migration guide.
 
@@ -55,7 +55,7 @@ plugin-framework (`provider_next.go`, `Resources()`/`DataSources()` factory slic
 The `dropped` set = every upstream resource **not** in the spec matrix's implemented list (policy /
 Sentinel / OPA, Stacks, no-code modules, admin/enterprise/SAML/SMTP/retention, `oauth_client`,
 `ssh_key`, provider-set, etc.). Strip = **remove them from the SDKv2 maps and the framework
-factory slices only** (the registration seam) — **keep the `resource_tfe_*.go` files** so upstream
+factory slices only** (the registration seam) - **keep the `resource_tfe_*.go` files** so upstream
 changes to them still diff cleanly against upstream; unregistered code is dead, not deleted. The exact list is
 enumerated at bootstrap and recorded `dropped` in the matrix. Partial/blocked rows
 (`tfe_organization`, `tfe_team_member`, `tfe_github_app_installation`, `tfe_registry_module`) are
@@ -64,9 +64,9 @@ also unregistered for v0.1 until their backing API is green.
 ## 4. Native client (`internal/stackweaver/`)
 
 Created at bootstrap; **the real code-heavy work of the provider** (the 17 native resources + 9 data
-sources are Stackweaver-only — no upstream code to fork). House style mirrors `go-tfe` services (a
+sources are Stackweaver-only - no upstream code to fork). House style mirrors `go-tfe` services (a
 client holding an `*http.Client` + base URL + token; one file per resource family with typed
-`List/Create/Read/Update/Delete` methods). **Critical: the native API envelope is mixed** — most
+`List/Create/Read/Update/Delete` methods). **Critical: the native API envelope is mixed** - most
 Ansible resources are JSON:API (`data.attributes`, snake- or dash-cased), a few are plain JSON
 (`ansible_config`, notification template/attachment, the VCS listing + playbook-file discovery
 endpoints). The client provides **both** a JSON:API codec and a plain-JSON codec; each service method
@@ -76,7 +76,7 @@ the `ansible_playbook` reference service; the native waves (below) add the rest.
 Several native resources have **backing gaps** (model fields not wired in the API:
 `credential.vault_id`, `job_template.galaxy_requirements`, `workflow.survey_spec`, some
 `workflow_node` targets, `ansible_job` non-`extra_vars` overrides). Those fields are omitted from the
-shipped resource and routed to `/tfe-compat` as small backend follow-ups — never faked in the client.
+shipped resource and routed to `/tfe-compat` as small backend follow-ups - never faked in the client.
 
 ## 5. Fixtures generated from acceptance criteria (the traceability link)
 
@@ -97,14 +97,14 @@ implement pipeline turns it into a fixture under `test/fixtures/<name>/`:
 
 `~/.terraformrc` `dev_overrides` → the `go build` binary; fixtures point at the dev stack
 (`TFE_HOSTNAME`/`TFE_TOKEN`, org `dev-test`). `dev_overrides` skips `terraform init` (expected). This
-is the **real gate** — a resource ships only when its fixture is green here. Upstream `TestAcc*` stay
+is the **real gate** - a resource ships only when its fixture is green here. Upstream `TestAcc*` stay
 in the tree as the backport regression net (they need a TFE-shaped backend, i.e. our dev stack).
 
 ## 7. CI / release (public repo → free minutes)
 
 Copy `vhco-pro/terraform-provider-garage`'s `.goreleaser.yml` + `.github/workflows/release.yml`.
 GPG signing reuses the existing VH&Co key (promote `garage`'s `GPG_PRIVATE_KEY`/`GPG_PASSPHRASE`
-repo-secrets to a `vhco-pro` **org secret**) — deferred until first release. **CI honesty:** build +
+repo-secrets to a `vhco-pro` **org secret**) - deferred until first release. **CI honesty:** build +
 `go vet` + lint + `go test ./...` (unit) run in CI for free; **full acceptance needs a running
 Stackweaver stack, so it runs locally/dev via `dev_overrides`, not in CI** (same posture as the
 tfe-compat E2E gate). Documented, not hidden.

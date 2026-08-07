@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Discovery helper
+// Native data source - no terraform-provider-tfe equivalent. Discovery helper
 // that lists the Ansible Galaxy collections pre-installed on the Stackweaver
 // runner image. Served by the native internal/stackweaver client (JSON:API).
 // Registered only under its primary stackweaver_ansible_collections name

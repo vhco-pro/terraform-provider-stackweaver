@@ -28,12 +28,12 @@ wrapper. The upstream resource uses the plugin framework (`Schema()` at
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `projects` JSON:API primary id |
-| `name` | string | Required | no | — | no | unique within the org |
+| `id` | string | Computed | - | - | no | `projects` JSON:API primary id |
+| `name` | string | Required | no | - | no | unique within the org |
 | `description` | string | Optional | no | `""` | no | |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name; changing it recreates |
-| `auto_destroy_activity_duration` | string | Optional+Computed | no | — | no | Go-ish duration ("24h"/"1d"); nullable on the wire |
-| `tags` | map(string) | Optional | no | — | no | key/value tag bindings; sent as `tag-bindings` relation |
+| `auto_destroy_activity_duration` | string | Optional+Computed | no | - | no | Go-ish duration ("24h"/"1d"); nullable on the wire |
+| `tags` | map(string) | Optional | no | - | no | key/value tag bindings; sent as `tag-bindings` relation |
 
 ## Wire contract
 
@@ -41,7 +41,7 @@ wrapper. The upstream resource uses the plugin framework (`Schema()` at
   Attrs sent: `name`, `description?`, `auto-destroy-activity-duration?`, `tag-bindings?` relation.
 - **Read:** `Projects.Read(id)` → `GET /projects/:id`.
 - **Update:** `Projects.Update(id, ProjectUpdateOptions)` → `PATCH /projects/:id` (name, description,
-  auto-destroy, tags — all in place).
+  auto-destroy, tags - all in place).
 - **Delete:** `Projects.Delete(id)` → `DELETE /projects/:id`.
 - **JSON:API type:** `projects`. No write-only fields. `default-execution-mode` /
   `default-agent-pool` live on `stackweaver_project_settings`, not here.
@@ -56,16 +56,16 @@ wrapper. The upstream resource uses the plugin framework (`Schema()` at
 
 ## Runtime criterion
 
-Container resource — its runtime effect is inheritance: a workspace placed in the project inherits its
+Container resource - its runtime effect is inheritance: a workspace placed in the project inherits its
 default execution mode / agent pool / tags at run time. Verified indirectly (a workspace referencing
 the project resolves those defaults); the resource itself is otherwise CRUD. Not `CRUD-only` in the
-dead sense — the inheritance is exercised by `stackweaver_workspace` + `stackweaver_project_settings`.
+dead sense - the inheritance is exercised by `stackweaver_workspace` + `stackweaver_project_settings`.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/project.md` — arguments (name/description/organization/
+- Provider docs page: `docs/resources/project.md` - arguments (name/description/organization/
   auto_destroy_activity_duration/tags), attribute `id`, import by id.
-- Example: `examples/resources/stackweaver_project/resource.tf` — a minimal named project in an org.
+- Example: `examples/resources/stackweaver_project/resource.tf` - a minimal named project in an org.
 
 ## Divergences from upstream / TFE
 

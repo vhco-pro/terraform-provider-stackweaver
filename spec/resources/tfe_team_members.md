@@ -22,7 +22,7 @@ membership (org members added to / removed from a team).
 `go-tfe-clean` **with a documented value-level divergence**. The upstream resource (SDKv2,
 `internal/provider/resource_tfe_team_members.go:20`) drives `go-tfe`'s `TeamMembers.Add/List/Remove`,
 which send/read a `users` relationship as `{"data":[{"type":"users","id":"<x>"}]}`. Stackweaver
-accepts this exact shape unchanged — **but interprets the relationship `id` as the user's email**, not
+accepts this exact shape unchanged - **but interprets the relationship `id` as the user's email**, not
 a TFE username. So `go-tfe` needs no wrapper; the only difference is the *value* callers put in
 `usernames`. Captured as a migration note below, not client code.
 
@@ -30,9 +30,9 @@ a TFE username. So `go-tfe` needs no wrapper; the only difference is the *value*
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | set to `team_id` |
-| `team_id` | string | Required | yes | — | no | `team-*` id |
-| `usernames` | set(string) | Required | no | — | no | **Stackweaver: put user emails here** (see divergence) |
+| `id` | string | Computed | - | - | no | set to `team_id` |
+| `team_id` | string | Required | yes | - | no | `team-*` id |
+| `usernames` | set(string) | Required | no | - | no | **Stackweaver: put user emails here** (see divergence) |
 
 ## Wire contract
 
@@ -51,7 +51,7 @@ a TFE username. So `go-tfe` needs no wrapper; the only difference is the *value*
 2. Re-`plan` after apply shows **no drift**.
 3. Removing one entry and re-`apply` removes exactly that membership; the other remains.
 4. Adding an entry and re-`apply` adds exactly that membership.
-5. `team_id` is ForceNew — changing it recreates.
+5. `team_id` is ForceNew - changing it recreates.
 6. `destroy` removes all managed memberships; a subsequent list shows none of them.
 
 ## Runtime criterion
@@ -62,14 +62,14 @@ config-only.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/team_members.md` — **must prominently document** that
+- Provider docs page: `docs/resources/team_members.md` - **must prominently document** that
   `usernames` takes **emails** on Stackweaver, with a migration note for users coming from TFE
   (where these were usernames).
-- Example: `examples/resources/stackweaver_team_members/resource.tf` — a team + two members by email.
+- Example: `examples/resources/stackweaver_team_members/resource.tf` - a team + two members by email.
 
 ## Divergences from upstream / TFE
 
-**Value-level (documented):** `usernames` entries are matched by **email**, not TFE username — the
+**Value-level (documented):** `usernames` entries are matched by **email**, not TFE username - the
 `users` relationship `id` on the wire carries the email. Wire *shape* is identical to go-tfe, so no
 client change; this is a usage/migration note only. Compat source:
 `docs/internal/tfe-compatibility/resources/teams/tfe_team_members.md:21,29,47`.

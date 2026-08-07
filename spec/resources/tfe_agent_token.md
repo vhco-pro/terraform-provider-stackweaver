@@ -16,7 +16,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/agent-pools/tfe_agent_toke
 
 A pool-scoped registration credential: the secret an agent presents to register into an agent pool.
 A pool may have **many** agent tokens, each identified by a `description`. Stackweaver maps it onto
-its existing API-key infrastructure — an agent token is a `Kind=org` api_key carrying the
+its existing API-key infrastructure - an agent token is a `Kind=org` api_key carrying the
 `org:<org>:runner:register` scope, bound to the pool (`AgentPoolID`) and flagged `IsAgentToken`; the
 runner registration handler enforces that a runner presenting it may only join that pool
 (`docs/internal/tfe-compatibility/resources/agent-pools/tfe_agent_token.md`).
@@ -29,17 +29,17 @@ runner registration handler enforces that a runner presenting it may only join t
 Stackweaver returns that same wire shape, so stock `go-tfe` parses it unchanged and **no wrapper is
 needed**. The only difference is a value-level one: Stackweaver omits the `created-by` relationship
 from the response. This is harmless because the provider's Read consumes only `description`
-(`resource_tfe_agent_token.go:89`) — it never reads `created-by`. Captured as a divergence note
+(`resource_tfe_agent_token.go:89`) - it never reads `created-by`. Captured as a divergence note
 below, not client code.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `authentication-tokens` primary id; read/delete are by this id |
-| `agent_pool_id` | string | Required | yes | — | no | pool the token registers into; create is pool-scoped |
-| `description` | string | Required | yes | — | no | required by the provider; stored as the api_key name, echoed on read |
-| `token` | string | Computed | — | — | **yes** | write-only secret; returned **only** on create, never on read |
+| `id` | string | Computed | - | - | no | `authentication-tokens` primary id; read/delete are by this id |
+| `agent_pool_id` | string | Required | yes | - | no | pool the token registers into; create is pool-scoped |
+| `description` | string | Required | yes | - | no | required by the provider; stored as the api_key name, echoed on read |
+| `token` | string | Computed | - | - | **yes** | write-only secret; returned **only** on create, never on read |
 
 ## Wire contract
 
@@ -50,7 +50,7 @@ below, not client code.
 - **Read:** `AgentTokens.Read(id)` → `GET /authentication-tokens/:id`. Response attrs: `description`,
   `created-at`, `last-used-at` (no `token`; `created-by` omitted by Stackweaver). Provider consumes
   `description` only. 404 → resource removed from state.
-- **Update:** none — no update handler; both `agent_pool_id` and `description` are ForceNew, so any
+- **Update:** none - no update handler; both `agent_pool_id` and `description` are ForceNew, so any
   change recreates (new token minted, old revoked).
 - **Delete:** `AgentTokens.Delete(id)` → `DELETE /authentication-tokens/:id` (revokes the token).
 - **JSON:API type:** `authentication-tokens`. `token` is **write-only** (only echoed on create; the
@@ -63,9 +63,9 @@ below, not client code.
    state, and `token` is populated in state from the create response.
 2. Re-`plan` after apply shows **no drift** (Read restores `description`; `token` is not re-fetched).
 3. `token` is write-only: it is present in state only from the create response and **never** appears
-   in / is refreshed by the Read response — a fixture asserting the read payload has no `token` field
+   in / is refreshed by the Read response - a fixture asserting the read payload has no `token` field
    passes.
-4. `agent_pool_id` and `description` are both ForceNew — changing either recreates the resource (a new
+4. `agent_pool_id` and `description` are both ForceNew - changing either recreates the resource (a new
    `id` and a new `token` value; the previous token is revoked).
 5. `destroy` revokes it; a subsequent `AgentTokens.Read(id)` returns 404.
 6. Divergence assertion: the create/read response carries **no** `created-by` relationship, and the
@@ -76,24 +76,24 @@ below, not client code.
 **Runtime effect (the real gate):** an agent authenticates/registers with the pool using the token.
 Verified: a runner calls the registration endpoint presenting the agent token, is accepted (200) and
 receives a per-runner control-plane token, then heartbeats (200); a register attempt into a
-**different** pool with the same token is rejected (403 — pool binding). Not CRUD-only.
+**different** pool with the same token is rejected (403 - pool binding). Not CRUD-only.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/agent_token.md` — arguments (agent_pool_id/description),
+- Provider docs page: `docs/resources/agent_token.md` - arguments (agent_pool_id/description),
   computed sensitive `token` and `id`, and a prominent note that `token` is shown only once at create
   time and must be captured then (it is never retrievable on read).
-- Example: `examples/resources/stackweaver_agent_token/resource.tf` — a `stackweaver_agent_pool` plus
+- Example: `examples/resources/stackweaver_agent_token/resource.tf` - a `stackweaver_agent_pool` plus
   a `stackweaver_agent_token` referencing it, with the token consumed by a runner/output.
 
 ## Divergences from upstream / TFE
 
 **Value-level (documented):** the `created-by` relationship is **omitted** from the Stackweaver
 response. The wire *shape* is otherwise identical to go-tfe's `authentication-tokens`, and the
-provider's Read consumes only `description`, so stock `go-tfe` parses the response unchanged — no
+provider's Read consumes only `description`, so stock `go-tfe` parses the response unchanged - no
 client change; this is a response-content note only. `token` is write-only (returned once on create,
 never on read) exactly as in upstream. Compat source:
-`docs/internal/tfe-compatibility/resources/agent-pools/tfe_agent_token.md` (Attribute Mapping —
+`docs/internal/tfe-compatibility/resources/agent-pools/tfe_agent_token.md` (Attribute Mapping -
 `created-by` row marked *divergent*; Divergences / scope decisions). Stackweaver-extra behavior
 (not a TFE divergence in wire terms): the token is a pool-bound `runner:register` api_key, so the
 registration handler confines a runner to the token's pool.

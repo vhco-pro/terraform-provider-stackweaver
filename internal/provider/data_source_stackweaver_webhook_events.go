@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Audit/debug helper
+// Native data source - no terraform-provider-tfe equivalent. Audit/debug helper
 // that lists recent VCS webhook deliveries recorded for an organization. Served
 // by the native internal/stackweaver client (JSON:API, dash-cased keys); the raw
 // webhook payload is never exposed. Registered only under its primary

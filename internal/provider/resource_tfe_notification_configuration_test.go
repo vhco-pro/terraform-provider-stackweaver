@@ -125,7 +125,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyValidation(t *testing.T) 
 				ExpectError: regexp.MustCompile(`Attribute "token_wo" cannot be specified when "token" is specified`),
 			},
 			{
-				// Create using token_wo, then attempt to switch to plaintext token — should be blocked
+				// Create using token_wo, then attempt to switch to plaintext token - should be blocked
 				Config: testAccTFENotificationConfiguration_tokenWriteOnlyAuto(rInt, "secret-token"),
 			},
 			{
@@ -152,7 +152,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyAutoDetect(t *testing.T) 
 		CheckDestroy:             testAccCheckTFENotificationConfigurationDestroy,
 		Steps: []resource.TestStep{
 			{
-				// Create with token_wo — version should be auto-set to 1
+				// Create with token_wo - version should be auto-set to 1
 				Config: testAccTFENotificationConfiguration_tokenWriteOnlyAuto(rInt, "token-v1"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
@@ -167,7 +167,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyAutoDetect(t *testing.T) 
 				},
 			},
 			{
-				// Update with a different token — version should auto-increment to 2
+				// Update with a different token - version should auto-increment to 2
 				Config: testAccTFENotificationConfiguration_tokenWriteOnlyAuto(rInt, "token-v2"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
@@ -181,7 +181,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyAutoDetect(t *testing.T) 
 				},
 			},
 			{
-				// Same token again — version should stay at 2 (no hash change)
+				// Same token again - version should stay at 2 (no hash change)
 				Config: testAccTFENotificationConfiguration_tokenWriteOnlyAuto(rInt, "token-v2"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
@@ -189,7 +189,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyAutoDetect(t *testing.T) 
 				),
 			},
 			{
-				// Remove token_wo entirely (no token set) — token_wo_version should be cleared
+				// Remove token_wo entirely (no token set) - token_wo_version should be cleared
 				Config: testAccTFENotificationConfiguration_basic(rInt),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckNoResourceAttr("tfe_notification_configuration.foobar", "token_wo"),
@@ -198,7 +198,7 @@ func TestAccTFENotificationConfiguration_tokenWriteOnlyAutoDetect(t *testing.T) 
 				),
 			},
 			{
-				// Re-add the same token value that was previously used — the stale hash must have
+				// Re-add the same token value that was previously used - the stale hash must have
 				// been cleared on removal, so this is treated as a new value and version increments.
 				Config: testAccTFENotificationConfiguration_tokenWriteOnlyAuto(rInt, "token-v2"),
 				Check: resource.ComposeTestCheckFunc(
@@ -1501,7 +1501,7 @@ func TestAccTFENotificationConfiguration_urlWriteOnly(t *testing.T) {
 		CheckDestroy:             testAccCheckTFENotificationConfigurationDestroy,
 		Steps: []resource.TestStep{
 			{
-				// Create with url_wo — version should be auto-set to 1
+				// Create with url_wo - version should be auto-set to 1
 				Config: testAccTFENotificationConfiguration_urlWriteOnly(rInt, runTasksURL()),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckTFENotificationConfigurationExists(
@@ -1520,7 +1520,7 @@ func TestAccTFENotificationConfiguration_urlWriteOnly(t *testing.T) {
 				},
 			},
 			{
-				// Update with a different URL — version should auto-increment to 2
+				// Update with a different URL - version should auto-increment to 2
 				Config: testAccTFENotificationConfiguration_urlWriteOnly(rInt, runTasksURL()+"?updated=true"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
@@ -1536,7 +1536,7 @@ func TestAccTFENotificationConfiguration_urlWriteOnly(t *testing.T) {
 				},
 			},
 			{
-				// Same URL again — version should stay at 2 (no hash change)
+				// Same URL again - version should stay at 2 (no hash change)
 				Config: testAccTFENotificationConfiguration_urlWriteOnly(rInt, runTasksURL()+"?updated=true"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(

@@ -328,7 +328,7 @@ func TestAccTFEAdminSMTPSettings_TestEmailAddressDrift(t *testing.T) {
 		ProtoV6ProviderFactories: testAccMuxedProviders,
 		CheckDestroy:             testAccTFEAdminSMTPSettingsDestroy,
 		Steps: []resource.TestStep{
-			// Step 1: initial apply — sets test_email_address in config.
+			// Step 1: initial apply - sets test_email_address in config.
 			{
 				Config: testAccTFEAdminSMTPSettings_TestEmailAddressDrift(s),
 				Check: resource.ComposeTestCheckFunc(

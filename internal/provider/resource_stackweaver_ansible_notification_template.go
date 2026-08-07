@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Registered only under
+// Native resource - no terraform-provider-tfe equivalent. Registered only under
 // its primary "stackweaver_ansible_notification_template" name (no tfe_ alias).
 var (
 	_ resource.Resource                = &resourceStackweaverAnsibleNotificationTemplate{}

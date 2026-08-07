@@ -30,18 +30,18 @@ endpoint returns the stock go-tfe `organization-memberships` JSON:API collection
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional | — | provider default | no | org whose members are listed; falls back to the provider's default org |
-| `members` | list(object) | Computed | — | — | no | active memberships; each `{user_id, organization_membership_id}` |
-| `members_waiting` | list(object) | Computed | — | — | no | invited/pending memberships; each `{user_id, organization_membership_id}` |
-| `members[].user_id` | string | Computed | — | — | no | `users` id of the member |
-| `members[].organization_membership_id` | string | Computed | — | — | no | `organization-memberships` id |
-| `id` | string | Computed | — | — | no | set to the organization name |
+| `organization` | string | Optional | - | provider default | no | org whose members are listed; falls back to the provider's default org |
+| `members` | list(object) | Computed | - | - | no | active memberships; each `{user_id, organization_membership_id}` |
+| `members_waiting` | list(object) | Computed | - | - | no | invited/pending memberships; each `{user_id, organization_membership_id}` |
+| `members[].user_id` | string | Computed | - | - | no | `users` id of the member |
+| `members[].organization_membership_id` | string | Computed | - | - | no | `organization-memberships` id |
+| `id` | string | Computed | - | - | no | set to the organization name |
 
 ## Wire contract
 
 - **Read/lookup:** `OrganizationMemberships.List(org, options)` → `GET /organizations/:org/organization-memberships`,
   paginated (follows `NextPage` to end). No input filters are sent; the client buckets by `Status`.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `organization-memberships` (each item embeds a `user` relation for `user_id`).
   `Status` is `active` → `members`, `invited` → `members_waiting`; other statuses are logged and skipped.
   No divergence from stock go-tfe.
@@ -63,9 +63,9 @@ side effect beyond the list read.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/organization_members.md` — argument `organization`; computed
+- Provider docs page: `docs/data-sources/organization_members.md` - argument `organization`; computed
   `members`/`members_waiting` (each `user_id` + `organization_membership_id`) and `id`.
-- Example: `examples/data-sources/stackweaver_organization_members/data-source.tf` — list an org's members.
+- Example: `examples/data-sources/stackweaver_organization_members/data-source.tf` - list an org's members.
 
 ## Divergences from upstream / TFE
 

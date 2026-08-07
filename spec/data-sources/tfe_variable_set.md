@@ -22,27 +22,27 @@ id sets.
 ## Client approach
 
 `go-tfe-clean`. Lists variable sets via `VariableSets.List` to find the name match, then re-reads the
-matched set with relation includes via `VariableSets.Read` (`workspaces`, `vars`, and — where the
-remote version supports it — `stacks`) to populate the id sets. Consumes the stock `VariableSet`
+matched set with relation includes via `VariableSets.Read` (`workspaces`, `vars`, and - where the
+remote version supports it - `stacks`) to populate the id sets. Consumes the stock `VariableSet`
 JSON:API shape unchanged; no wrapper. No compatibility detail doc exists yet
-(`docs/internal/tfe-compatibility/data-sources/variables/tfe_variable_set.md` is absent) — this spec is
+(`docs/internal/tfe-compatibility/data-sources/variables/tfe_variable_set.md` is absent) - this spec is
 the source of record.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | variable set name to look up |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to the provider's default org |
-| `id` | string | Computed | — | — | no | `varsets` JSON:API primary id |
-| `description` | string | Computed | — | — | no | variable set description |
-| `global` | bool | Computed | — | — | no | applied to all workspaces in the org |
-| `priority` | bool | Computed | — | — | no | overrides workspace-level variables |
-| `workspace_ids` | set(string) | Optional+Computed | — | — | no | ids of attached workspaces |
-| `variable_ids` | set(string) | Optional+Computed | — | — | no | ids of variables in the set |
-| `project_ids` | set(string) | Optional+Computed | — | — | no | ids of attached projects |
-| `stack_ids` | set(string) | Optional+Computed | — | — | no | ids of attached stacks — **not populated** (gap, see below) |
-| `parent_project_id` | string | Optional+Computed | — | — | no | parent project id when parented to a project — **not populated** (gap, see below) |
+| `name` | string | Required | - | - | no | variable set name to look up |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to the provider's default org |
+| `id` | string | Computed | - | - | no | `varsets` JSON:API primary id |
+| `description` | string | Computed | - | - | no | variable set description |
+| `global` | bool | Computed | - | - | no | applied to all workspaces in the org |
+| `priority` | bool | Computed | - | - | no | overrides workspace-level variables |
+| `workspace_ids` | set(string) | Optional+Computed | - | - | no | ids of attached workspaces |
+| `variable_ids` | set(string) | Optional+Computed | - | - | no | ids of variables in the set |
+| `project_ids` | set(string) | Optional+Computed | - | - | no | ids of attached projects |
+| `stack_ids` | set(string) | Optional+Computed | - | - | no | ids of attached stacks - **not populated** (gap, see below) |
+| `parent_project_id` | string | Optional+Computed | - | - | no | parent project id when parented to a project - **not populated** (gap, see below) |
 
 ## Wire contract
 
@@ -52,7 +52,7 @@ the source of record.
   /varsets/:id?include=...` to load the relations. Sets `id`, copies `description`/`global`/`priority`,
   and flattens the `Workspaces`/`Variables`/`Projects`/`Stacks` relation ids into the corresponding
   sets; sets `parent_project_id` from `Parent.Project.ID` when present.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `varsets`. The `stacks` include is gated behind a minimum remote TFE version
   check (`minTFEVersionVariableSetStacks`). On Stackweaver `stacks` and the `parent` project relation
   are not surfaced (Stacks is unimplemented), so `stack_ids` and `parent_project_id` come back empty.
@@ -79,14 +79,14 @@ so a config can reference the set or its members by name. No runtime side effect
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/variable_set.md` — arguments (`name`, `organization`),
+- Provider docs page: `docs/data-sources/variable_set.md` - arguments (`name`, `organization`),
   computed attributes (`id`, `description`, `global`, `priority`, `workspace_ids`, `variable_ids`,
   `project_ids`), with a note that `stack_ids`/`parent_project_id` are unpopulated on Stackweaver.
-- Example: `examples/data-sources/stackweaver_variable_set/data-source.tf` — look up a variable set by
+- Example: `examples/data-sources/stackweaver_variable_set/data-source.tf` - look up a variable set by
   name and reference `data.stackweaver_variable_set.x.id`.
 
 ## Divergences from upstream / TFE
 
 None (schema/wire drop-in with `tfe_variable_set`). The unpopulated `stack_ids` and `parent_project_id`
 are an unimplemented-feature gap (Stacks / project-parented variable sets are not yet supported), not a
-wire divergence — the fields exist and are exposed, they simply resolve empty.
+wire divergence - the fields exist and are exposed, they simply resolve empty.

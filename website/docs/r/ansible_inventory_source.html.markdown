@@ -14,7 +14,7 @@ cloud credential and provider-specific `config`. A sync populates the inventory'
 
 This is a native Stackweaver resource with no `terraform-provider-tfe` equivalent.
 
-The owning `inventory_id` and the `source_type` are immutable — changing either forces a new source.
+The owning `inventory_id` and the `source_type` are immutable - changing either forces a new source.
 The `config` argument is a provider-specific JSON string (use `jsonencode`); its keys depend on
 `source_type` (for example AWS regions and filters, Azure resource groups, GCP projects and zones, or
 VMware connection settings). The server defaults `config` to an empty object and may reorder its keys.
@@ -56,7 +56,7 @@ The following arguments are supported:
 * `inventory_id` - (Required) ID of the owning inventory. Changing this forces a new source.
 * `name` - (Required) Name of the inventory source (1-255 characters).
 * `source_type` - (Required) Source type: one of `aws`, `azure`, `gcp`, `vmware`, `custom`. Immutable
-  — changing it forces a new source.
+  - changing it forces a new source.
 * `description` - (Optional) Human-readable description of the source.
 * `credential_id` - (Optional) ID of the cloud credential used for discovery. Omit (or set empty) to
   use workload-identity/OIDC.

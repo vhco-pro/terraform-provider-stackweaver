@@ -18,7 +18,7 @@ A **lifecycle-only** resource with no stored object of its own: on `create` it s
 `workspace_id` and (by default) waits for it to reach `applied`; on `destroy` it starts a destroy run
 and waits; `update` is a no-op. It exists to sequence runs between workspaces (e.g. apply a networking
 workspace, wait, then apply an app workspace) without a VCS trigger. It orchestrates Stackweaver's
-existing runs API — there is no by-id `workspace-runs` endpoint.
+existing runs API - there is no by-id `workspace-runs` endpoint.
 
 ## Client approach
 
@@ -26,7 +26,7 @@ existing runs API — there is no by-id `workspace-runs` endpoint.
 `internal/provider/resource_tfe_workspace_run.go:73` + `workspace_run_helpers.go`) is pure client-side
 orchestration over the `go-tfe` `Runs` service (`Runs.Create`, `Runs.Read`, `Runs.Apply`); the nested
 `apply {}` / `destroy {}` blocks are all **provider-side** poll/confirm/retry tuning that never reach
-the wire. Stackweaver accepts stock go-tfe `RunCreateOptions` / `RunApplyOptions` unchanged — no
+the wire. Stackweaver accepts stock go-tfe `RunCreateOptions` / `RunApplyOptions` unchanged - no
 wrapper. Making it work end-to-end required closing three server-side run-create gaps (see wire
 contract); each fix helps *every* go-tfe caller, not just this resource, and none change the wire the
 provider sends.
@@ -35,12 +35,12 @@ provider sends.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | synthetic: the apply run id, or a random int for a destroy-only resource |
-| `workspace_id` | string | Required | yes | — | no | workspace the run executes in |
-| `apply` | list(block) max 1 | Optional | no | — | no | at-least-one-of `apply`/`destroy`; drives a create-time apply run |
-| `destroy` | list(block) max 1 | Optional | no | — | no | drives a delete-time destroy run (`is-destroy: true`) |
-| `apply/destroy.manual_confirm` | bool | Required (in block) | no | — | no | `false` → provider auto-confirms via `POST /runs/:id/actions/apply`; `true` → waits for out-of-band confirm |
-| `apply/destroy.message` | string | Optional | no | — | no | run `message` on create |
+| `id` | string | Computed | - | - | no | synthetic: the apply run id, or a random int for a destroy-only resource |
+| `workspace_id` | string | Required | yes | - | no | workspace the run executes in |
+| `apply` | list(block) max 1 | Optional | no | - | no | at-least-one-of `apply`/`destroy`; drives a create-time apply run |
+| `destroy` | list(block) max 1 | Optional | no | - | no | drives a delete-time destroy run (`is-destroy: true`) |
+| `apply/destroy.manual_confirm` | bool | Required (in block) | no | - | no | `false` → provider auto-confirms via `POST /runs/:id/actions/apply`; `true` → waits for out-of-band confirm |
+| `apply/destroy.message` | string | Optional | no | - | no | run `message` on create |
 | `apply/destroy.retry` | bool | Optional | no | `true` | no | provider-side: retry errored runs |
 | `apply/destroy.retry_attempts` | int | Optional | no | `3` | no | provider-side |
 | `apply/destroy.retry_backoff_min` | int | Optional | no | `1` | no | provider-side (seconds) |
@@ -69,15 +69,15 @@ provider sends.
 
 ## Acceptance criteria (these ARE the test)
 
-Concrete, testable — the `implement` pipeline generates fixture assertions from these.
+Concrete, testable - the `implement` pipeline generates fixture assertions from these.
 
 1. `apply` of a fixture (workspace with an uploaded config, `apply { manual_confirm = false }`) starts a
    real run that reaches **`applied`**; `id` is set to the apply run id and round-trips into state.
 2. `plan -detailed-exitcode` after apply shows **no drift** (exit 0).
-3. `workspace_id` is ForceNew — changing it recreates.
+3. `workspace_id` is ForceNew - changing it recreates.
 4. `destroy` with a `destroy { manual_confirm = false }` block starts a **destroy run** (`is-destroy`)
    that reaches `applied`; after that the apply run id is gone from state.
-5. `update` is a no-op — changing a provider-side field (e.g. `message`) does not start a new run.
+5. `update` is a no-op - changing a provider-side field (e.g. `message`) does not start a new run.
 6. `wait_for_run = true` (default) apply-and-wait: the provider polls `is-confirmable`, confirms via
    `POST /runs/:id/actions/apply`, and the run reaches `applied` (does not hang at `planned`).
 7. `wait_for_run = false, manual_confirm = false` fire-and-forget: the run auto-applies server-side via
@@ -85,18 +85,18 @@ Concrete, testable — the `implement` pipeline generates fixture assertions fro
 
 ## Runtime criterion
 
-The run **is** the behavior — not CRUD. Verified live: creating the resource starts a real run that
+The run **is** the behavior - not CRUD. Verified live: creating the resource starts a real run that
 plans, waits at `planned`, is confirmed, and reaches `applied`; destroying it starts a destroy run that
 reaches `applied`. The apply-and-wait confirmation and the destroy path both exercise the real
 `POST /runs/:id/actions/apply` transition against a runner (remote or agent).
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/workspace_run.md` — `workspace_id`, the `apply {}` / `destroy {}`
+- Provider docs page: `docs/resources/workspace_run.md` - `workspace_id`, the `apply {}` / `destroy {}`
   blocks and their `manual_confirm` / `message` / `wait_for_run` / retry fields, the lifecycle-only /
   no-import nature, and the note that `refresh` / `refresh_only` / `target_addrs` / `allow_empty_apply`
   run options are not modelled by Stackweaver runs.
-- Example: `examples/resources/stackweaver_workspace_run/resource.tf` — a workspace + a
+- Example: `examples/resources/stackweaver_workspace_run/resource.tf` - a workspace + a
   `stackweaver_workspace_run` with `apply { manual_confirm = false }` and
   `destroy { manual_confirm = false }`.
 
@@ -104,7 +104,7 @@ reaches `applied`. The apply-and-wait confirmation and the destroy path both exe
 
 None (drop-in for the common `apply {}` / `destroy {}` usage with `manual_confirm` and default
 `wait_for_run = true`). The `operation` / `auto-apply-after-plan` wire bindings are Stackweaver-side
-**additive fallbacks** for the frontend and are *not* used by this resource — the provider sends stock
+**additive fallbacks** for the frontend and are *not* used by this resource - the provider sends stock
 go-tfe `auto-apply` / `plan-only` / `is-destroy`. `refresh`, `refresh_only`, `target_addrs`, and
 `allow_empty_apply` inside the triggered run are not yet modelled by Stackweaver runs; this resource
 does not set them, so they are documented as unsupported rather than silently dropped.

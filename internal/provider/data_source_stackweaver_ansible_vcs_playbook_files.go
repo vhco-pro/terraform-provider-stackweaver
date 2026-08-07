@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Discovery helper
+// Native data source - no terraform-provider-tfe equivalent. Discovery helper
 // that lists playbook candidate files in a connected VCS repository at a branch,
 // each annotated with whether it is already registered as a
 // stackweaver_ansible_playbook. Served by the native internal/stackweaver
@@ -77,7 +77,7 @@ func (d *dataSourceStackweaverAnsibleVCSPlaybookFiles) Schema(_ context.Context,
 				Required:    true,
 			},
 			"branch": schema.StringAttribute{
-				Description: "Branch to list files from. Required — the listing and annotation are branch-scoped.",
+				Description: "Branch to list files from. Required - the listing and annotation are branch-scoped.",
 				Required:    true,
 			},
 			"path": schema.StringAttribute{

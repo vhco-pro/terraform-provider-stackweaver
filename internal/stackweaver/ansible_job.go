@@ -16,12 +16,12 @@ const jobResourceType = "ansible-jobs"
 
 // AnsibleJobsService is a native service that LAUNCHES Ansible jobs from a job
 // template and reads back the resulting execution. It backs a lifecycle-trigger
-// resource modeled on tfe_workspace_run — a job is immutable execution history,
+// resource modeled on tfe_workspace_run - a job is immutable execution history,
 // not reconciled config. Built stand-alone via NewAnsibleJobsService.
 //
 // Backing-API gap (IMPORTANT): the template-launch endpoint
 // (POST /ansible/job-templates/:id/launch, handler LaunchFromTemplate) currently
-// accepts ONLY an extra-vars override — limit/tags/inventory overrides are NOT
+// accepts ONLY an extra-vars override - limit/tags/inventory overrides are NOT
 // wired on this path today (the org-scoped POST /organizations/:name/ansible/jobs
 // accepts them but is playbook+inventory driven, not template driven). So Launch
 // here sends only extra-vars.

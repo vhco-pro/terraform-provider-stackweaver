@@ -32,14 +32,14 @@ model (`docs/internal/tfe-compatibility/data-sources/workspaces/tfe_workspace_id
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `names` | list(string) | Optional | — | — | no | explicit names or a single `*` (all); `AtLeastOneOf(tag_filters, names, tag_names)` |
-| `tag_names` | list(string) | Optional | — | — | no | legacy tag names → `search[tags]`; **matches on binding KEY (any value)** — see divergence |
-| `exclude_tags` | set(string) | Optional | — | — | no | legacy tag names → `search[exclude-tags]`; **excludes on binding KEY (any value)** — see divergence |
-| `tag_filters` | list(object) | Optional | — | — | no | single block `{include = map, exclude = map}`; key=value bindings (AND) |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to the provider default |
-| `ids` | map(string) | Computed | — | — | no | workspace name → workspace id |
-| `full_names` | map(string) | Computed | — | — | no | workspace name → "org/name" |
-| `id` | string | Computed | — | — | no | `"<org>/<hash(names+tag_names)>"` (SetId) |
+| `names` | list(string) | Optional | - | - | no | explicit names or a single `*` (all); `AtLeastOneOf(tag_filters, names, tag_names)` |
+| `tag_names` | list(string) | Optional | - | - | no | legacy tag names → `search[tags]`; **matches on binding KEY (any value)** - see divergence |
+| `exclude_tags` | set(string) | Optional | - | - | no | legacy tag names → `search[exclude-tags]`; **excludes on binding KEY (any value)** - see divergence |
+| `tag_filters` | list(object) | Optional | - | - | no | single block `{include = map, exclude = map}`; key=value bindings (AND) |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to the provider default |
+| `ids` | map(string) | Computed | - | - | no | workspace name → workspace id |
+| `full_names` | map(string) | Computed | - | - | no | workspace name → "org/name" |
+| `id` | string | Computed | - | - | no | `"<org>/<hash(names+tag_names)>"` (SetId) |
 
 ## Wire contract
 
@@ -47,7 +47,7 @@ model (`docs/internal/tfe-compatibility/data-sources/workspaces/tfe_workspace_id
   (follows `NextPage`). Options carry `Tags` (`search[tags]`), `ExcludeTags` (`search[exclude-tags]`),
   `TagBindings` (`filter[tagged][N][key|value]`), and `Include: [effective_tag_bindings]` when
   `tag_filters` is set. Name wildcard/exact matching and `tag_filters.exclude` are done client-side.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `workspaces` (collection). Each item's `effective-tag-bindings` relation drives
   client-side tag exclusion. **Value-level divergence** (see below) in how legacy tag names map to
   key/value bindings.
@@ -62,7 +62,7 @@ model (`docs/internal/tfe-compatibility/data-sources/workspaces/tfe_workspace_id
    `team=platform` include selects both.
 3. The data source's computed `id` is set (`"<org>/<hash>"`).
 4. Re-`plan` after apply shows **no drift**.
-5. `ids`/`full_names` are Computed-only; input filter blocks are Optional and may be known-null at plan —
+5. `ids`/`full_names` are Computed-only; input filter blocks are Optional and may be known-null at plan -
    assert on `ids`/`full_names`/`id`, not on the filter inputs.
 
 ## Runtime criterion
@@ -72,15 +72,15 @@ no runtime side effect beyond the list read.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/workspace_ids.md` — arguments `names`/`tag_names`/
+- Provider docs page: `docs/data-sources/workspace_ids.md` - arguments `names`/`tag_names`/
   `exclude_tags`/`tag_filters`/`organization`; computed `ids`, `full_names`, `id`; document the
   KEY-match semantics of `tag_names`/`exclude_tags`.
-- Example: `examples/data-sources/stackweaver_workspace_ids/data-source.tf` — list by names and by tags.
+- Example: `examples/data-sources/stackweaver_workspace_ids/data-source.tf` - list by names and by tags.
 
 ## Divergences from upstream / TFE
 
 Value-level: Stackweaver models tags as key/value **bindings**, not TFE's flat tag names. So
-`tag_names` and `exclude_tags` (legacy flat names) match/exclude on the binding **key** (any value) —
+`tag_names` and `exclude_tags` (legacy flat names) match/exclude on the binding **key** (any value) -
 a legacy name maps to a binding key. `tag_filters {include/exclude = {k=v}}` matches key=value pairs
 exactly (server-side AND for include). "Effective" tags include project-inherited bindings. Schema is
 otherwise a drop-in for `tfe_workspace_ids`.

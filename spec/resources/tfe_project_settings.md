@@ -14,7 +14,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/projects/tfe_project_setti
 ---
 # stackweaver_project_settings
 
-Manages the default execution settings **on an existing project** — the default execution mode
+Manages the default execution settings **on an existing project** - the default execution mode
 (`remote`/`agent`/`local`) and, for agent execution, the default agent pool. It has no object of its
 own: it PATCHes the project. Workspaces in the project inherit these defaults at run time unless they
 overwrite their own execution mode. Maps onto Stackweaver's per-project execution defaults.
@@ -22,8 +22,8 @@ overwrite their own execution mode. Maps onto Stackweaver's per-project executio
 ## Client approach
 
 `go-tfe-clean`. The upstream resource (plugin framework,
-`internal/provider/resource_tfe_project_settings.go:217`) drives the `go-tfe` `Projects` service —
-`Projects.Read` and `Projects.Update` with `ProjectUpdateOptions` — the exact same endpoint and wire
+`internal/provider/resource_tfe_project_settings.go:217`) drives the `go-tfe` `Projects` service -
+`Projects.Read` and `Projects.Update` with `ProjectUpdateOptions` - the exact same endpoint and wire
 shape `tfe_project` uses. Stackweaver's `PATCH /projects/:id` accepts and returns the stock `Project`
 JSON:API shape (`default-execution-mode`, `default-agent-pool-id` on write / `default-agent-pool`
 relation on read, `setting-overwrites`) unchanged
@@ -33,22 +33,22 @@ relation on read, `setting-overwrites`) unchanged
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | equals `project_id` (the `projects` primary id) |
-| `project_id` | string | Required | yes | — | no | `RequiresReplace`; the project to configure |
+| `id` | string | Computed | - | - | no | equals `project_id` (the `projects` primary id) |
+| `project_id` | string | Required | yes | - | no | `RequiresReplace`; the project to configure |
 | `default_execution_mode` | string | Optional+Computed | no | server (`remote`) | no | one of `agent`/`local`/`remote` |
-| `default_agent_pool_id` | string | Optional+Computed | no | — | no | required iff mode is `agent`; must be unset otherwise (validated) |
-| `overwrites` | object | Computed | — | — | no | `{default_execution_mode: bool, default_agent_pool_id: bool}` — which settings overwrite org defaults |
+| `default_agent_pool_id` | string | Optional+Computed | no | - | no | required iff mode is `agent`; must be unset otherwise (validated) |
+| `overwrites` | object | Computed | - | - | no | `{default_execution_mode: bool, default_agent_pool_id: bool}` - which settings overwrite org defaults |
 
 ## Wire contract
 
-- **Create:** no dedicated create — `Projects.Update(project_id, ProjectUpdateOptions)` →
+- **Create:** no dedicated create - `Projects.Update(project_id, ProjectUpdateOptions)` →
   `PATCH /projects/:id`. Sends `default-execution-mode`, `default-agent-pool-id`, and
   `setting-overwrites` = `{default-execution-mode:true, default-agent-pool:true}` when a mode is set
   (both `false` when unset, deferring to defaults).
 - **Read:** `Projects.Read(project_id)` → `GET /projects/:id`. Reads `default-execution-mode`, the
   `default-agent-pool` relation (only when mode is `agent`), and the computed `setting-overwrites`.
-- **Update:** `Projects.Update` → `PATCH /projects/:id` — same as create, in place.
-- **Delete:** not a real delete — `Projects.Update` with `setting-overwrites`
+- **Update:** `Projects.Update` → `PATCH /projects/:id` - same as create, in place.
+- **Delete:** not a real delete - `Projects.Update` with `setting-overwrites`
   `{default-execution-mode:false, default-agent-pool:false}`, reverting the project to the built-in
   `remote` default; then the resource is removed from state.
 - **JSON:API type:** `projects`. No write-only fields. `default-agent-pool-id` is a write attr;
@@ -73,7 +73,7 @@ relation on read, `setting-overwrites`) unchanged
 ## Runtime criterion
 
 Not `CRUD-only`. The behavior is **inheritance**: a workspace in the project that does not overwrite
-its own execution mode inherits the project default at run time. The meaningful case is `agent` — when
+its own execution mode inherits the project default at run time. The meaningful case is `agent` - when
 the project defaults to `agent` with a default pool, an inheriting workspace's runs dispatch to that
 pool (`backend/internal/api/v2/handlers/terraform/runs.go`); `remote`/`local` change no dispatch
 target. Verified live per the compat doc's runtime check (an inheriting workspace's run picks up the
@@ -81,10 +81,10 @@ project's default pool; a workspace with its own explicit mode is unaffected).
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/project_settings.md` — arguments (project_id,
+- Provider docs page: `docs/resources/project_settings.md` - arguments (project_id,
   default_execution_mode, default_agent_pool_id), the computed `overwrites` object, the "agent requires
   a pool" rule, and the note that a cleared setting reverts to `remote` (no org-level defaults yet).
-- Example: `examples/resources/stackweaver_project_settings/resource.tf` — a project +
+- Example: `examples/resources/stackweaver_project_settings/resource.tf` - a project +
   project_settings with `default_execution_mode = "agent"` and a default agent pool.
 
 ## Divergences from upstream / TFE

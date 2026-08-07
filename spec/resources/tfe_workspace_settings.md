@@ -14,8 +14,8 @@ compat_doc: docs/internal/tfe-compatibility/resources/workspaces/tfe_workspace_s
 ---
 # stackweaver_workspace_settings
 
-Manages the mutable execution and state-sharing settings of an existing workspace — chiefly
-`execution_mode` and `agent_pool_id` — as the authoritative replacement for the deprecated equivalents
+Manages the mutable execution and state-sharing settings of an existing workspace - chiefly
+`execution_mode` and `agent_pool_id` - as the authoritative replacement for the deprecated equivalents
 on `tfe_workspace`. It is the supported way to attach a workspace to a self-hosted runner (agent pool).
 Maps onto the same Stackweaver workspace object, patched by id.
 
@@ -33,19 +33,19 @@ object; no wrapper.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | set equal to `workspace_id` |
-| `workspace_id` | string | Required | yes | — | no | `RequiresReplace`; the workspace to configure |
-| `execution_mode` | string | Optional+Computed | no | — | no | `remote`/`local`/`agent`; unset defers to project/org defaults |
-| `agent_pool_id` | string | Optional+Computed | no | — | no | required when `execution_mode = agent`, forbidden otherwise |
-| `overwrites` | list(obj{execution_mode,agent_pool}) | Computed | — | — | no | the `setting-overwrites` booleans; drives defer-vs-own logic |
-| `global_remote_state` | bool | Optional+Computed | no | — | no | mutually exclusive with `project_remote_state` |
-| `project_remote_state` | bool | Optional+Computed | no | — | no | mutually exclusive with `global_remote_state` |
-| `remote_state_consumer_ids` | set(string) | Optional+Computed | no | — | no | explicit consumers when neither global nor project sharing |
-| `description` | string | Optional+Computed | no | — | no | |
-| `auto_apply` | bool | Optional+Computed | no | — | no | |
-| `assessments_enabled` | bool | Optional+Computed | no | — | no | |
-| `tags` | map(string) | Optional+Computed | no | — | no | key-value tag bindings (`tag-bindings`) |
-| `effective_tags` | map(string) | Optional+Computed | no | — | no | tags including inherited |
+| `id` | string | Computed | - | - | no | set equal to `workspace_id` |
+| `workspace_id` | string | Required | yes | - | no | `RequiresReplace`; the workspace to configure |
+| `execution_mode` | string | Optional+Computed | no | - | no | `remote`/`local`/`agent`; unset defers to project/org defaults |
+| `agent_pool_id` | string | Optional+Computed | no | - | no | required when `execution_mode = agent`, forbidden otherwise |
+| `overwrites` | list(obj{execution_mode,agent_pool}) | Computed | - | - | no | the `setting-overwrites` booleans; drives defer-vs-own logic |
+| `global_remote_state` | bool | Optional+Computed | no | - | no | mutually exclusive with `project_remote_state` |
+| `project_remote_state` | bool | Optional+Computed | no | - | no | mutually exclusive with `global_remote_state` |
+| `remote_state_consumer_ids` | set(string) | Optional+Computed | no | - | no | explicit consumers when neither global nor project sharing |
+| `description` | string | Optional+Computed | no | - | no | |
+| `auto_apply` | bool | Optional+Computed | no | - | no | |
+| `assessments_enabled` | bool | Optional+Computed | no | - | no | |
+| `tags` | map(string) | Optional+Computed | no | - | no | key-value tag bindings (`tag-bindings`) |
+| `effective_tags` | map(string) | Optional+Computed | no | - | no | tags including inherited |
 
 ## Wire contract
 
@@ -62,7 +62,7 @@ object; no wrapper.
 - **Update:** same `Workspaces.UpdateByID` → `PATCH /workspaces/:id`. `tags` diffs may also call
   `DeleteAllTagBindings`; `remote_state_consumer_ids` diffs call
   `AddRemoteStateConsumers`/`RemoveRemoteStateConsumers`.
-- **Delete:** no destroy of the workspace — `Delete` patches the workspace back to defaults
+- **Delete:** no destroy of the workspace - `Delete` patches the workspace back to defaults
   (`setting-overwrites` false/false, `execution-mode = "remote"`) via `UpdateByID`, then removes the
   resource from state. State-toggle contract, not lifecycle.
 - **JSON:API type:** `workspaces`. `WorkspaceSettingOverwritesOptions` fields are `json:`
@@ -81,16 +81,16 @@ object; no wrapper.
    `execution_mode` also fails ("must not be set").
 4. Clearing `execution_mode` from config reverts the workspace to deferring: the request sends
    `setting-overwrites` false/false, `execution_mode` reads back the inherited/`remote` default, and
-   `agent_pool_id` reads back null — no drift on the following plan.
+   `agent_pool_id` reads back null - no drift on the following plan.
 5. Changing `execution_mode` in place (e.g. `agent` → `remote`) applies via `PATCH /workspaces/:id`
    without recreate and clears `agent_pool_id`; changing `workspace_id` is ForceNew and recreates.
 6. `destroy` does **not** delete the workspace: it resets the workspace to `execution_mode = "remote"`
    with overwrites false/false and removes only this resource from state (assert the workspace still
-   exists afterwards, with default execution — a state-toggle, not a 404).
+   exists afterwards, with default execution - a state-toggle, not a 404).
 
 ## Runtime criterion
 
-Not CRUD-only — this is the resource that actually binds a workspace to a self-hosted runner. Verified:
+Not CRUD-only - this is the resource that actually binds a workspace to a self-hosted runner. Verified:
 after applying `execution_mode = "agent"` with an `agent_pool_id`, a run for that workspace is
 dispatched to the named agent pool (a self-hosted runner in that pool executes it); after reverting to
 `remote`, subsequent runs execute in remote mode / defer to project/org defaults per the inheritance
@@ -98,17 +98,17 @@ chain.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/workspace_settings.md` — arguments (`workspace_id`,
+- Provider docs page: `docs/resources/workspace_settings.md` - arguments (`workspace_id`,
   `execution_mode`, `agent_pool_id`, plus `global_remote_state`/`project_remote_state`/
   `remote_state_consumer_ids`, `description`, `auto_apply`, `assessments_enabled`, `tags`), the
   agent-mode/pool constraint, the "authoritative replacement for the deprecated `tfe_workspace`
   attributes" note, and import by workspace id or `<org>/<name>`.
-- Example: `examples/resources/stackweaver_workspace_settings/resource.tf` — a workspace plus a
+- Example: `examples/resources/stackweaver_workspace_settings/resource.tf` - a workspace plus a
   `tfe_workspace_settings` pinning it to `agent` mode + an agent pool (mirrors the compat doc example).
 
 ## Divergences from upstream / TFE
 
-None on the wire shape or the `execution_mode`/`agent_pool_id` contract — drop-in with
+None on the wire shape or the `execution_mode`/`agent_pool_id` contract - drop-in with
 `tfe_workspace_settings` (client is go-tfe-clean). Stackweaver returns both the `agent-pool`
 relationship and the `agent-pool-id` attribute and the `setting-overwrites` object, which the go-tfe
 client requires for correct state. `run_timeout` and other Stackweaver-only workspace knobs are handled

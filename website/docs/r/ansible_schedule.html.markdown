@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_ansible_schedule
 
-Provides an Ansible schedule — a declarative cron schedule that periodically triggers an Ansible target: a
+Provides an Ansible schedule - a declarative cron schedule that periodically triggers an Ansible target: a
 job template, an inventory-source sync, a playbook sync, or a workflow. The `type` selects which target id
 is required.
 

@@ -180,7 +180,7 @@ func credentialsSource(credentials CredentialsMap) auth.CredentialsSource {
 // use for the given tfeHost/token arguments, applying the same environment
 // variable / credentials-file / default-host fallbacks as GetClient. It lets the
 // native Stackweaver client be configured with identical resolution (so it works
-// whenever the go-tfe client does — provider block, TFE_HOSTNAME/TFE_TOKEN, or a
+// whenever the go-tfe client does - provider block, TFE_HOSTNAME/TFE_TOKEN, or a
 // terraform-login credentials file).
 func ResolvedHostToken(tfeHost, token string, insecure bool) (string, string, error) {
 	config, err := configure(tfeHost, token, insecure)

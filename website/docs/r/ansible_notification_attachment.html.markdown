@@ -8,8 +8,8 @@ description: |-
 
 # stackweaver_ansible_notification_attachment
 
-Binds a `stackweaver_ansible_notification_template` (channel) to exactly one target — a job template or a
-workflow — with per-trigger flags controlling when the channel fires. This is a create/delete-only
+Binds a `stackweaver_ansible_notification_template` (channel) to exactly one target - a job template or a
+workflow - with per-trigger flags controlling when the channel fires. This is a create/delete-only
 relationship: every attribute forces replacement, so there is no in-place update.
 
 This is a native Stackweaver resource with no `terraform-provider-tfe` equivalent. The organization is

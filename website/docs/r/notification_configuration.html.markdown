@@ -147,7 +147,7 @@ The following arguments are supported:
   [private state](https://developer.hashicorp.com/terraform/plugin/framework/resources/private-state)
   and incrementing `token_wo_version` when it changes. No additional configuration is required.
 
-  For maximum privacy — to prevent even the hash from being stored — omit `token_wo` from
+  For maximum privacy - to prevent even the hash from being stored - omit `token_wo` from
   your config and set `token_wo_version` manually instead, incrementing it whenever you
   need to push a new token value.
 
@@ -155,7 +155,7 @@ The following arguments are supported:
   (the default when `token_wo_version` is not set in config), the provider computes this value
   automatically: it is set to `1` on resource creation and incremented whenever the value of
   `token_wo` changes. In **manual mode** (when you explicitly set `token_wo_version` in config),
-  auto-detection is disabled and you control updates by incrementing this value yourself —
+  auto-detection is disabled and you control updates by incrementing this value yourself -
   no hash is stored in private state. Cannot be used with `token`.
 * `triggers` - (Optional) The array of triggers for which this notification configuration will
   send notifications. Valid values are `run:created`, `run:planning`, `run:needs_attention`, `run:applying`
@@ -175,7 +175,7 @@ The following arguments are supported:
   [private state](https://developer.hashicorp.com/terraform/plugin/framework/resources/private-state)
   and incrementing `url_wo_version` when it changes. No additional configuration is required.
 
-  For maximum privacy — to prevent even the hash from being stored — omit `url_wo` from
+  For maximum privacy - to prevent even the hash from being stored - omit `url_wo` from
   your config and set `url_wo_version` manually instead, incrementing it whenever you
   need to push a new URL value.
 
@@ -183,7 +183,7 @@ The following arguments are supported:
   (the default when `url_wo_version` is not set in config), the provider computes this value
   automatically: it is set to `1` on resource creation and incremented whenever the value of
   `url_wo` changes. In **manual mode** (when you explicitly set `url_wo_version` in config),
-  auto-detection is disabled and you control updates by incrementing this value yourself —
+  auto-detection is disabled and you control updates by incrementing this value yourself -
   no hash is stored in private state. Cannot be used with `url`.
 * `workspace_id` - (Required) The id of the workspace that owns the notification configuration.
 

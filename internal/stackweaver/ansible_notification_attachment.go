@@ -11,8 +11,8 @@ import (
 )
 
 // AnsibleNotificationAttachmentsService is a native service that binds a
-// notification template (channel) to a single target — a job template OR a
-// workflow — with per-trigger flags. It is a create/delete-only relationship
+// notification template (channel) to a single target - a job template OR a
+// workflow - with per-trigger flags. It is a create/delete-only relationship
 // resource: there is no update path (every field is ForceNew).
 //
 // Envelope is MIXED: the create request is plain JSON
@@ -149,7 +149,7 @@ func (s *AnsibleNotificationAttachmentsService) Create(ctx context.Context, opti
 
 // ReadByJobTemplate resolves an attachment by id from its job-template target's
 // notifications listing. A missing id surfaces as ErrNotFound. This is the only
-// confirmed read path — workflow-target attachments have no listing route.
+// confirmed read path - workflow-target attachments have no listing route.
 func (s *AnsibleNotificationAttachmentsService) ReadByJobTemplate(ctx context.Context, jobTemplateID, id string) (*AnsibleNotificationAttachment, error) {
 	if jobTemplateID == "" {
 		return nil, fmt.Errorf("stackweaver: ReadByJobTemplate requires a JobTemplateID")

@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native relationship resource — no terraform-provider-tfe equivalent. Attaches
+// Native relationship resource - no terraform-provider-tfe equivalent. Attaches
 // one Ansible credential to a job template's multi-credential set. A pure
 // association: create = attach, delete = detach, no update. Served by the native
 // internal/stackweaver client and registered only under its primary name (no

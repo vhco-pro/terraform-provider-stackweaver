@@ -30,13 +30,13 @@ returns the stock go-tfe `RegistryProvider` JSON:API shape unchanged, so no wrap
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | lookup key; provider name |
-| `organization` | string | Optional+Computed | — | provider default | no | org name; defaults to provider config |
-| `registry_name` | string | Optional+Computed | — | `private` | no | `public` or `private`; validated (OneOf) |
-| `namespace` | string | Optional+Computed | — | org (for private) | no | equals org for private; **required** for public, **forbidden** for private (ValidateConfig) |
-| `id` | string | Computed | — | — | no | `registry-providers` JSON:API primary id |
-| `created_at` | string | Computed | — | — | no | ISO8601 create time |
-| `updated_at` | string | Computed | — | — | no | ISO8601 update time |
+| `name` | string | Required | - | - | no | lookup key; provider name |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; defaults to provider config |
+| `registry_name` | string | Optional+Computed | - | `private` | no | `public` or `private`; validated (OneOf) |
+| `namespace` | string | Optional+Computed | - | org (for private) | no | equals org for private; **required** for public, **forbidden** for private (ValidateConfig) |
+| `id` | string | Computed | - | - | no | `registry-providers` JSON:API primary id |
+| `created_at` | string | Computed | - | - | no | ISO8601 create time |
+| `updated_at` | string | Computed | - | - | no | ISO8601 update time |
 
 ## Wire contract
 
@@ -65,10 +65,10 @@ metadata so other config can reference it without hardcoding the id. No mutating
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/registry_provider.md` — arguments (`name`, `organization`,
-  `registry_name`, `namespace` — with the public-vs-private namespace rule), computed `id`,
+- Provider docs page: `docs/data-sources/registry_provider.md` - arguments (`name`, `organization`,
+  `registry_name`, `namespace` - with the public-vs-private namespace rule), computed `id`,
   `created_at`, `updated_at`.
-- Example: `examples/data-sources/stackweaver_registry_provider/data-source.tf` — read a private
+- Example: `examples/data-sources/stackweaver_registry_provider/data-source.tf` - read a private
   provider by name.
 
 ## Divergences from upstream / TFE

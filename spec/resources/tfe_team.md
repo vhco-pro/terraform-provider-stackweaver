@@ -23,7 +23,7 @@ inherit. Maps 1:1 onto Stackweaver's team concept.
 `go-tfe-clean`. The upstream resource (legacy SDKv2, `Schema()` at
 `internal/provider/resource_tfe_team.go:55`) drives the stock `go-tfe` `Teams` service
 (`Create/Read/Update/Delete`). Stackweaver accepts and returns the stock `teams` JSON:API shape
-unchanged — no wrapper. Some attributes are accepted on the wire but not yet enforced by the
+unchanged - no wrapper. Some attributes are accepted on the wire but not yet enforced by the
 Stackweaver backend (see divergences); that is a backing-completeness gap, not a wire-shape difference,
 so it needs no client change.
 
@@ -31,13 +31,13 @@ so it needs no client change.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `teams` JSON:API primary id (`team-*`) |
-| `name` | string | Required | no | — | no | team name, unique within the org |
+| `id` | string | Computed | - | - | no | `teams` JSON:API primary id (`team-*`) |
+| `name` | string | Required | no | - | no | team name, unique within the org |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name; changing it recreates |
 | `visibility` | string | Optional+Computed | no | server | no | `secret` or `organization` |
-| `sso_team_id` | string | Optional | no | — | no | SAML/SSO team id; sent as `sso-team-id` |
+| `sso_team_id` | string | Optional | no | - | no | SAML/SSO team id; sent as `sso-team-id` |
 | `allow_member_token_management` | bool | Optional | no | `true` | no | `allow-member-token-management` |
-| `organization_access` | block (list, max 1) | Optional+Computed | no | — | no | org-level permission booleans (below) |
+| `organization_access` | block (list, max 1) | Optional+Computed | no | - | no | org-level permission booleans (below) |
 
 ### `organization_access` block (all bool, Optional, Default `false`)
 
@@ -65,7 +65,7 @@ so it needs no client change.
 3. Setting `organization_access { read_workspaces = true, read_projects = true }` round-trips: both
    booleans read back `true`, unset booleans read back `false`.
 4. Updating `name` and `visibility` applies in place without recreate.
-5. `organization` is ForceNew — changing it recreates the team.
+5. `organization` is ForceNew - changing it recreates the team.
 6. `destroy` removes it; a subsequent `Teams.Read(id)` returns 404.
 7. `allow_member_token_management` defaults to `true` when omitted and round-trips.
 
@@ -78,9 +78,9 @@ granted operation); the team resource itself is otherwise CRUD.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/team.md` — arguments (name/organization/visibility/sso_team_id/
+- Provider docs page: `docs/resources/team.md` - arguments (name/organization/visibility/sso_team_id/
   allow_member_token_management/organization_access), attribute `id`, import formats.
-- Example: `examples/resources/stackweaver_team/resource.tf` — a named team with a minimal
+- Example: `examples/resources/stackweaver_team/resource.tf` - a named team with a minimal
   `organization_access` block.
 
 ## Divergences from upstream / TFE
@@ -89,4 +89,4 @@ Wire shape is identical to `tfe_team`; drop-in on the schema. Backing is **parti
 (`docs/internal/tfe-compatibility/resources/teams/tfe_team.md`): `sso_team_id` (SSO team management) and
 the `manage_teams` / `manage_organization_access` / `access_secret_teams` organization-access booleans
 are accepted on the wire but **not yet enforced** by the Stackweaver backend. These are ignored, not
-rejected, so no drift and no client change — a backing-completeness gap only.
+rejected, so no drift and no client change - a backing-completeness gap only.

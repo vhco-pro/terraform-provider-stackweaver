@@ -25,25 +25,25 @@ computed `permissions` block.
 `TeamAccess.List` filtered by workspace, then re-reads the matched grant through the shared resource
 read path (`TeamAccess.Read`). Consumes the stock `TeamAccess` JSON:API shape unchanged; no wrapper.
 No compatibility detail doc exists yet
-(`docs/internal/tfe-compatibility/data-sources/teams/tfe_team_access.md` is absent) — this spec is the
+(`docs/internal/tfe-compatibility/data-sources/teams/tfe_team_access.md` is absent) - this spec is the
 source of record.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `team_id` | string | Required | — | — | no | team whose grant to look up |
-| `workspace_id` | string | Required | — | — | no | workspace to look up the grant on |
-| `id` | string | Computed | — | — | no | `team-workspaces` primary id of the grant |
-| `access` | string | Computed | — | — | no | access level (`read`/`plan`/`write`/`admin`/`custom`) |
-| `permissions` | list(object) | Computed | — | — | no | single-element list of the resolved custom permissions |
-| `permissions.runs` | string | Computed | — | — | no | runs permission |
-| `permissions.variables` | string | Computed | — | — | no | variables permission |
-| `permissions.state_versions` | string | Computed | — | — | no | state-versions permission |
-| `permissions.sentinel_mocks` | string | Computed | — | — | no | sentinel-mocks permission |
-| `permissions.workspace_locking` | bool | Computed | — | — | no | may lock/unlock the workspace |
-| `permissions.run_tasks` | bool | Computed | — | — | no | may manage run tasks |
-| `permissions.policy_overrides` | bool | Computed | — | — | no | may override policy checks (BETA) |
+| `team_id` | string | Required | - | - | no | team whose grant to look up |
+| `workspace_id` | string | Required | - | - | no | workspace to look up the grant on |
+| `id` | string | Computed | - | - | no | `team-workspaces` primary id of the grant |
+| `access` | string | Computed | - | - | no | access level (`read`/`plan`/`write`/`admin`/`custom`) |
+| `permissions` | list(object) | Computed | - | - | no | single-element list of the resolved custom permissions |
+| `permissions.runs` | string | Computed | - | - | no | runs permission |
+| `permissions.variables` | string | Computed | - | - | no | variables permission |
+| `permissions.state_versions` | string | Computed | - | - | no | state-versions permission |
+| `permissions.sentinel_mocks` | string | Computed | - | - | no | sentinel-mocks permission |
+| `permissions.workspace_locking` | bool | Computed | - | - | no | may lock/unlock the workspace |
+| `permissions.run_tasks` | bool | Computed | - | - | no | may manage run tasks |
+| `permissions.policy_overrides` | bool | Computed | - | - | no | may override policy checks (BETA) |
 
 ## Wire contract
 
@@ -52,7 +52,7 @@ source of record.
   /team-workspaces?filter[workspace][id]=:id`. Paginates until a grant whose `Team.ID` equals `team_id`
   is found, sets `id` to that grant's id, and delegates to the resource read
   (`TeamAccess.Read(id)` → `GET /team-workspaces/:id`) to populate `access` and `permissions`.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `team-workspaces`. No divergent fields; the permission enums map straight from the
   go-tfe `TeamAccess` struct.
 
@@ -76,9 +76,9 @@ workspace so a config can branch on or export those permissions. No runtime side
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/team_access.md` — arguments (`team_id`, `workspace_id`),
+- Provider docs page: `docs/data-sources/team_access.md` - arguments (`team_id`, `workspace_id`),
   computed attributes (`id`, `access`, nested `permissions`).
-- Example: `examples/data-sources/stackweaver_team_access/data-source.tf` — look up a team's access on
+- Example: `examples/data-sources/stackweaver_team_access/data-source.tf` - look up a team's access on
   a workspace and reference `data.stackweaver_team_access.x.access`.
 
 ## Divergences from upstream / TFE

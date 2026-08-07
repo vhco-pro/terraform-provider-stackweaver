@@ -31,20 +31,20 @@ read (upstream assumes empty).
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | lookup key; matched against the org run-task list |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to provider default |
-| `id` | string | Computed | — | — | no | `tasks` JSON:API primary id of the matched task |
-| `url` | string | Optional (plan-null quirk) | — | — | no | callback URL; set from `RunTask.URL` on read |
-| `category` | string | Optional (plan-null quirk) | — | — | no | task category (e.g. `task`); set from `RunTask.Category` |
-| `enabled` | bool | Optional (plan-null quirk) | — | — | no | whether the task is enabled; set from `RunTask.Enabled` |
-| `description` | string | Optional (plan-null quirk) | — | — | no | set from `RunTask.Description` |
+| `name` | string | Required | - | - | no | lookup key; matched against the org run-task list |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to provider default |
+| `id` | string | Computed | - | - | no | `tasks` JSON:API primary id of the matched task |
+| `url` | string | Optional (plan-null quirk) | - | - | no | callback URL; set from `RunTask.URL` on read |
+| `category` | string | Optional (plan-null quirk) | - | - | no | task category (e.g. `task`); set from `RunTask.Category` |
+| `enabled` | bool | Optional (plan-null quirk) | - | - | no | whether the task is enabled; set from `RunTask.Enabled` |
+| `description` | string | Optional (plan-null quirk) | - | - | no | set from `RunTask.Description` |
 
 ## Wire contract
 
 - **Read/lookup:** `RunTasks.List(org, RunTaskListOptions)` → `GET /organizations/:org/tasks`,
   paginated; the provider matches the item whose `name` equals the input, then maps its attributes. No
   create/update/delete.
-- **JSON:API type:** `tasks`. `hmac-key` is write-only (never echoed) — the data source does not expose
+- **JSON:API type:** `tasks`. `hmac-key` is write-only (never echoed) - the data source does not expose
   it. No divergent fields.
 
 ## Acceptance criteria (these ARE the test)
@@ -67,10 +67,10 @@ mutating runtime effect.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/organization_run_task.md` — arguments (`name`,
+- Provider docs page: `docs/data-sources/organization_run_task.md` - arguments (`name`,
   `organization`), computed `id`, and the `url`/`category`/`enabled`/`description` outputs (with the
   plan-null caveat).
-- Example: `examples/data-sources/stackweaver_organization_run_task/data-source.tf` — look up a task by
+- Example: `examples/data-sources/stackweaver_organization_run_task/data-source.tf` - look up a task by
   name and reference `data.stackweaver_organization_run_task.this.id`.
 
 ## Divergences from upstream / TFE

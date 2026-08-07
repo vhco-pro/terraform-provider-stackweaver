@@ -44,7 +44,7 @@ func NewAnsibleInventoriesService(c *Client) *AnsibleInventoriesService {
 // AnsibleInventory is the native representation of an Ansible inventory, flattened
 // from the JSON:API resource object into the shape the Terraform resource
 // consumes. Fields the backend never echoes (organization name, project id) are
-// intentionally absent — the resource preserves those from prior state/plan.
+// intentionally absent - the resource preserves those from prior state/plan.
 type AnsibleInventory struct {
 	ID                      string
 	Name                    string
@@ -95,7 +95,7 @@ type AnsibleInventoryCreateOptions struct {
 
 // AnsibleInventoryUpdateOptions are the fields accepted when updating an
 // inventory. A nil pointer leaves the corresponding field unchanged; note that
-// inventory-type is intentionally absent — the backend has no update path for it,
+// inventory-type is intentionally absent - the backend has no update path for it,
 // so type is ForceNew.
 type AnsibleInventoryUpdateOptions struct {
 	Name                    *string

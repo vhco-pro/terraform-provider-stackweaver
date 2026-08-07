@@ -3,7 +3,7 @@ layout: "stackweaver"
 page_title: "Stackweaver: stackweaver_ansible_credential"
 subcategory: "Ansible"
 description: |-
-  Manages an Ansible credential — a named, typed secret bundle.
+  Manages an Ansible credential - a named, typed secret bundle.
 ---
 
 # stackweaver_ansible_credential
@@ -18,29 +18,29 @@ home for an eventual `stackweaver_ssh_key`-style face over the `ssh` credential 
 ## Write-only secret behavior
 
 All secret material is accepted on write and **never returned by the API**. Terraform state holds the
-value the practitioner wrote — that is the only place it exists after apply. The provider does not
+value the practitioner wrote - that is the only place it exists after apply. The provider does not
 reconcile secret attributes from the read response, so an omitted server value never produces a
 perpetual diff. Rotating a secret is a normal in-place update: send the new value.
 
-For four of the secrets the API surfaces a computed presence boolean — `has_ssh_private_key`,
-`has_password`, `has_vault_password`, and `has_become_password` — so you can confirm a secret is
+For four of the secrets the API surfaces a computed presence boolean - `has_ssh_private_key`,
+`has_password`, `has_vault_password`, and `has_become_password` - so you can confirm a secret is
 stored without reading it back. The AWS, Azure, and GCP secrets have no presence readback; their
 presence can only be tracked from state.
 
 Which secret attributes apply depends on `credential_type`:
 
-* `ssh` and `machine-ssh` — `ssh_private_key`, `ssh_passphrase`, `password`, `become_password`, plus
+* `ssh` and `machine-ssh` - `ssh_private_key`, `ssh_passphrase`, `password`, `become_password`, plus
   `username`, `ssh_port`, and `ssh_become_user`.
-* `scm` — `username` and `password` (or `ssh_private_key`) for source-control access.
-* `vault` — `vault_password`.
-* `aws` — `aws_access_key_id` and `aws_secret_access_key`.
-* `azure` — `azure_tenant_id`, `azure_client_id`, and `azure_client_secret`.
-* `gcp` — `gcp_service_account`.
-* `vmware` — `username` and `password`.
+* `scm` - `username` and `password` (or `ssh_private_key`) for source-control access.
+* `vault` - `vault_password`.
+* `aws` - `aws_access_key_id` and `aws_secret_access_key`.
+* `azure` - `azure_tenant_id`, `azure_client_id`, and `azure_client_secret`.
+* `gcp` - `gcp_service_account`.
+* `vmware` - `username` and `password`.
 
 ## Example Usage
 
-Basic usage — an SSH credential fed from a variable:
+Basic usage - an SSH credential fed from a variable:
 
 ```hcl
 variable "ssh_private_key" {
@@ -87,7 +87,7 @@ The following arguments are supported:
 * `organization` - (Required) Name of the owning organization. Changing this forces a new credential.
 * `name` - (Required) Name of the credential, unique within the organization.
 * `credential_type` - (Required) Credential type: one of `ssh`, `scm`, `vault`, `machine-ssh`, `aws`,
-  `azure`, `gcp`, `vmware`. Immutable — changing it forces a new credential.
+  `azure`, `gcp`, `vmware`. Immutable - changing it forces a new credential.
 * `project_id` - (Optional) ID of the project to narrow the credential to. Omit for an org-scoped
   credential (resolves to the organization's default project). Not returned by the API, so it is
   tracked from configuration only.
@@ -97,7 +97,7 @@ The following arguments are supported:
 * `azure_client_id` - (Optional) Azure client ID (not a secret).
 * `ssh_port` - (Optional) SSH port for host access. Defaults to `22`.
 * `ssh_become_user` - (Optional) User to become for privilege escalation. Defaults to `root`.
-* `ssh_private_key` - (Optional, Sensitive) SSH private key. Write-only — never read back.
+* `ssh_private_key` - (Optional, Sensitive) SSH private key. Write-only - never read back.
 * `ssh_passphrase` - (Optional, Sensitive) Passphrase for the SSH private key. Write-only.
 * `password` - (Optional, Sensitive) Password for host or SCM access. Write-only.
 * `vault_password` - (Optional, Sensitive) Ansible Vault password. Write-only.

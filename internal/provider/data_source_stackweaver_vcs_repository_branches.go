@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Read-only
+// Native data source - no terraform-provider-tfe equivalent. Read-only
 // discovery helper listing the branches of one repository reachable through a
 // Stackweaver VCS connection, served by the native internal/stackweaver client.
 var (
@@ -72,7 +72,7 @@ func (d *dataSourceStackweaverVCSRepositoryBranches) Schema(_ context.Context, _
 				Required:    true,
 			},
 			"owner": schema.StringAttribute{
-				Description: "Repository owner (org/user/project — the left half of \"owner/repo\").",
+				Description: "Repository owner (org/user/project - the left half of \"owner/repo\").",
 				Required:    true,
 			},
 			"repo": schema.StringAttribute{
@@ -80,7 +80,7 @@ func (d *dataSourceStackweaverVCSRepositoryBranches) Schema(_ context.Context, _
 				Required:    true,
 			},
 			"id": schema.StringAttribute{
-				Description: "Synthetic identifier — \"<connection_id>/<owner>/<repo>\".",
+				Description: "Synthetic identifier - \"<connection_id>/<owner>/<repo>\".",
 				Computed:    true,
 			},
 			"branches": schema.ListNestedAttribute{

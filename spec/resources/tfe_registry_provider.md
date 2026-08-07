@@ -28,7 +28,7 @@ versions/platforms are published under and that `terraform init` installs from.
 resource reads (`id`, `name`, `namespace`, `registry-name`, `created-at`, `updated-at`,
 `permissions.can-delete`, the `organization` relation). Two things differ only in *value/behaviour*,
 not in bytes go-tfe must parse: the response **omits** the `registry-provider-versions` and
-`tag-bindings` relations (both `omitempty`/optional in the struct, so decoding is unaffected — the
+`tag-bindings` relations (both `omitempty`/optional in the struct, so decoding is unaffected - the
 resource never reads them), and the `/v1` install endpoint returns **package-metadata JSON** instead of
 a 302 redirect (the install protocol, not this CRUD resource). No wrapper; captured as notes below.
 
@@ -36,15 +36,15 @@ a 302 redirect (the install protocol, not this CRUD resource). No wrapper; captu
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `registry-providers` primary id (opaque UUID); re-read by composite address so it round-trips without drift |
+| `id` | string | Computed | - | - | no | `registry-providers` primary id (opaque UUID); re-read by composite address so it round-trips without drift |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name; resolved from provider config when omitted |
 | `registry_name` | string | Optional+Computed | yes | `"private"` | no | `private` or `public` (validated `OneOf`) |
-| `namespace` | string | Optional+Computed | yes | — | no | private → forced to the org name (must be omitted in config); public → the upstream namespace (required) |
-| `name` | string | Required | yes | — | no | provider name |
-| `created_at` | string | Computed | — | — | no | iso8601 |
-| `updated_at` | string | Computed | — | — | no | iso8601 |
+| `namespace` | string | Optional+Computed | yes | - | no | private → forced to the org name (must be omitted in config); public → the upstream namespace (required) |
+| `name` | string | Required | yes | - | no | provider name |
+| `created_at` | string | Computed | - | - | no | iso8601 |
+| `updated_at` | string | Computed | - | - | no | iso8601 |
 
-Every configurable attribute is `RequiresReplace` — there is no in-place update (see Wire contract).
+Every configurable attribute is `RequiresReplace` - there is no in-place update (see Wire contract).
 
 ## Wire contract
 
@@ -54,7 +54,7 @@ Every configurable attribute is `RequiresReplace` — there is no in-place updat
 - **Read:** `RegistryProviders.Read(RegistryProviderID{org, registry_name, namespace, name}, opts)` →
   `GET /organizations/:org/registry-providers/:registry_name/:namespace/:name` (go-tfe also supports the
   by-id form `GET /registry-providers/:id`).
-- **Update:** none — the resource's `Update` returns an error; all attributes are ForceNew, so any change
+- **Update:** none - the resource's `Update` returns an error; all attributes are ForceNew, so any change
   recreates.
 - **Delete:** `RegistryProviders.Delete(RegistryProviderID{...})` →
   `DELETE /organizations/:org/registry-providers/:registry_name/:namespace/:name`. Cascades to versions,
@@ -89,10 +89,10 @@ endpoint returns package-metadata JSON (`protocols`, `download_url`, `shasums_ur
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/registry_provider.md` — arguments
+- Provider docs page: `docs/resources/registry_provider.md` - arguments
   (organization/name/registry_name/namespace), computed `id`/`created_at`/`updated_at`, the
   private-vs-public namespace rule, import by `<org>/<registry_name>/<namespace>/<name>`.
-- Example: `examples/resources/stackweaver_registry_provider/resource.tf` — a minimal private provider
+- Example: `examples/resources/stackweaver_registry_provider/resource.tf` - a minimal private provider
   (`registry_name = "private"`, `name`) plus a commented public example.
 
 ## Divergences from upstream / TFE
@@ -100,7 +100,7 @@ endpoint returns package-metadata JSON (`protocols`, `download_url`, `shasums_ur
 **Value-level (documented), wire-safe:**
 - The read/create response **omits the `registry-provider-versions` and `tag-bindings` relations**
   (optional in the go-tfe struct; the resource never reads them; versions are published out-of-band).
-- The **v1 install protocol** endpoint returns **package-metadata JSON** rather than a 302 redirect —
+- The **v1 install protocol** endpoint returns **package-metadata JSON** rather than a 302 redirect -
   a corrected signing/install model (publisher-signed `SHA256SUMS`), not a CRUD change; the resource is
   unaffected.
 - **Agent-pool request forwarding** for providers is not modelled (no attribute exists upstream).

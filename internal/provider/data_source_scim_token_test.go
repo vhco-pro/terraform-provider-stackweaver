@@ -17,8 +17,8 @@ import (
 //
 // FLAKE ALERT: SCIM settings are a singleton resource shared by the entire TFE
 // instance. Every sub-test here enables SCIM (via an inline tfe_scim_settings
-// block) as a prerequisite. Running all cases inside one function — without
-// calling t.Parallel in any sub-test — prevents concurrent tests from racing
+// block) as a prerequisite. Running all cases inside one function - without
+// calling t.Parallel in any sub-test - prevents concurrent tests from racing
 // over the same singleton state.
 //
 // FLAKE ALERT (dual-singleton): This suite also contends with

@@ -11,7 +11,7 @@ import (
 )
 
 // RunnersService is the native service backing the stackweaver_runners data
-// source — a read-only observability view over an organization's self-hosted
+// source - a read-only observability view over an organization's self-hosted
 // runner fleet. Runners self-register and heartbeat out of band; the provider
 // never mutates the fleet, so this service exposes only reads.
 //

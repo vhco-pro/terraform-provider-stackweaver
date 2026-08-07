@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Reads the
+// Native data source - no terraform-provider-tfe equivalent. Reads the
 // effective ad hoc module allowlist for an organization (its configured list,
 // or the built-in AWX default). Served by the native internal/stackweaver
 // client (JSON:API single object). Registered only under its primary

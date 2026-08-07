@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. History helper
+// Native data source - no terraform-provider-tfe equivalent. History helper
 // that lists the sync runs of one Ansible inventory (newest first). Served by
 // the native internal/stackweaver client (JSON:API, dash-cased keys), the list
 // omits the large captured output by design. Registered only under its primary

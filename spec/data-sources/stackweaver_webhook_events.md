@@ -8,13 +8,13 @@ origin: native
 backing_api: implemented
 client_approach: native-client
 status: spec'd
-upstream_file: n/a (native — no terraform-provider-tfe equivalent)
+upstream_file: n/a (native - no terraform-provider-tfe equivalent)
 go_tfe_type: n/a
 compat_doc: n/a (native surface; source of record is this spec + core/models/webhook_event.go)
 ---
 # stackweaver_webhook_events
 
-**Native data source — no TFE equivalent.** A read-only audit/debug helper that lists recent VCS
+**Native data source - no TFE equivalent.** A read-only audit/debug helper that lists recent VCS
 webhook deliveries received for an organization: the delivery log Stackweaver records for each inbound
 push / pull_request / ping / installation event, with the status and HTTP response code it returned.
 Use it to observe whether a repository's webhooks are reaching the platform. Model:
@@ -28,26 +28,26 @@ Use it to observe whether a repository's webhooks are reaching the platform. Mod
 `GET /organizations/:org/webhook-events`. The endpoint returns a JSON:API-shaped envelope
 (`{"data": [{"type":"webhook-events", ...}], "meta": {"pagination": {...}}}`) with dash-cased
 attribute keys (a `?format=simple` snake_case variant also exists for the frontend; the native client
-should use the default JSON:API form). Read-only audit log — no create/update/delete.
+should use the default JSON:API form). Read-only audit log - no create/update/delete.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional+Computed | — | provider default | no | org name; falls back to the provider default |
-| `id` | string | Computed | — | — | no | set to the organization name |
-| `events` | list(object) | Computed | — | — | no | recent webhook deliveries, newest first |
-| `events[].id` | string (uuid) | Computed | — | — | no | delivery id |
-| `events[].event_type` | string | Computed | — | — | no | `push` \| `pull_request` \| `ping` \| `installation` \| … |
-| `events[].provider` | string | Computed | — | — | no | `github` \| `gitlab` \| … |
-| `events[].repository` | string | Computed | — | — | no | `owner/repo`, when applicable |
-| `events[].branch` | string | Computed | — | — | no | branch, when applicable |
-| `events[].commit` | string | Computed | — | — | no | commit SHA, when applicable |
-| `events[].status` | string | Computed | — | — | no | `success` \| `failed` \| `ignored` |
-| `events[].response_code` | number | Computed | — | — | no | HTTP code Stackweaver returned |
-| `events[].message` | string | Computed | — | — | no | additional info / error message |
-| `events[].delivered_at` | string (rfc3339) | Computed | — | — | no | receipt time |
-| `events[].processed_at` | string (rfc3339) | Computed | — | — | no | nullable until processed |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; falls back to the provider default |
+| `id` | string | Computed | - | - | no | set to the organization name |
+| `events` | list(object) | Computed | - | - | no | recent webhook deliveries, newest first |
+| `events[].id` | string (uuid) | Computed | - | - | no | delivery id |
+| `events[].event_type` | string | Computed | - | - | no | `push` \| `pull_request` \| `ping` \| `installation` \| … |
+| `events[].provider` | string | Computed | - | - | no | `github` \| `gitlab` \| … |
+| `events[].repository` | string | Computed | - | - | no | `owner/repo`, when applicable |
+| `events[].branch` | string | Computed | - | - | no | branch, when applicable |
+| `events[].commit` | string | Computed | - | - | no | commit SHA, when applicable |
+| `events[].status` | string | Computed | - | - | no | `success` \| `failed` \| `ignored` |
+| `events[].response_code` | number | Computed | - | - | no | HTTP code Stackweaver returned |
+| `events[].message` | string | Computed | - | - | no | additional info / error message |
+| `events[].delivered_at` | string (rfc3339) | Computed | - | - | no | receipt time |
+| `events[].processed_at` | string (rfc3339) | Computed | - | - | no | nullable until processed |
 
 Note: the raw webhook `payload` is stored server-side but never exposed by the API (`json:"-"`), so it
 is not part of this schema.
@@ -57,10 +57,10 @@ is not part of this schema.
 - **Read/lookup:** `WebhookEvents.ListByOrganization(ctx, org, {pageSize, pageNumber})` →
   `GET /organizations/:org/webhook-events?page[size]=&page[number]=` (default page size 50, max 100).
   Paginate via `meta.pagination.total-count` to cover the log.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `webhook-events`. Attributes are dash-cased (`event-type`, `response-code`,
   `delivered-at`, `processed-at`, …); the native client maps them to the snake_case schema above. A
-  `?format=simple` snake_case envelope exists for the frontend — the provider uses the default
+  `?format=simple` snake_case envelope exists for the frontend - the provider uses the default
   JSON:API form.
 - **Auth/scope:** filtered to the organization (`:name` path param); unknown org → 404. The raw
   `payload` field is never returned.
@@ -86,14 +86,14 @@ list read; its value is confirming inbound webhooks are being received and how t
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/webhook_events.md` — argument `organization`; computed
+- Provider docs page: `docs/data-sources/webhook_events.md` - argument `organization`; computed
   `events` (each `id`/`event_type`/`provider`/`repository`/`branch`/`commit`/`status`/`response_code`/
   `message`/`delivered_at`/`processed_at`) and `id`.
-- Example: `examples/data-sources/stackweaver_webhook_events/data-source.tf` — list an org's recent
+- Example: `examples/data-sources/stackweaver_webhook_events/data-source.tf` - list an org's recent
   webhook deliveries and output the latest event's type and status.
 
 ## Divergences from upstream / TFE
 
-Native data source — no TFE equivalent. JSON:API envelope with dash-cased keys (mapped to snake_case
+Native data source - no TFE equivalent. JSON:API envelope with dash-cased keys (mapped to snake_case
 schema); a `?format=simple` variant exists for the frontend but is not used by the provider. The raw
 webhook `payload` is intentionally never exposed. Read-only audit surface with no lifecycle.

@@ -16,7 +16,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/notifications/tfe_team_not
 
 A team-scoped notification configuration. It shares the notification model, delivery service, and GUI
 with the workspace and project notification resources; the difference is the scope (`team`) and the
-event — it fires **only** on `change_request:created`, delivering to every workspace the team can reach.
+event - it fires **only** on `change_request:created`, delivering to every workspace the team can reach.
 Maps onto Stackweaver's `NotificationConfiguration` bound to a team.
 
 ## Client approach
@@ -24,25 +24,25 @@ Maps onto Stackweaver's `NotificationConfiguration` bound to a team.
 `go-tfe-clean`. The upstream resource (Plugin Framework, `Schema()` at
 `internal/provider/resource_tfe_team_notification_configuration.go:125`) drives the stock `go-tfe`
 `NotificationConfigurations` service (`Create` scoped to a team, then shared `Read/Update/Delete`).
-Stackweaver accepts and returns the stock `notification-configurations` JSON:API shape unchanged — no
+Stackweaver accepts and returns the stock `notification-configurations` JSON:API shape unchanged - no
 wrapper. The `subscribable` polyrelation is `{type: teams}`.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `notification-configurations` primary id |
-| `name` | string | Required | no | — | no | |
-| `destination_type` | string | Required | yes (RequiresReplace) | — | no | `email`/`generic`/`slack`/`microsoft-teams` |
-| `team_id` | string | Required | yes (RequiresReplace) | — | no | `team-*` id; the subscribable |
+| `id` | string | Computed | - | - | no | `notification-configurations` primary id |
+| `name` | string | Required | no | - | no | |
+| `destination_type` | string | Required | yes (RequiresReplace) | - | no | `email`/`generic`/`slack`/`microsoft-teams` |
+| `team_id` | string | Required | yes (RequiresReplace) | - | no | `team-*` id; the subscribable |
 | `enabled` | bool | Optional+Computed | no | `false` | no | |
-| `triggers` | set(string) | Optional | no | — | no | only `change_request:created` accepted |
-| `url` | string | Optional | no | — | **yes** | required for `generic`/`slack`/`microsoft-teams`; forbidden for `email`/with email fields |
-| `email_addresses` | set(string) | Optional+Computed | no | — | no | `email` only |
-| `email_user_ids` | set(string) | Optional+Computed | no | — | no | `email` only |
-| `token` | string | Optional | no | — | **yes** | HMAC secret for `generic`; never echoed back on read |
-| `token_wo` | string | Optional | no | — | **yes** (WriteOnly) | write-only variant; requires `token_wo_version`; conflicts with `token` |
-| `token_wo_version` | int64 | Optional | no | — | no | bumping it triggers a `token_wo` update; conflicts with `token` |
+| `triggers` | set(string) | Optional | no | - | no | only `change_request:created` accepted |
+| `url` | string | Optional | no | - | **yes** | required for `generic`/`slack`/`microsoft-teams`; forbidden for `email`/with email fields |
+| `email_addresses` | set(string) | Optional+Computed | no | - | no | `email` only |
+| `email_user_ids` | set(string) | Optional+Computed | no | - | no | `email` only |
+| `token` | string | Optional | no | - | **yes** | HMAC secret for `generic`; never echoed back on read |
+| `token_wo` | string | Optional | no | - | **yes** (WriteOnly) | write-only variant; requires `token_wo_version`; conflicts with `token` |
+| `token_wo_version` | int64 | Optional | no | - | no | bumping it triggers a `token_wo` update; conflicts with `token` |
 
 ## Wire contract
 
@@ -85,10 +85,10 @@ only. **Not** CRUD-only.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/team_notification_configuration.md` — the single-trigger
+- Provider docs page: `docs/resources/team_notification_configuration.md` - the single-trigger
   constraint (`change_request:created`), destination-type conflict rules, `token` vs write-only
   `token_wo`/`token_wo_version`, and the change-request payload shape.
-- Example: `examples/resources/stackweaver_team_notification_configuration/resource.tf` — a
+- Example: `examples/resources/stackweaver_team_notification_configuration/resource.tf` - a
   `stackweaver_team` + a `generic` notification with a token and the `change_request:created` trigger.
 
 ## Divergences from upstream / TFE
@@ -96,7 +96,7 @@ only. **Not** CRUD-only.
 Per `docs/internal/tfe-compatibility/resources/notifications/tfe_team_notification_configuration.md`:
 
 - Team notifications fire **only** on `change_request:created` (exactly what the provider allows).
-- A team with org-wide read access is notified for **every** change request in the org — TFE's
+- A team with org-wide read access is notified for **every** change request in the org - TFE's
   documented "all workspaces the team has access to" semantics, not an accident.
 - `email` delivery and `delivery_responses` are deferred (as for the workspace/project scopes); the
   attributes are accepted but delivery is not wired for `email`.

@@ -20,7 +20,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Served by the native
+// Native resource - no terraform-provider-tfe equivalent. Served by the native
 // internal/stackweaver client and registered only under its primary
 // "stackweaver_ansible_inventory" name (native resources get NO tfe_ alias).
 var (
@@ -67,7 +67,7 @@ type modelStackweaverAnsibleInventory struct {
 
 // modelFromInventory overlays the server-derived fields of inv onto base, which
 // carries the attributes the backend never echoes (organization name, project id,
-// and — for non-constructed inventories — input_inventory_ids), preserving them
+// and - for non-constructed inventories - input_inventory_ids), preserving them
 // across reads without producing drift.
 func modelFromInventory(ctx context.Context, inv *stackweaver.AnsibleInventory, base modelStackweaverAnsibleInventory) (modelStackweaverAnsibleInventory, diag.Diagnostics) {
 	var diags diag.Diagnostics

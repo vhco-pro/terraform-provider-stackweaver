@@ -207,7 +207,7 @@ func (p *frameworkProvider) frameworkResources() []func() resource.Resource {
 		NewVaultOIDCConfigurationResource,
 		// Native resources (no terraform-provider-tfe equivalent) are served by
 		// the internal/stackweaver client and registered ONLY under their
-		// primary stackweaver_* name — they get no tfe_ alias, so they are not
+		// primary stackweaver_* name - they get no tfe_ alias, so they are not
 		// added to aliasResourceFactories.
 		NewAnsiblePlaybookResource,
 		// Native Ansible surface (stackweaver_* only, no tfe_ alias).

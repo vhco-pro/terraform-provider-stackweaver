@@ -24,9 +24,9 @@ const scheduleResourceType = "schedules"
 //   - Create speaks JSON:API: body under data.attributes with hyphenated keys,
 //     data.type = "schedules"; the response is a JSON:API resource object.
 //   - Read (GET) and Update (PATCH) return the RAW GORM model (c.JSON(200,
-//     schedule)) with underscore json keys — NOT a JSON:API envelope.
+//     schedule)) with underscore json keys - NOT a JSON:API envelope.
 //   - Update's request body is plain JSON ({name, description, cron_expression,
-//     timezone, config}) with underscore keys — NOT JSON:API, and it does NOT
+//     timezone, config}) with underscore keys - NOT JSON:API, and it does NOT
 //     accept target/type/date-window changes (those are ForceNew).
 //
 // The service therefore decodes create responses with the JSON:API codec and

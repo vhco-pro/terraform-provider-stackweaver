@@ -32,16 +32,16 @@ hiding admin endpoints).
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `tool-`-prefixed primary id; `UseStateForUnknown` |
-| `version` | string | Required | no | — | no | semver, e.g. `1.13.0`; updatable in place |
-| `url` | string | Optional+Computed | no | — | no | linux/amd64 binary URL; empty → null-normalized; synced with amd64 arch |
-| `sha` | string | Optional+Computed | no | — | no | SHA-256; empty → null-normalized; synced with amd64 arch |
+| `id` | string | Computed | - | - | no | `tool-`-prefixed primary id; `UseStateForUnknown` |
+| `version` | string | Required | no | - | no | semver, e.g. `1.13.0`; updatable in place |
+| `url` | string | Optional+Computed | no | - | no | linux/amd64 binary URL; empty → null-normalized; synced with amd64 arch |
+| `sha` | string | Optional+Computed | no | - | no | SHA-256; empty → null-normalized; synced with amd64 arch |
 | `official` | bool | Optional+Computed | no | `false` | no | set for auto-seeded versions |
 | `enabled` | bool | Optional+Computed | no | `true` | no | availability for workspaces |
 | `beta` | bool | Optional+Computed | no | `false` | no | |
 | `deprecated` | bool | Optional+Computed | no | `false` | no | |
-| `deprecated_reason` | string | Optional | no | — | no | see null-handling note below |
-| `archs` | set(obj{url,sha,os,arch}) | Optional+Computed | no | — | no | per-arch download rows; `UseStateForUnknown` + preserve-amd64 |
+| `deprecated_reason` | string | Optional | no | - | no | see null-handling note below |
+| `archs` | set(obj{url,sha,os,arch}) | Optional+Computed | no | - | no | per-arch download rows; `UseStateForUnknown` + preserve-amd64 |
 
 ## Wire contract
 
@@ -50,7 +50,7 @@ hiding admin endpoints).
   `enabled?`, `beta?`, `deprecated?`, `deprecated-reason?`, `archs?`.
 - **Read:** `Admin.TerraformVersions.Read(id)` → `GET /admin/terraform-versions/:id`.
 - **Update:** `Admin.TerraformVersions.Update(id, AdminTerraformVersionUpdateOptions)` →
-  `PATCH /admin/terraform-versions/:id`. All fields update in place — **nothing is ForceNew**, including
+  `PATCH /admin/terraform-versions/:id`. All fields update in place - **nothing is ForceNew**, including
   `version`.
 - **Delete:** `Admin.TerraformVersions.Delete(id)` → `DELETE /admin/terraform-versions/:id`. Refused for
   `official` versions and versions in use by a workspace (matches TFE).
@@ -68,10 +68,10 @@ hiding admin endpoints).
 1. `apply` of `{version, url, sha, official=false, enabled=true, beta=false}` creates the version; `id`
    (with `tool-` prefix), `version`, `url`, `sha`, `official`, `enabled`, `beta`, `deprecated` all
    round-trip into state.
-2. Re-`plan` after apply shows **no drift** — specifically, with `deprecated_reason` unset the read
+2. Re-`plan` after apply shows **no drift** - specifically, with `deprecated_reason` unset the read
    returns null (not `""`) and does not produce an inconsistent-result error; likewise empty `url`/`sha`
    read back as null.
-3. Updating `enabled` (or `deprecated` + `deprecated_reason`, or `version`) applies **in place** — no
+3. Updating `enabled` (or `deprecated` + `deprecated_reason`, or `version`) applies **in place** - no
    attribute is ForceNew, so no recreate.
 4. Setting `deprecated = true, deprecated_reason = "superseded by 1.14"` round-trips the reason; then
    clearing `deprecated_reason` reads back null with no drift.
@@ -90,10 +90,10 @@ binary; a disabled version is not selectable.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/terraform_version.md` — arguments (`version`, `url`, `sha`,
+- Provider docs page: `docs/resources/terraform_version.md` - arguments (`version`, `url`, `sha`,
   `official`, `enabled`, `beta`, `deprecated`, `deprecated_reason`, `archs`), computed `id`, admin-only
   access note, delete constraints (official / in-use protected), import by id or by version string.
-- Example: `examples/resources/stackweaver_terraform_version/resource.tf` — a custom non-official
+- Example: `examples/resources/stackweaver_terraform_version/resource.tf` - a custom non-official
   version with url + sha, enabled.
 
 ## Divergences from upstream / TFE

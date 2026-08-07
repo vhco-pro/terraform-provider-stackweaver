@@ -25,32 +25,32 @@ level, and the computed `project_access` / `workspace_access` blocks.
 `TeamProjectAccess.List` filtered by project, then re-reads the matched grant through the shared
 resource read path (`TeamProjectAccess.Read`). Consumes the stock `TeamProjectAccess` JSON:API shape
 unchanged; no wrapper. No compatibility detail doc exists yet
-(`docs/internal/tfe-compatibility/data-sources/teams/tfe_team_project_access.md` is absent) — this spec
+(`docs/internal/tfe-compatibility/data-sources/teams/tfe_team_project_access.md` is absent) - this spec
 is the source of record.
 
 ## Schema
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `team_id` | string | Required | — | — | no | team whose grant to look up |
-| `project_id` | string | Required | — | — | no | project to look up the grant on |
-| `id` | string | Computed | — | — | no | `team-projects` primary id of the grant |
-| `access` | string | Computed | — | — | no | access level (`admin`/`write`/`maintain`/`read`/`custom`) |
-| `project_access` | list(object) | Computed | — | — | no | single-element list of project-level permissions |
-| `project_access.settings` | string | Computed | — | — | no | project settings permission |
-| `project_access.teams` | string | Computed | — | — | no | project teams permission |
-| `project_access.variable_sets` | string | Computed | — | — | no | project variable-sets permission |
-| `workspace_access` | list(object) | Computed | — | — | no | single-element list of workspace-level permissions |
-| `workspace_access.create` | bool | Computed | — | — | no | may create workspaces |
-| `workspace_access.locking` | bool | Computed | — | — | no | may lock/unlock workspaces |
-| `workspace_access.move` | bool | Computed | — | — | no | may move workspaces |
-| `workspace_access.delete` | bool | Computed | — | — | no | may delete workspaces |
-| `workspace_access.run_tasks` | bool | Computed | — | — | no | may manage run tasks |
-| `workspace_access.policy_overrides` | bool | Computed | — | — | no | may override policy checks (BETA) |
-| `workspace_access.runs` | string | Computed | — | — | no | runs permission |
-| `workspace_access.sentinel_mocks` | string | Computed | — | — | no | sentinel-mocks permission |
-| `workspace_access.state_versions` | string | Computed | — | — | no | state-versions permission |
-| `workspace_access.variables` | string | Computed | — | — | no | variables permission |
+| `team_id` | string | Required | - | - | no | team whose grant to look up |
+| `project_id` | string | Required | - | - | no | project to look up the grant on |
+| `id` | string | Computed | - | - | no | `team-projects` primary id of the grant |
+| `access` | string | Computed | - | - | no | access level (`admin`/`write`/`maintain`/`read`/`custom`) |
+| `project_access` | list(object) | Computed | - | - | no | single-element list of project-level permissions |
+| `project_access.settings` | string | Computed | - | - | no | project settings permission |
+| `project_access.teams` | string | Computed | - | - | no | project teams permission |
+| `project_access.variable_sets` | string | Computed | - | - | no | project variable-sets permission |
+| `workspace_access` | list(object) | Computed | - | - | no | single-element list of workspace-level permissions |
+| `workspace_access.create` | bool | Computed | - | - | no | may create workspaces |
+| `workspace_access.locking` | bool | Computed | - | - | no | may lock/unlock workspaces |
+| `workspace_access.move` | bool | Computed | - | - | no | may move workspaces |
+| `workspace_access.delete` | bool | Computed | - | - | no | may delete workspaces |
+| `workspace_access.run_tasks` | bool | Computed | - | - | no | may manage run tasks |
+| `workspace_access.policy_overrides` | bool | Computed | - | - | no | may override policy checks (BETA) |
+| `workspace_access.runs` | string | Computed | - | - | no | runs permission |
+| `workspace_access.sentinel_mocks` | string | Computed | - | - | no | sentinel-mocks permission |
+| `workspace_access.state_versions` | string | Computed | - | - | no | state-versions permission |
+| `workspace_access.variables` | string | Computed | - | - | no | variables permission |
 
 ## Wire contract
 
@@ -60,7 +60,7 @@ is the source of record.
   found, sets `id` to that grant's id, and delegates to the resource read
   (`TeamProjectAccess.Read(id)` → `GET /team-projects/:id`) to populate `access`, `project_access`, and
   `workspace_access`.
-- No create/update/delete — data source.
+- No create/update/delete - data source.
 - **JSON:API type:** `team-projects`. No divergent fields; the permission enums map straight from the
   go-tfe `TeamProjectAccess` struct.
 
@@ -84,9 +84,9 @@ project so a config can branch on or export those permissions. No runtime side e
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/team_project_access.md` — arguments (`team_id`, `project_id`),
+- Provider docs page: `docs/data-sources/team_project_access.md` - arguments (`team_id`, `project_id`),
   computed attributes (`id`, `access`, nested `project_access` and `workspace_access`).
-- Example: `examples/data-sources/stackweaver_team_project_access/data-source.tf` — look up a team's
+- Example: `examples/data-sources/stackweaver_team_project_access/data-source.tf` - look up a team's
   access on a project and reference `data.stackweaver_team_project_access.x.access`.
 
 ## Divergences from upstream / TFE

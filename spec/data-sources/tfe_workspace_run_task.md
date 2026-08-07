@@ -30,12 +30,12 @@ JSON:API shape unchanged, so no wrapper.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `workspace_id` | string | Required | — | — | no | lookup key; the workspace to list tasks for |
-| `task_id` | string | Required | — | — | no | lookup key; matched against each item's `RunTask.ID` |
-| `id` | string | Computed | — | — | no | `workspace-tasks` JSON:API primary id of the matched association |
-| `enforcement_level` | string | Computed | — | — | no | from `WorkspaceRunTask.EnforcementLevel` |
-| `stage` | string | Computed | — | — | no | deprecated; single stage from `WorkspaceRunTask.Stage` |
-| `stages` | list(string) | Computed | — | — | no | from `WorkspaceRunTask.Stages` |
+| `workspace_id` | string | Required | - | - | no | lookup key; the workspace to list tasks for |
+| `task_id` | string | Required | - | - | no | lookup key; matched against each item's `RunTask.ID` |
+| `id` | string | Computed | - | - | no | `workspace-tasks` JSON:API primary id of the matched association |
+| `enforcement_level` | string | Computed | - | - | no | from `WorkspaceRunTask.EnforcementLevel` |
+| `stage` | string | Computed | - | - | no | deprecated; single stage from `WorkspaceRunTask.Stage` |
+| `stages` | list(string) | Computed | - | - | no | from `WorkspaceRunTask.Stages` |
 
 ## Wire contract
 
@@ -64,9 +64,9 @@ without hardcoding its id. No mutating runtime effect.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/workspace_run_task.md` — arguments (`workspace_id`,
+- Provider docs page: `docs/data-sources/workspace_run_task.md` - arguments (`workspace_id`,
   `task_id`), computed `id`, `enforcement_level`, `stage` (deprecated), `stages`.
-- Example: `examples/data-sources/stackweaver_workspace_run_task/data-source.tf` — resolve an
+- Example: `examples/data-sources/stackweaver_workspace_run_task/data-source.tf` - resolve an
   association by workspace + task id.
 
 ## Divergences from upstream / TFE

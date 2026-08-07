@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. A single variable
+// Native resource - no terraform-provider-tfe equivalent. A single variable
 // scoped to one Ansible job template, served by the native internal/stackweaver
 // client and registered only under its primary name (no tfe_ alias).
 var (

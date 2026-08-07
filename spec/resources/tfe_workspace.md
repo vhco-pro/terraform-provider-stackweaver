@@ -35,35 +35,35 @@ Top-level attributes (kebab-case wire names in Notes where they differ):
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `ws-` primary id |
-| `name` | string | Required | no | — | no | unique in org; rename changes URL, not ForceNew |
+| `id` | string | Computed | - | - | no | `ws-` primary id |
+| `name` | string | Required | no | - | no | unique in org; rename changes URL, not ForceNew |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name |
-| `description` | string | Optional+Computed | no | — | no | |
-| `agent_pool_id` | string | Optional+Computed | no | — | no | **deprecated** (use `tfe_workspace_settings`); conflicts with `operations`; sets `setting-overwrites` |
-| `execution_mode` | string | Optional+Computed | no | — | no | **deprecated**; `remote`/`local`/`agent`; conflicts with `operations`; sets `setting-overwrites` |
-| `operations` | bool | Optional+Computed | no | — | no | **deprecated**; conflicts with `execution_mode`/`agent_pool_id`; reads back `true` |
+| `description` | string | Optional+Computed | no | - | no | |
+| `agent_pool_id` | string | Optional+Computed | no | - | no | **deprecated** (use `tfe_workspace_settings`); conflicts with `operations`; sets `setting-overwrites` |
+| `execution_mode` | string | Optional+Computed | no | - | no | **deprecated**; `remote`/`local`/`agent`; conflicts with `operations`; sets `setting-overwrites` |
+| `operations` | bool | Optional+Computed | no | - | no | **deprecated**; conflicts with `execution_mode`/`agent_pool_id`; reads back `true` |
 | `allow_destroy_plan` | bool | Optional | no | `true` | no | |
-| `auto_apply` | bool | Optional+Computed | no | — | no | |
+| `auto_apply` | bool | Optional+Computed | no | - | no | |
 | `auto_apply_run_trigger` | bool | Optional | no | `false` | no | |
 | `file_triggers_enabled` | bool | Optional | no | `true` | no | |
-| `global_remote_state` | bool | Optional+Computed | no | — | no | deprecated on this resource; use `tfe_workspace_settings` |
+| `global_remote_state` | bool | Optional+Computed | no | - | no | deprecated on this resource; use `tfe_workspace_settings` |
 | `queue_all_runs` | bool | Optional | no | `true` (provider) | no | TFE API default is `false`; provider defaults `true` |
 | `speculative_enabled` | bool | Optional | no | `true` | no | |
 | `structured_run_output_enabled` | bool | Optional | no | `true` | no | |
-| `assessments_enabled` | bool | Optional+Computed | no | — | no | drift/health assessments |
-| `project_id` | string | Optional+Computed | no | — | no | `project` relationship |
-| `source_name` | string | Optional | no | — | no | requires `source_url`; "Created via <name>" |
-| `source_url` | string | Optional | no | — | no | requires `source_name`; must be http(s) |
-| `tag_names` | set(string) | Optional+Computed | no | — | no | via `AddTags`/`RemoveTags`; lowercase alnum + `:_-`, begin/end alnum |
-| `terraform_version` | string | Optional+Computed | no | — | no | exact or constraint |
-| `trigger_prefixes` | list(string) | Optional | no | — | no | conflicts with `trigger_patterns` |
-| `trigger_patterns` | list(string) | Optional | no | — | no | conflicts with `trigger_prefixes` |
+| `assessments_enabled` | bool | Optional+Computed | no | - | no | drift/health assessments |
+| `project_id` | string | Optional+Computed | no | - | no | `project` relationship |
+| `source_name` | string | Optional | no | - | no | requires `source_url`; "Created via <name>" |
+| `source_url` | string | Optional | no | - | no | requires `source_name`; must be http(s) |
+| `tag_names` | set(string) | Optional+Computed | no | - | no | via `AddTags`/`RemoveTags`; lowercase alnum + `:_-`, begin/end alnum |
+| `terraform_version` | string | Optional+Computed | no | - | no | exact or constraint |
+| `trigger_prefixes` | list(string) | Optional | no | - | no | conflicts with `trigger_patterns` |
+| `trigger_patterns` | list(string) | Optional | no | - | no | conflicts with `trigger_prefixes` |
 | `working_directory` | string | Optional | no | `""` | no | |
-| `vcs_repo` | block (0/1) | Optional | no | — | no | VCS-driven workflow; see block below |
+| `vcs_repo` | block (0/1) | Optional | no | - | no | VCS-driven workflow; see block below |
 | `force_delete` | bool | Optional | no | `false` | no | force (unsafe) delete on destroy |
-| `resource_count` | int | Computed | — | — | no | returned `0` by Stackweaver |
-| `inherits_project_auto_destroy` | bool | Computed | — | — | no | out of scope (see Divergences) |
-| `effective_tags` | map(string) | Computed | — | — | no | returns `{}` — key-value tag maps out of scope |
+| `resource_count` | int | Computed | - | - | no | returned `0` by Stackweaver |
+| `inherits_project_auto_destroy` | bool | Computed | - | - | no | out of scope (see Divergences) |
+| `effective_tags` | map(string) | Computed | - | - | no | returns `{}` - key-value tag maps out of scope |
 
 VCS repo block (`vcs_repo { ... }`, `TypeList` MaxItems=1; sent as the `vcs-repo` attribute object,
 `VCSRepoOptions` fields are `json:` not `jsonapi:`):
@@ -95,7 +95,7 @@ VCS repo block (`vcs_repo { ... }`, `TypeList` MaxItems=1; sent as the `vcs-repo
   attribute + `vcs-repo` handling. `tag_names` diffs are applied out-of-band via `AddTags`/`RemoveTags`
   (`POST`/`DELETE /workspaces/:id/relationships/tags`). Removing the `vcs_repo` block calls
   `RemoveVCSConnectionByID`.
-- **Delete:** default is **safe-delete** — `Workspaces.SafeDeleteByID(id)` →
+- **Delete:** default is **safe-delete** - `Workspaces.SafeDeleteByID(id)` →
   `POST /workspaces/:id/actions/safe-delete` (gated on `permissions.can-force-delete` being present in
   the response, which Stackweaver advertises as `true`). With `force_delete = true`,
   `Workspaces.DeleteByID(id)` → `DELETE /workspaces/:id`. Safe-delete refuses (409) a workspace that
@@ -125,7 +125,7 @@ VCS repo block (`vcs_repo { ... }`, `TypeList` MaxItems=1; sent as the `vcs-repo
    at plan.
 6. `trigger_prefixes` and `trigger_patterns` are mutually exclusive (plan-time ConflictsWith); each
    round-trips as an ordered list when used alone.
-7. `organization` is ForceNew — changing it recreates; `name` change is an in-place rename (not a
+7. `organization` is ForceNew - changing it recreates; `name` change is an in-place rename (not a
    recreate).
 8. Default `destroy` of an **empty** workspace safe-deletes and a subsequent `ReadByID` returns 404; a
    workspace that still manages resources refuses destroy (409) unless `force_delete = true`, which then
@@ -133,7 +133,7 @@ VCS repo block (`vcs_repo { ... }`, `TypeList` MaxItems=1; sent as the `vcs-repo
 
 ## Runtime criterion
 
-Not CRUD-only — a workspace is the execution surface. Verified: a VCS-driven workspace
+Not CRUD-only - a workspace is the execution surface. Verified: a VCS-driven workspace
 (`identifier` + `github_app_installation_id`) receives a webhook/VCS push and queues a run against the
 configured `branch`/`working_directory`, honoring `trigger_prefixes`/`trigger_patterns`; an agent-mode
 workspace (via `execution_mode`/`agent_pool_id` or `tfe_workspace_settings`) dispatches its run to the
@@ -142,16 +142,16 @@ named agent pool; and a run resolves its execution settings down the
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/workspace.md` — full argument reference, the `vcs_repo` block,
+- Provider docs page: `docs/resources/workspace.md` - full argument reference, the `vcs_repo` block,
   the deprecation of `execution_mode`/`agent_pool_id`/`global_remote_state` in favor of
   `tfe_workspace_settings`, safe-delete vs `force_delete`, computed `id`/`resource_count`, and import by
   id or `<org>/<name>`.
-- Example: `examples/resources/stackweaver_workspace/resource.tf` — a project-scoped workspace with a
+- Example: `examples/resources/stackweaver_workspace/resource.tf` - a project-scoped workspace with a
   `vcs_repo` block and a companion CLI-only workspace.
 
 ## Divergences from upstream / TFE
 
-No wire-shape or value divergence — drop-in with `tfe_workspace` for the implemented surface (client is
+No wire-shape or value divergence - drop-in with `tfe_workspace` for the implemented surface (client is
 go-tfe-clean). The following upstream attributes are **out of scope** (present in the provider schema
 but not backed by Stackweaver; they are coverage gaps, not wire divergences):
 `auto_destroy_at`, `auto_destroy_activity_duration`, `inherits_project_auto_destroy` (auto-destroy);

@@ -21,7 +21,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. Registered only under
+// Native resource - no terraform-provider-tfe equivalent. Registered only under
 // its primary "stackweaver_ansible_host" name (native resources get NO tfe_
 // alias).
 var (

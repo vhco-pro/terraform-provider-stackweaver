@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_ansible_job_template_variable
 
-Native Stackweaver resource — there is no `terraform-provider-tfe` equivalent.
+Native Stackweaver resource - there is no `terraform-provider-tfe` equivalent.
 
 Provides a single variable scoped to one Ansible job template (the AWX/Stackweaver analogue of a
 workspace variable). Each variable is a key/value pair with a category (`env` or

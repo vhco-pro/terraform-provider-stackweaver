@@ -33,9 +33,9 @@ and it **rejects attaching a project-owned set**. Captured as migration notes be
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | composite `{project_id}_{variable_set_id}` (provider-side; no server row id) |
-| `variable_set_id` | string | Required | yes | — | no | `varset-…`; must be **organization-owned** (see divergence) |
-| `project_id` | string | Required | yes | — | no | the target project; **bare UUID on Stackweaver** (not `prj-…`) |
+| `id` | string | Computed | - | - | no | composite `{project_id}_{variable_set_id}` (provider-side; no server row id) |
+| `variable_set_id` | string | Required | yes | - | no | `varset-…`; must be **organization-owned** (see divergence) |
+| `project_id` | string | Required | yes | - | no | the target project; **bare UUID on Stackweaver** (not `prj-…`) |
 
 ## Wire contract
 
@@ -45,7 +45,7 @@ and it **rejects attaching a project-owned set**. Captured as migration notes be
 - **Read:** `VariableSets.Read(variable_set_id, {Include:[projects]})` →
   `GET /varsets/:id?include=projects`. The provider scans `relationships.projects` for `project_id`;
   if absent (or the set is gone) it drops the resource from state.
-- **Update:** none — both attributes are ForceNew, so any change recreates.
+- **Update:** none - both attributes are ForceNew, so any change recreates.
 - **Delete:** `VariableSets.RemoveFromProjects(variable_set_id, {Projects})` →
   `DELETE /varsets/:id/relationships/projects`, same body shape.
 - **JSON:API type:** `projects` (relationship data). No write-only fields. **Divergence:** the
@@ -58,7 +58,7 @@ and it **rejects attaching a project-owned set**. Captured as migration notes be
    `{project_id}_{variable_set_id}` and both ids round-trip.
 2. Re-`plan` after apply shows **no drift**; on read `project_id` is present in the set's
    `relationships.projects`.
-3. The `project_id` round-trips **verbatim as a bare UUID** (not rewritten to `prj-…`) — no drift is
+3. The `project_id` round-trips **verbatim as a bare UUID** (not rewritten to `prj-…`) - no drift is
    introduced by the id format.
 4. Attaching a **project-owned** variable set (one created with a `parent_project_id`) is rejected with
    an error like "Only organization-owned variable sets can be assigned to projects".
@@ -71,14 +71,14 @@ and it **rejects attaching a project-owned set**. Captured as migration notes be
 Not `CRUD-only`. The attachment must make the org-owned set's variables reach that project's workspaces'
 runs and **no others**. Verified by `core/repository` `TestListByWorkspace_AUD150_OwnershipAndGlobal`:
 an org-owned, non-global set attached to project P is returned by `ListByWorkspace` for a workspace in P
-and not for one outside P — the resolver used by run-config assembly on both runner paths.
+and not for one outside P - the resolver used by run-config assembly on both runner paths.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/project_variable_set.md` — arguments (variable_set_id,
+- Provider docs page: `docs/resources/project_variable_set.md` - arguments (variable_set_id,
   project_id), the composite `id`, and a prominent note that (a) `project_id` is a **bare UUID** on
   Stackweaver and (b) only **organization-owned** sets can be attached.
-- Example: `examples/resources/stackweaver_project_variable_set/resource.tf` — an org-owned
+- Example: `examples/resources/stackweaver_project_variable_set/resource.tf` - an org-owned
   `stackweaver_variable_set` + a `stackweaver_project`, joined by this resource.
 
 ## Divergences from upstream / TFE
@@ -87,7 +87,7 @@ and not for one outside P — the resolver used by run-config assembly on both r
 
 1. **Bare-UUID project ids.** `project_id` (and the read-back relationship id) is a bare UUID on
    Stackweaver, not TFE's `prj-…`. Stock go-tfe treats it as an opaque string and round-trips it
-   verbatim — no client change.
+   verbatim - no client change.
 2. **Project-owned sets rejected.** Stackweaver rejects attaching a variable set that is itself owned
    by a project (created with a `parent_project_id`) to another project; only organization-owned sets
    may be attached. TFE enforces the same via ownership.

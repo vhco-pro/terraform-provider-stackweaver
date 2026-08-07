@@ -2,7 +2,7 @@
 layout: "stackweaver"
 page_title: "Provider: Stackweaver"
 description: |-
-  The Stackweaver provider manages Stackweaver platform resources — organizations, workspaces, projects, teams, variables, runs, agent pools, run tasks, the private registry, and the full Ansible/AWX surface — with Terraform.
+  The Stackweaver provider manages Stackweaver platform resources - organizations, workspaces, projects, teams, variables, runs, agent pools, run tasks, the private registry, and the full Ansible/AWX surface - with Terraform.
 ---
 
 # Stackweaver Provider

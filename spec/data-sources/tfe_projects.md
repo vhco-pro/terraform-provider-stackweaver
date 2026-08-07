@@ -29,19 +29,19 @@ backend change and no wrapper were needed.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional+Computed | — | provider default | no | org name; falls back to the provider default; echoed back |
-| `id` | string | Computed | — | — | no | set to the organization name |
-| `projects` | list(object) | Computed | — | — | no | `{id, name, description, organization}` per project |
-| `projects[].id` | string | Computed | — | — | no | `projects` id |
-| `projects[].name` | string | Computed | — | — | no | |
-| `projects[].description` | string | Computed | — | — | no | |
-| `projects[].organization` | string | Computed | — | — | no | org name |
+| `organization` | string | Optional+Computed | - | provider default | no | org name; falls back to the provider default; echoed back |
+| `id` | string | Computed | - | - | no | set to the organization name |
+| `projects` | list(object) | Computed | - | - | no | `{id, name, description, organization}` per project |
+| `projects[].id` | string | Computed | - | - | no | `projects` id |
+| `projects[].name` | string | Computed | - | - | no | |
+| `projects[].description` | string | Computed | - | - | no | |
+| `projects[].organization` | string | Computed | - | - | no | org name |
 
 ## Wire contract
 
 - **Read/lookup:** `Projects.List(org, {ListOptions: {PageSize: 100}})` →
   `GET /organizations/:org/projects`, paginated (follows `NextPage` to the last page).
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `projects` (collection). Each item maps `id`, `name`, `description`, and the
   `organization` relation name. No divergence from stock go-tfe.
 
@@ -61,9 +61,9 @@ runtime side effect beyond the list read.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/projects.md` — argument `organization`; computed `projects`
+- Provider docs page: `docs/data-sources/projects.md` - argument `organization`; computed `projects`
   (each `id`/`name`/`description`/`organization`) and `id`.
-- Example: `examples/data-sources/stackweaver_projects/data-source.tf` — list an org's projects.
+- Example: `examples/data-sources/stackweaver_projects/data-source.tf` - list an org's projects.
 
 ## Divergences from upstream / TFE
 

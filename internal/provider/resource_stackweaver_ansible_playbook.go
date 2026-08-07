@@ -18,10 +18,10 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native resource — no terraform-provider-tfe equivalent. It is served by the
+// Native resource - no terraform-provider-tfe equivalent. It is served by the
 // native internal/stackweaver client, not go-tfe, and is registered only under
 // its primary "stackweaver_ansible_playbook" name (native resources get NO tfe_
-// alias — see provider_next.go frameworkResources).
+// alias - see provider_next.go frameworkResources).
 var (
 	_ resource.Resource                = &resourceStackweaverAnsiblePlaybook{}
 	_ resource.ResourceWithConfigure   = &resourceStackweaverAnsiblePlaybook{}

@@ -5,7 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 Per-resource spec template for terraform-provider-stackweaver. Copy to spec/<name>.md and fill every
 section. This file IS the contract the automated `implement` pipeline consumes: acceptance criteria
 below become the fixture assertions, so they must be concrete and testable. Do not leave a section
-blank — write "n/a" with a reason instead.
+blank - write "n/a" with a reason instead.
 -->
 ---
 name: stackweaver_<name>
@@ -38,9 +38,9 @@ exact wire divergence (which bytes differ from stock go-tfe) that forces the wra
 
 ## Wire contract
 
-- **Create:** `<go-tfe method>` → `POST <path>` — request attrs / response attrs.
+- **Create:** `<go-tfe method>` → `POST <path>` - request attrs / response attrs.
 - **Read:** `<method>` → `GET <path>`.
-- **Update:** `<method>` → `PATCH <path>` (or "recreate — ForceNew only").
+- **Update:** `<method>` → `PATCH <path>` (or "recreate - ForceNew only").
 - **Delete:** `<method>` → `DELETE <path>`.
 - **JSON:API type:** `<type>`. Note any field that is write-only (never echoed), null-normalized, or
   divergent from stock go-tfe.
@@ -54,7 +54,7 @@ Concrete, testable. The `implement` pipeline generates the fixture assertions fr
 3. `<attribute>` is write-only and never appears in state / read response.
 4. Update of `<attribute>` applies in place; update of `<ForceNew attr>` recreates.
 5. `destroy` removes it; a subsequent read returns 404.
-6. (resource-specific assertions — enumerate every one that matters.)
+6. (resource-specific assertions - enumerate every one that matters.)
 
 ## Runtime criterion
 
@@ -64,8 +64,8 @@ authenticates", "the webhook delivers"). If the resource is config-only with no 
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/<name>.md` — sections/attributes to document.
-- Example: `examples/resources/stackweaver_<name>/resource.tf` — the minimal working config.
+- Provider docs page: `docs/resources/<name>.md` - sections/attributes to document.
+- Example: `examples/resources/stackweaver_<name>/resource.tf` - the minimal working config.
 
 ## Divergences from upstream / TFE
 

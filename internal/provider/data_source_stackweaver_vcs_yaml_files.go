@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Read-only
+// Native data source - no terraform-provider-tfe equivalent. Read-only
 // discovery helper listing candidate YAML files (or, in inventory mode,
 // inventory files) inside a repository reachable through a Stackweaver VCS
 // connection. A single data source covers both backing endpoints via file_type,
@@ -85,7 +85,7 @@ func (d *dataSourceStackweaverVCSYamlFiles) Schema(_ context.Context, _ datasour
 				},
 			},
 			"id": schema.StringAttribute{
-				Description: "Synthetic identifier — \"<connection_id>/<owner>/<repo>/<file_type>@<ref>\".",
+				Description: "Synthetic identifier - \"<connection_id>/<owner>/<repo>/<file_type>@<ref>\".",
 				Computed:    true,
 			},
 			"paths": schema.ListAttribute{

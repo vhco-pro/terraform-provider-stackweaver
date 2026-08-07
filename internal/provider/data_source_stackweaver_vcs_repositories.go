@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-provider-tfe/internal/stackweaver"
 )
 
-// Native data source — no terraform-provider-tfe equivalent. Read-only
+// Native data source - no terraform-provider-tfe equivalent. Read-only
 // discovery helper listing the repositories reachable through a Stackweaver VCS
 // connection, served by the native internal/stackweaver client (not go-tfe).
 var (
@@ -87,7 +87,7 @@ func (d *dataSourceStackweaverVCSRepositories) Schema(_ context.Context, _ datas
 				Optional:    true,
 			},
 			"id": schema.StringAttribute{
-				Description: "Synthetic identifier — the VCS connection ID.",
+				Description: "Synthetic identifier - the VCS connection ID.",
 				Computed:    true,
 			},
 			"repositories": schema.ListNestedAttribute{

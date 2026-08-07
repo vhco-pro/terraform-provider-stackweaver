@@ -102,7 +102,7 @@ func aliasDataSourceFactories() []func() datasource.DataSource {
 // per instance). The wrapper variant is chosen once, up front, so that the
 // optional ResourceWithIdentity capability is advertised only when the inner
 // actually implements it (the identity schema is queried eagerly at provider
-// load, so it must not be faked — see aliasResourceWithIdentity).
+// load, so it must not be faked - see aliasResourceWithIdentity).
 func aliasResourceFactory(inner func() resource.Resource, tfeName string) func() resource.Resource {
 	_, hasIdentity := inner().(resource.ResourceWithIdentity)
 	if hasIdentity {
@@ -125,7 +125,7 @@ func aliasDataSourceFactory(inner func() datasource.DataSource, tfeName string) 
 }
 
 // ---------------------------------------------------------------------------
-// aliasResource — framework resource decorator
+// aliasResource - framework resource decorator
 // ---------------------------------------------------------------------------
 
 // aliasResource decorates an inner resource.Resource, overriding only its
@@ -133,8 +133,8 @@ func aliasDataSourceFactory(inner func() datasource.DataSource, tfeName string) 
 // the inner. It implements the optional resource interfaces whose presence is
 // either universally safe to advertise (a no-op / nil fallback is
 // behaviour-identical to a resource that does not implement it) or handled via
-// a faithful fallback (ImportState). The one capability that must NOT be faked —
-// ResourceWithIdentity, whose schema is queried eagerly at provider load — is
+// a faithful fallback (ImportState). The one capability that must NOT be faked -
+// ResourceWithIdentity, whose schema is queried eagerly at provider load - is
 // gated in aliasResourceFactory and added by aliasResourceWithIdentity.
 type aliasResource struct {
 	inner    resource.Resource
@@ -257,7 +257,7 @@ func (a *aliasResourceWithIdentity) UpgradeIdentity(ctx context.Context) map[int
 }
 
 // ---------------------------------------------------------------------------
-// aliasDataSource — framework data source decorator
+// aliasDataSource - framework data source decorator
 // ---------------------------------------------------------------------------
 
 // aliasDataSource decorates an inner datasource.DataSource, overriding only its

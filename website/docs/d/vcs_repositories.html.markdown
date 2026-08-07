@@ -9,7 +9,7 @@ description: |-
 # stackweaver_vcs_repositories (Data Source)
 
 Use this data source to list the repositories reachable through a Stackweaver VCS connection. It is a
-read-only discovery helper — useful for populating workspace or playbook configuration from the set of
+read-only discovery helper - useful for populating workspace or playbook configuration from the set of
 repositories a connection can see.
 
 This is a native Stackweaver data source with no `terraform-provider-tfe` equivalent.
@@ -37,7 +37,7 @@ The following arguments are supported:
 
 In addition to all arguments above, the following attributes are exported:
 
-* `id` - Synthetic identifier — the VCS connection ID.
+* `id` - Synthetic identifier - the VCS connection ID.
 * `repositories` - The repositories reachable through the connection. Each element documented below.
 
 The `repositories` block contains:

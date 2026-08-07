@@ -32,24 +32,24 @@ the stock go-tfe `workspaces` JSON:API shape with the effective-tag-bindings rel
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `name` | string | Required | — | — | no | workspace name (lookup key) |
-| `organization` | string | Optional | — | provider default | no | org name; falls back to the provider default |
-| `id` | string | Computed | — | — | no | `workspaces` id (SetId) |
-| `description` | string | Computed | — | — | no | |
-| `effective_tags` | map(string) | Computed | — | — | no | own + project-inherited tag bindings (workspace wins) |
-| `tag_names` | set(string) | Optional+Computed | — | — | no | legacy flat tag names; set from the read |
-| `project_id` | string | Computed | — | — | no | owning project id (nil-safe if pre-projects instance) |
-| `execution_mode` | string | Computed | — | — | no | |
-| `terraform_version` | string | Computed | — | — | no | |
-| `auto_apply`, `auto_apply_run_trigger`, `allow_destroy_plan`, `assessments_enabled`, `file_triggers_enabled`, `operations`, `queue_all_runs`, `speculative_enabled`, `structured_run_output_enabled`, `global_remote_state`, `project_remote_state`, `locked`, `hyok_enabled` | bool | Computed | — | — | no | workspace flags |
-| `auto_destroy_at`, `auto_destroy_activity_duration`, `inherits_project_auto_destroy` | string/bool | Computed | — | — | no | auto-destroy settings (duration nullable on the wire) |
-| `working_directory`, `source_name`, `source_url`, `source`, `environment`, `ssh_key_id`, `html_url` | string | Computed | — | — | no | |
-| `trigger_prefixes`, `trigger_patterns` | list(string) | Computed | — | — | no | |
-| `remote_state_consumer_ids` | set(string) | Computed | — | — | no | resolved via a secondary read when not globally/project shared |
-| `resource_count`, `run_failures`, `runs_count`, `policy_check_failures`, `apply_duration_average`, `plan_duration_average` | int | Computed | — | — | no | counters/averages (averages in ms) |
-| `vcs_repo` | list(object) | Computed | — | — | no | `{identifier, branch, ingress_submodules, oauth_token_id, tags_regex, github_app_installation_id}` |
-| `setting_overwrites`, `permissions`, `actions` | map(bool) | Computed | — | — | no | inherited-setting flags / caller permissions / available actions |
-| `created_at`, `updated_at` | string | Computed | — | — | no | RFC3339 |
+| `name` | string | Required | - | - | no | workspace name (lookup key) |
+| `organization` | string | Optional | - | provider default | no | org name; falls back to the provider default |
+| `id` | string | Computed | - | - | no | `workspaces` id (SetId) |
+| `description` | string | Computed | - | - | no | |
+| `effective_tags` | map(string) | Computed | - | - | no | own + project-inherited tag bindings (workspace wins) |
+| `tag_names` | set(string) | Optional+Computed | - | - | no | legacy flat tag names; set from the read |
+| `project_id` | string | Computed | - | - | no | owning project id (nil-safe if pre-projects instance) |
+| `execution_mode` | string | Computed | - | - | no | |
+| `terraform_version` | string | Computed | - | - | no | |
+| `auto_apply`, `auto_apply_run_trigger`, `allow_destroy_plan`, `assessments_enabled`, `file_triggers_enabled`, `operations`, `queue_all_runs`, `speculative_enabled`, `structured_run_output_enabled`, `global_remote_state`, `project_remote_state`, `locked`, `hyok_enabled` | bool | Computed | - | - | no | workspace flags |
+| `auto_destroy_at`, `auto_destroy_activity_duration`, `inherits_project_auto_destroy` | string/bool | Computed | - | - | no | auto-destroy settings (duration nullable on the wire) |
+| `working_directory`, `source_name`, `source_url`, `source`, `environment`, `ssh_key_id`, `html_url` | string | Computed | - | - | no | |
+| `trigger_prefixes`, `trigger_patterns` | list(string) | Computed | - | - | no | |
+| `remote_state_consumer_ids` | set(string) | Computed | - | - | no | resolved via a secondary read when not globally/project shared |
+| `resource_count`, `run_failures`, `runs_count`, `policy_check_failures`, `apply_duration_average`, `plan_duration_average` | int | Computed | - | - | no | counters/averages (averages in ms) |
+| `vcs_repo` | list(object) | Computed | - | - | no | `{identifier, branch, ingress_submodules, oauth_token_id, tags_regex, github_app_installation_id}` |
+| `setting_overwrites`, `permissions`, `actions` | map(bool) | Computed | - | - | no | inherited-setting flags / caller permissions / available actions |
+| `created_at`, `updated_at` | string | Computed | - | - | no | RFC3339 |
 
 ## Wire contract
 
@@ -57,7 +57,7 @@ the stock go-tfe `workspaces` JSON:API shape with the effective-tag-bindings rel
   `GET /organizations/:org/workspaces/:name?include=effective_tag_bindings`; falls back to
   `Workspaces.Read` on `ErrInvalidIncludeValue`. Remote-state consumers via
   `readWorkspaceStateConsumers` when the workspace is neither globally nor project shared.
-- **Create/Update/Delete:** n/a — read-only data source.
+- **Create/Update/Delete:** n/a - read-only data source.
 - **JSON:API type:** `workspaces`. `effective-tag-bindings` relation → `effective_tags` map;
   `auto-destroy-activity-duration` and `auto-destroy-at` are nullable on the wire. No divergence from
   stock go-tfe.
@@ -82,9 +82,9 @@ runtime side effect beyond the read.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/workspace.md` — arguments `name`/`organization`; the full
+- Provider docs page: `docs/data-sources/workspace.md` - arguments `name`/`organization`; the full
   computed attribute set (settings, `effective_tags`, `vcs_repo`, counters, `id`).
-- Example: `examples/data-sources/stackweaver_workspace/data-source.tf` — read a workspace by name.
+- Example: `examples/data-sources/stackweaver_workspace/data-source.tf` - read a workspace by name.
 
 ## Divergences from upstream / TFE
 

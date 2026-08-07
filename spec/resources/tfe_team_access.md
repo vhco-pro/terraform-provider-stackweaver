@@ -14,7 +14,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/teams/tfe_team_access.md
 ---
 # stackweaver_team_access
 
-Grants a team a level of access to a single **workspace** — either a fixed level (`read`/`plan`/
+Grants a team a level of access to a single **workspace** - either a fixed level (`read`/`plan`/
 `write`/`admin`) or a `custom` set of fine-grained permissions. Maps onto Stackweaver's
 `team-workspaces` access record.
 
@@ -23,7 +23,7 @@ Grants a team a level of access to a single **workspace** — either a fixed lev
 `go-tfe-clean`. The upstream resource (legacy SDKv2, `Schema()` at
 `internal/provider/resource_tfe_team_access.go:39`) drives the stock `go-tfe` `TeamAccess` service
 (`Add/Read/Update/Remove`) against the `team-workspaces` endpoint. Stackweaver accepts and returns the
-stock `team-workspaces` JSON:API shape unchanged — no wrapper. A `CustomizeDiff`
+stock `team-workspaces` JSON:API shape unchanged - no wrapper. A `CustomizeDiff`
 (`setCustomOrComputedPermissions`) reconciles the `access` ⇄ `permissions` relationship provider-side;
 it emits no extra wire bytes.
 
@@ -31,9 +31,9 @@ it emits no extra wire bytes.
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | `team-workspaces` primary id |
-| `team_id` | string | Required | yes | — | no | `team-*` id |
-| `workspace_id` | string | Required | yes | — | no | must match `ws-<...>` |
+| `id` | string | Computed | - | - | no | `team-workspaces` primary id |
+| `team_id` | string | Required | yes | - | no | `team-*` id |
+| `workspace_id` | string | Required | yes | - | no | must match `ws-<...>` |
 | `access` | string | Optional+Computed | no | server | no | `read`/`plan`/`write`/`admin`; ExactlyOneOf with `permissions`; becomes `custom` when a `permissions` block is set |
 | `permissions` | block (list, max 1) | Optional+Computed | no | server | no | fine-grained permissions (below) |
 
@@ -45,9 +45,9 @@ it emits no extra wire bytes.
 | `variables` | string | Required | `none`/`read`/`write` |
 | `state_versions` | string | Required | `none`/`read-outputs`/`read`/`write` |
 | `sentinel_mocks` | string | Required | `none`/`read` |
-| `workspace_locking` | bool | Required | — |
-| `run_tasks` | bool | Required | — |
-| `policy_overrides` | bool | Optional+Computed | — (BETA upstream) |
+| `workspace_locking` | bool | Required | - |
+| `run_tasks` | bool | Required | - |
+| `policy_overrides` | bool | Optional+Computed | - (BETA upstream) |
 
 ## Wire contract
 
@@ -71,7 +71,7 @@ it emits no extra wire bytes.
    each named permission matches what was set.
 4. Updating `access` from `write` to `read` (and updating a `permissions` field in a custom config)
    applies in place without recreate.
-5. `team_id` and `workspace_id` are ForceNew — changing either recreates the record.
+5. `team_id` and `workspace_id` are ForceNew - changing either recreates the record.
 6. `destroy` removes it; a subsequent `TeamAccess.Read(id)` returns 404.
 
 ## Runtime criterion
@@ -82,9 +82,9 @@ Verified by exercising a run/variable/state operation as a team member. Not conf
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/team_access.md` — the `access` vs `permissions` mutual exclusion,
+- Provider docs page: `docs/resources/team_access.md` - the `access` vs `permissions` mutual exclusion,
   the custom-permission value tables, import format.
-- Example: `examples/resources/stackweaver_team_access/resource.tf` — one fixed-level grant and one
+- Example: `examples/resources/stackweaver_team_access/resource.tf` - one fixed-level grant and one
   `custom` permissions grant.
 
 ## Divergences from upstream / TFE

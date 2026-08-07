@@ -8,7 +8,7 @@ description: |-
 
 # stackweaver_ansible_job_template_credential
 
-Native Stackweaver resource — there is no `terraform-provider-tfe` equivalent.
+Native Stackweaver resource - there is no `terraform-provider-tfe` equivalent.
 
 Attaches one Ansible credential to a job template's multi-credential set, enforcing the
 AWX one-credential-per-type rule. This is a pure association with no in-place update:

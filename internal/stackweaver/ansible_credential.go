@@ -28,7 +28,7 @@ const credentialResourceType = "ansible-credentials"
 // This service is self-contained (built inline via NewAnsibleCredentialsService)
 // so it does not depend on a field on Client.
 //
-// NOTE: this resource is the intended future home of tfe_ssh_key — a thin
+// NOTE: this resource is the intended future home of tfe_ssh_key - a thin
 // TFE-compatible face over the `ssh` credential type can be layered on later.
 type AnsibleCredentialsService struct {
 	client *Client
@@ -89,7 +89,7 @@ type AnsibleCredentialCreateOptions struct {
 // AnsibleCredentialUpdateOptions are the fields accepted when updating a
 // credential. ProjectID is sent as a relationship only when non-empty; a secret
 // is sent only when non-empty (an empty value leaves the stored secret
-// unchanged — the API cannot echo it, so it is config-driven). credential-type
+// unchanged - the API cannot echo it, so it is config-driven). credential-type
 // is not accepted by the update handler and is therefore ForceNew.
 type AnsibleCredentialUpdateOptions struct {
 	Name               string

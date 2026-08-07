@@ -14,7 +14,7 @@ compat_doc: docs/internal/tfe-compatibility/resources/tokens/tfe_organization_to
 ---
 # stackweaver_organization_token
 
-Manages the single **authentication token per organization** — the credential CI/automation uses to act
+Manages the single **authentication token per organization** - the credential CI/automation uses to act
 on the org. There is exactly one; creating again **regenerates** it (revoking the previous value).
 Stackweaver backs it with the existing API-key infrastructure: an org-bound key (`Kind=org`,
 `OrganizationID`, scope `org:<id>:admin`) flagged `IsOrgToken=true`, making it a distinct singleton from
@@ -33,11 +33,11 @@ is a real api_key, it authenticates through the normal API-key path with no org-
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `id` | string | Computed | — | — | no | set to the organization name |
+| `id` | string | Computed | - | - | no | set to the organization name |
 | `organization` | string | Optional+Computed | yes | provider default | no | org name; changing it recreates |
-| `token` | string | Computed | — | — | **yes** | plaintext value returned **once** on create; never read back |
+| `token` | string | Computed | - | - | **yes** | plaintext value returned **once** on create; never read back |
 | `expired_at` | string | Optional+Computed | yes | 24 months (server) | no | iso8601/RFC3339; null at create → server defaults to 24 months; changing it recreates |
-| `force_regenerate` | bool | Optional | yes | — | no | **provider-side only**; when true, allows recreate over an existing token |
+| `force_regenerate` | bool | Optional | yes | - | no | **provider-side only**; when true, allows recreate over an existing token |
 
 ## Wire contract
 
@@ -47,25 +47,25 @@ is a real api_key, it authenticates through the normal API-key path with no org-
   `POST /organizations/:org/authentication-token`, which replaces any existing token and returns the
   **`token`** value (only here). `id` is set to the org name; `token` and `expired_at` are stored from
   the response.
-- **Read:** `OrganizationTokens.Read(org)` → `GET /organizations/:org/authentication-token` — metadata
+- **Read:** `OrganizationTokens.Read(org)` → `GET /organizations/:org/authentication-token` - metadata
   only (`expired-at`, `created-at`, `last-used-at`); the `token` value is **never** returned again. 404
   → resource removed from state.
-- **Update:** none — all writable attrs (`organization`, `expired_at`, `force_regenerate`) are ForceNew,
+- **Update:** none - all writable attrs (`organization`, `expired_at`, `force_regenerate`) are ForceNew,
   so any change recreates.
 - **Delete:** `OrganizationTokens.Delete(org)` → `DELETE /organizations/:org/authentication-token`
   (idempotent; 404 treated as gone).
 - **JSON:API type:** `authentication-tokens`. `token` is **write-only** (echoed once on create, never on
   read). `token_type` in go-tfe (`OrganizationTokenCreateOptions.TokenType`, sent as the `?token=` query
-  param) is HCP-only and **ignored by TFE and Stackweaver** — the upstream resource does not expose it.
+  param) is HCP-only and **ignored by TFE and Stackweaver** - the upstream resource does not expose it.
 
 ## Acceptance criteria (these ARE the test)
 
-Concrete, testable — the `implement` pipeline generates fixture assertions from these.
+Concrete, testable - the `implement` pipeline generates fixture assertions from these.
 
 1. `apply` of `stackweaver_organization_token { organization = <org> }` creates the token; `id` (= org
    name) and `expired_at` round-trip into state, and `token` is populated (non-empty) from the create
    response.
-2. Re-`plan` after apply shows **no drift** (in particular `token` and `expired_at` are stable — read
+2. Re-`plan` after apply shows **no drift** (in particular `token` and `expired_at` are stable - read
    returns metadata only and does not clear them).
 3. `token` is **sensitive and write-only**: it is present in state after create but the Read/refresh path
    never re-fetches or changes it, and it is masked in plan/apply output.
@@ -75,27 +75,27 @@ Concrete, testable — the `implement` pipeline generates fixture assertions fro
    revoking the old); without it, creating when a token already exists errors.
 6. `destroy` revokes it; a subsequent `OrganizationTokens.Read(org)` returns **404**.
 7. Import by organization name populates `organization` and reads token metadata (the `token` value
-   stays null on import — never retrievable).
+   stays null on import - never retrievable).
 
 ## Runtime criterion
 
-Not CRUD-only — the minted token genuinely authenticates. The `token` value acts as an org-admin
+Not CRUD-only - the minted token genuinely authenticates. The `token` value acts as an org-admin
 automation credential: a request bearing it succeeds against the org's API (authorized by the
 `org:<id>:admin` scope through the normal api-key auth path), and after `destroy` (revoke) the same
 token is rejected. Verified with a live auth check in the harness.
 
 ## Docs + example
 
-- Provider docs page: `docs/resources/organization_token.md` — arguments `organization`, `expired_at`,
+- Provider docs page: `docs/resources/organization_token.md` - arguments `organization`, `expired_at`,
   `force_regenerate`; computed sensitive `token`; the singleton/regenerate semantics; import by org
   name; note that `token_type` is HCP-only and not exposed.
-- Example: `examples/resources/stackweaver_organization_token/resource.tf` — a token for an org with an
+- Example: `examples/resources/stackweaver_organization_token/resource.tf` - a token for an org with an
   optional `expired_at`, showing the `sensitive` `token` output usage.
 
 ## Divergences from upstream / TFE
 
 None at the wire/attribute level. Notes: `force_regenerate` is a **provider-side-only** flag (no wire
-field — each regenerating apply simply re-POSTs). `token_type` is HCP-only and ignored (TFE ignores it
+field - each regenerating apply simply re-POSTs). `token_type` is HCP-only and ignored (TFE ignores it
 too); the upstream resource does not surface it. Stackweaver grants the org token the `org:<id>:admin`
 scope (closest existing scope to TFE's fixed org-token permission set); finer-grained org-token
 permissions are out of scope until the RBAC model exposes them.

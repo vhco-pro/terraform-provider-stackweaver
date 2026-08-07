@@ -30,11 +30,11 @@ shape unchanged, so no wrapper
 
 | Attribute | Type | Req/Opt/Computed | ForceNew | Default | Sensitive | Notes |
 |-----------|------|------------------|----------|---------|-----------|-------|
-| `organization` | string | Optional+Computed | — | provider default | no | org name (the key namespace); defaults to provider config |
-| `id` | string | Computed | — | — | no | set to the organization name |
-| `keys` | list(object) | Computed | — | — | no | one object per GPG key (fields below) |
+| `organization` | string | Optional+Computed | - | provider default | no | org name (the key namespace); defaults to provider config |
+| `id` | string | Computed | - | - | no | set to the organization name |
+| `keys` | list(object) | Computed | - | - | no | one object per GPG key (fields below) |
 
-Each `keys[*]` object: `id`, `organization`, `ascii_armor`, `created_at`, `updated_at` (all strings) —
+Each `keys[*]` object: `id`, `organization`, `ascii_armor`, `created_at`, `updated_at` (all strings) -
 the same fields as `stackweaver_registry_gpg_key`.
 
 ## Wire contract
@@ -62,9 +62,9 @@ without knowing their ids up front. No mutating runtime effect.
 
 ## Docs + example
 
-- Provider docs page: `docs/data-sources/registry_gpg_keys.md` — argument (`organization`), computed
+- Provider docs page: `docs/data-sources/registry_gpg_keys.md` - argument (`organization`), computed
   `id` and `keys` list (with the nested object attributes).
-- Example: `examples/data-sources/stackweaver_registry_gpg_keys/data-source.tf` — list GPG keys in an
+- Example: `examples/data-sources/stackweaver_registry_gpg_keys/data-source.tf` - list GPG keys in an
   org.
 
 ## Divergences from upstream / TFE

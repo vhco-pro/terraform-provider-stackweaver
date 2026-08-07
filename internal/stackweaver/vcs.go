@@ -21,7 +21,7 @@ import (
 // { "pagination": { "page", "per_page" } } } with snake_case keys; the file
 // endpoints return { "data": [ "<path>", ... ] } (a flat []string, no meta, not
 // paginated). Provider-capability failures surface as APIError (501 unsupported,
-// 403 Azure DevOps identity not materialized) — never swallowed into an empty
+// 403 Azure DevOps identity not materialized) - never swallowed into an empty
 // list. Wire contract (paths relative to /api/v2):
 //
 //	Repositories:    GET /vcs-connections/:id/repositories
