@@ -44,7 +44,6 @@ type modelStackweaverAnsibleJobTemplate struct {
 	ProjectID         types.String `tfsdk:"project_id"`
 	PlaybookID        types.String `tfsdk:"playbook_id"`
 	InventoryID       types.String `tfsdk:"inventory_id"`
-	CredentialID      types.String `tfsdk:"credential_id"`
 	AgentPoolID       types.String `tfsdk:"agent_pool_id"`
 	Name              types.String `tfsdk:"name"`
 	Description       types.String `tfsdk:"description"`
@@ -107,13 +106,8 @@ func modelFromJobTemplate(ctx context.Context, t *stackweaver.AnsibleJobTemplate
 		UpdatedAt:         types.StringValue(t.UpdatedAt),
 	}
 
-	// credential_id and agent_pool_id are optional relationships; keep them null
+	// agent_pool_id is an optional relationship; keep it null
 	// when the server reports no linkage so an unset config does not drift.
-	if t.CredentialID != "" {
-		m.CredentialID = types.StringValue(t.CredentialID)
-	} else {
-		m.CredentialID = types.StringNull()
-	}
 	if t.AgentPoolID != "" {
 		m.AgentPoolID = types.StringValue(t.AgentPoolID)
 	} else {
@@ -227,14 +221,6 @@ func (r *resourceStackweaverAnsibleJobTemplate) Schema(_ context.Context, _ reso
 			"inventory_id": schema.StringAttribute{
 				Description: "ID of the inventory to run against.",
 				Required:    true,
-			},
-			"credential_id": schema.StringAttribute{
-				Description: "ID of the legacy single machine credential. Multi-credential attachment is managed by stackweaver_ansible_job_template_credential; because that resource sets this field server-side, it is Computed so an externally-attached credential does not cause perpetual drift.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"agent_pool_id": schema.StringAttribute{
 				Description: "ID of the agent pool to run on. Must belong to the same organization.",
@@ -402,7 +388,6 @@ func (r *resourceStackweaverAnsibleJobTemplate) Create(ctx context.Context, req 
 		ProjectID:         plan.ProjectID.ValueString(),
 		PlaybookID:        plan.PlaybookID.ValueString(),
 		InventoryID:       plan.InventoryID.ValueString(),
-		CredentialID:      plan.CredentialID.ValueString(),
 		AgentPoolID:       plan.AgentPoolID.ValueString(),
 		Name:              plan.Name.ValueString(),
 		Description:       plan.Description.ValueString(),
@@ -532,7 +517,6 @@ func (r *resourceStackweaverAnsibleJobTemplate) Update(ctx context.Context, req 
 	options := stackweaver.AnsibleJobTemplateUpdateOptions{
 		PlaybookID:        plan.PlaybookID.ValueString(),
 		InventoryID:       plan.InventoryID.ValueString(),
-		CredentialID:      plan.CredentialID.ValueString(),
 		AgentPoolID:       plan.AgentPoolID.ValueString(),
 		Name:              &name,
 		Description:       &description,

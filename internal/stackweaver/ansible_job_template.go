@@ -17,7 +17,8 @@ const jobTemplateResourceType = "ansible-job-templates"
 
 // AnsibleJobTemplatesService is the native service for the AWX-style Ansible job
 // template. The handler speaks TFE-style JSON:API with hyphenated attribute keys
-// and playbook/inventory/credential/agent-pool/project as relationships. Wire
+// and playbook/inventory/agent-pool/project as relationships. Credentials are
+// managed separately via stackweaver_ansible_job_template_credential. Wire
 // contract (all paths relative to /api/v2):
 //
 //	Create: POST   /organizations/:org/ansible/job-templates
@@ -47,7 +48,6 @@ type AnsibleJobTemplate struct {
 	ProjectID         string
 	PlaybookID        string
 	InventoryID       string
-	CredentialID      string
 	AgentPoolID       string
 	Name              string
 	Description       string
@@ -82,7 +82,6 @@ type AnsibleJobTemplateCreateOptions struct {
 	ProjectID         string
 	PlaybookID        string
 	InventoryID       string
-	CredentialID      string
 	AgentPoolID       string
 	Name              string
 	Description       string
@@ -110,7 +109,6 @@ type AnsibleJobTemplateCreateOptions struct {
 type AnsibleJobTemplateUpdateOptions struct {
 	PlaybookID        string
 	InventoryID       string
-	CredentialID      string
 	AgentPoolID       string
 	Name              *string
 	Description       *string
@@ -165,7 +163,6 @@ type jobTemplateResource struct {
 		Project    jsonAPIRelationship `json:"project"`
 		Playbook   jsonAPIRelationship `json:"playbook"`
 		Inventory  jsonAPIRelationship `json:"inventory"`
-		Credential jsonAPIRelationship `json:"credential"`
 		AgentPool  jsonAPIRelationship `json:"agent-pool"`
 	} `json:"relationships"`
 }
@@ -205,9 +202,6 @@ func (r *jobTemplateResource) toModel() *AnsibleJobTemplate {
 	}
 	if r.Relationships.Inventory.Data != nil {
 		t.InventoryID = r.Relationships.Inventory.Data.ID
-	}
-	if r.Relationships.Credential.Data != nil {
-		t.CredentialID = r.Relationships.Credential.Data.ID
 	}
 	if r.Relationships.AgentPool.Data != nil {
 		t.AgentPoolID = r.Relationships.AgentPool.Data.ID
@@ -274,9 +268,6 @@ func (s *AnsibleJobTemplatesService) Create(ctx context.Context, options Ansible
 	}
 	if options.ProjectID != "" {
 		relationships["project"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "projects", ID: options.ProjectID}}
-	}
-	if options.CredentialID != "" {
-		relationships["credential"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "ansible-credentials", ID: options.CredentialID}}
 	}
 	if options.AgentPoolID != "" {
 		relationships["agent-pool"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "agent-pools", ID: options.AgentPoolID}}
@@ -393,9 +384,6 @@ func (s *AnsibleJobTemplatesService) Update(ctx context.Context, id string, opti
 	}
 	if options.InventoryID != "" {
 		relationships["inventory"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "ansible-inventories", ID: options.InventoryID}}
-	}
-	if options.CredentialID != "" {
-		relationships["credential"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "ansible-credentials", ID: options.CredentialID}}
 	}
 	if options.AgentPoolID != "" {
 		relationships["agent-pool"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: "agent-pools", ID: options.AgentPoolID}}
