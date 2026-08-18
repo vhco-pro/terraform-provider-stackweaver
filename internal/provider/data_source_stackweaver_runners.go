@@ -55,7 +55,7 @@ type modelRunnerElem struct {
 	OSType           types.String `tfsdk:"os_type"`
 	AgentVersion     types.String `tfsdk:"agent_version"`
 	Labels           types.List   `tfsdk:"labels"`
-	TerraformVersion types.String `tfsdk:"terraform_version"`
+	TofuVersion types.String `tfsdk:"tofu_version"`
 	AnsibleVersion   types.String `tfsdk:"ansible_version"`
 	LastHeartbeatAt  types.String `tfsdk:"last_heartbeat_at"`
 }
@@ -79,7 +79,7 @@ func runnerElemAttrTypes() map[string]attr.Type {
 		"os_type":           types.StringType,
 		"agent_version":     types.StringType,
 		"labels":            types.ListType{ElemType: types.StringType},
-		"terraform_version": types.StringType,
+		"tofu_version": types.StringType,
 		"ansible_version":   types.StringType,
 		"last_heartbeat_at": types.StringType,
 	}
@@ -140,7 +140,7 @@ func (d *dataSourceStackweaverRunners) Schema(_ context.Context, _ datasource.Sc
 						"os_type":           schema.StringAttribute{Description: "Agent-reported OS type.", Computed: true},
 						"agent_version":     schema.StringAttribute{Description: "Agent-reported version.", Computed: true},
 						"labels":            schema.ListAttribute{Description: "Agent-reported labels.", Computed: true, ElementType: types.StringType},
-						"terraform_version": schema.StringAttribute{Description: "Terraform capability version.", Computed: true},
+						"tofu_version": schema.StringAttribute{Description: "OpenTofu capability version.", Computed: true},
 						"ansible_version":   schema.StringAttribute{Description: "Ansible capability version.", Computed: true},
 						"last_heartbeat_at": schema.StringAttribute{Description: "Timestamp of the last heartbeat (empty when never seen).", Computed: true},
 					},
@@ -234,7 +234,7 @@ func (d *dataSourceStackweaverRunners) Read(ctx context.Context, req datasource.
 			OSType:           types.StringValue(r.OSType),
 			AgentVersion:     types.StringValue(r.AgentVersion),
 			Labels:           labels,
-			TerraformVersion: types.StringValue(r.TerraformVersion),
+			TofuVersion: types.StringValue(r.TofuVersion),
 			AnsibleVersion:   types.StringValue(r.AnsibleVersion),
 			LastHeartbeatAt:  types.StringValue(r.LastHeartbeatAt),
 		})

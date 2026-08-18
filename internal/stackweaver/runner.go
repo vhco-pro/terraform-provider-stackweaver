@@ -36,19 +36,19 @@ func NewRunnersService(c *Client) *RunnersService {
 // Runner is the native representation of a single runner, flattened from the
 // JSON:API resource object into the shape the Terraform data source consumes.
 type Runner struct {
-	ID               string
-	Name             string
-	Description      string
-	AgentPoolID      string
-	RunnerType       string
-	Status           string
-	Hostname         string
-	OSType           string
-	AgentVersion     string
-	Labels           []string
-	TerraformVersion string
-	AnsibleVersion   string
-	LastHeartbeatAt  string
+	ID              string
+	Name            string
+	Description     string
+	AgentPoolID     string
+	RunnerType      string
+	Status          string
+	Hostname        string
+	OSType          string
+	AgentVersion    string
+	Labels          []string
+	TofuVersion     string
+	AnsibleVersion  string
+	LastHeartbeatAt string
 }
 
 // RunnerStats is the fleet summary returned by the stats endpoint.
@@ -74,36 +74,36 @@ type runnerResource struct {
 	ID         string `json:"id"`
 	Type       string `json:"type"`
 	Attributes struct {
-		Name             string   `json:"name"`
-		Description      string   `json:"description"`
-		AgentPoolID      string   `json:"agent-pool-id"`
-		RunnerType       string   `json:"runner-type"`
-		Status           string   `json:"status"`
-		Hostname         string   `json:"hostname"`
-		OSType           string   `json:"os-type"`
-		AgentVersion     string   `json:"agent-version"`
-		Labels           []string `json:"labels"`
-		TerraformVersion string   `json:"terraform-version"`
-		AnsibleVersion   string   `json:"ansible-version"`
-		LastHeartbeatAt  *string  `json:"last-heartbeat-at"`
+		Name            string   `json:"name"`
+		Description     string   `json:"description"`
+		AgentPoolID     string   `json:"agent-pool-id"`
+		RunnerType      string   `json:"runner-type"`
+		Status          string   `json:"status"`
+		Hostname        string   `json:"hostname"`
+		OSType          string   `json:"os-type"`
+		AgentVersion    string   `json:"agent-version"`
+		Labels          []string `json:"labels"`
+		TofuVersion     string   `json:"tofu-version"`
+		AnsibleVersion  string   `json:"ansible-version"`
+		LastHeartbeatAt *string  `json:"last-heartbeat-at"`
 	} `json:"attributes"`
 }
 
 // toModel flattens a wire resource into the public Runner.
 func (r *runnerResource) toModel() *Runner {
 	m := &Runner{
-		ID:               r.ID,
-		Name:             r.Attributes.Name,
-		Description:      r.Attributes.Description,
-		AgentPoolID:      r.Attributes.AgentPoolID,
-		RunnerType:       r.Attributes.RunnerType,
-		Status:           r.Attributes.Status,
-		Hostname:         r.Attributes.Hostname,
-		OSType:           r.Attributes.OSType,
-		AgentVersion:     r.Attributes.AgentVersion,
-		Labels:           r.Attributes.Labels,
-		TerraformVersion: r.Attributes.TerraformVersion,
-		AnsibleVersion:   r.Attributes.AnsibleVersion,
+		ID:             r.ID,
+		Name:           r.Attributes.Name,
+		Description:    r.Attributes.Description,
+		AgentPoolID:    r.Attributes.AgentPoolID,
+		RunnerType:     r.Attributes.RunnerType,
+		Status:         r.Attributes.Status,
+		Hostname:       r.Attributes.Hostname,
+		OSType:         r.Attributes.OSType,
+		AgentVersion:   r.Attributes.AgentVersion,
+		Labels:         r.Attributes.Labels,
+		TofuVersion:    r.Attributes.TofuVersion,
+		AnsibleVersion: r.Attributes.AnsibleVersion,
 	}
 	if r.Attributes.LastHeartbeatAt != nil {
 		m.LastHeartbeatAt = *r.Attributes.LastHeartbeatAt
