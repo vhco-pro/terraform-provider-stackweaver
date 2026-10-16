@@ -7,9 +7,10 @@
 // *http.Client + base URL + token, with one file per resource family exposing
 // typed List/Create/Read/Update/Delete methods.
 //
-// The native API envelope is mixed - most Ansible resources are JSON:API, a few
-// endpoints are plain JSON - so the client carries BOTH a JSON:API codec and a
-// plain-JSON codec and each service method declares which it uses.
+// The native API speaks JSON:API. The client carries a JSON:API codec, which
+// unwraps a document's data, and a plain-JSON codec, which decodes a whole
+// document when a caller needs its meta (the paged listings); each service
+// method declares which it uses.
 package stackweaver
 
 import (

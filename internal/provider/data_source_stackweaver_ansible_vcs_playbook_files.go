@@ -20,7 +20,7 @@ import (
 // that lists playbook candidate files in a connected VCS repository at a branch,
 // each annotated with whether it is already registered as a
 // stackweaver_ansible_playbook. Served by the native internal/stackweaver
-// client (plain-JSON endpoint), registered only under its primary
+// client (a JSON:API listing), registered only under its primary
 // stackweaver_ansible_vcs_playbook_files name (native = no tfe_ alias).
 var (
 	_ datasource.DataSource              = &dataSourceStackweaverAnsibleVCSPlaybookFiles{}

@@ -124,23 +124,51 @@ type recordedRequest struct {
 }
 
 // newRecordingClient returns a Client pointed at a test server that records the
-// request into the returned recordedRequest and answers status with response.
+// one request a case makes into the returned recordedRequest and answers status
+// with response.
 func newRecordingClient(t *testing.T, status int, response string) (*Client, *recordedRequest) {
 	t.Helper()
 	got := &recordedRequest{}
+	c := newTestServerClient(t, status, []string{response}, func(r recordedRequest) { *got = r })
+	return c, got
+}
+
+// newReplayClient returns a Client pointed at a test server that answers the
+// n-th request with responses[n] and records every request, in order, into the
+// returned slice.
+func newReplayClient(t *testing.T, status int, responses ...string) (*Client, *[]recordedRequest) {
+	t.Helper()
+	var got []recordedRequest
+	c := newTestServerClient(t, status, responses, func(r recordedRequest) { got = append(got, r) })
+	return c, &got
+}
+
+// newTestServerClient serves responses in order with status, hands each request
+// to record, and fails the test on a request beyond the last response.
+func newTestServerClient(t *testing.T, status int, responses []string, record func(recordedRequest)) *Client {
+	t.Helper()
+	served := 0
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Errorf("read request body: %v", err)
 		}
-		got.Method = r.Method
-		got.Path = r.URL.Path
-		got.Query = r.URL.RawQuery
-		got.ContentType = r.Header.Get("Content-Type")
-		got.Body = body
+		record(recordedRequest{
+			Method:      r.Method,
+			Path:        r.URL.Path,
+			Query:       r.URL.RawQuery,
+			ContentType: r.Header.Get("Content-Type"),
+			Body:        body,
+		})
+		if served == len(responses) {
+			t.Errorf("request %d (%s %s) has no recorded response", served+1, r.Method, r.URL)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.Header().Set("Content-Type", "application/vnd.api+json")
 		w.WriteHeader(status)
-		_, _ = io.WriteString(w, response)
+		_, _ = io.WriteString(w, responses[served])
+		served++
 	}))
 	t.Cleanup(srv.Close)
 
@@ -148,7 +176,7 @@ func newRecordingClient(t *testing.T, status int, response string) (*Client, *re
 	if err != nil {
 		t.Fatalf("NewClient: %v", err)
 	}
-	return c, got
+	return c
 }
 
 // assertRequest checks the method, path and body of the recorded request. An

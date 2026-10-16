@@ -25,11 +25,12 @@ enumerates the repo's branches (name, head commit SHA, protection flag) so a con
 `native-client`. Not in `go-tfe`; served by the `internal/stackweaver` `VCS` service `Branches` (list)
 method calling the Stackweaver VCS-connection API over HTTP. Read-only.
 
-**Envelope:** plain JSON, not JSON:API. The handler returns `{ "data": [ <Branch>, ... ], "meta": {
-"pagination": { "page", "per_page" } } }`, where each `Branch` is `{ "name": string, "commit": { "sha":
-string, "url": string }, "protected": bool }`. The native client unmarshals this plain shape directly.
-Confirm keys against `ListBranches` in `backend/internal/api/v2/handlers/vcs_connections.go` and the
-`Branch` struct at implement time.
+**Envelope:** JSON:API. The handler answers a collection of `vcs-branches` resources whose `id` is the
+branch name and whose attributes are `protected`, `commit-sha` and `commit-url`. `meta.pagination` is the provider page block: `total-pages` and `total-count` are null (the provider
+reports no total) and `next-page` is set only when the page came back full, so the native client
+follows `next-page` until it is null.
+Confirm against `ListBranches` in `backend/internal/api/v2/handlers/vcs_connections.go` and
+`VCSBranchAttributes`.
 
 ## Schema
 
@@ -41,20 +42,22 @@ Confirm keys against `ListBranches` in `backend/internal/api/v2/handlers/vcs_con
 | `id` | string | Computed | - | - | no | synthetic id = `"<connection_id>/<owner>/<repo>"` |
 | `branches` | list(object) | Computed | - | - | no | one object per branch |
 | `branches[].name` | string | Computed | - | - | no | branch name |
-| `branches[].commit_sha` | string | Computed | - | - | no | head commit SHA (`commit.sha`) |
+| `branches[].commit_sha` | string | Computed | - | - | no | head commit SHA (`commit-sha`) |
 | `branches[].protected` | bool | Computed | - | - | no | protection flag |
 
 ## Wire contract
 
 - **Read (list):** `VCS.ListBranches(connID, owner, repo, opts)` →
-  `GET /vcs-connections/:id/repositories/:owner/:repo/branches`. Pagination via `?page[...]`/`?per_page`
-  (server default 30, cap 100). Response `data` is a plain array of `Branch`; accumulate all pages into
-  `branches`, flattening nested `commit.sha` into `branches[].commit_sha`. Set synthetic `id` to
+  `GET /vcs-connections/:id/repositories/:owner/:repo/branches`. Pagination via `?page[number]`/
+  `?page[size]` (server default 30, cap 100; the client asks for 100). Accumulate every page, following
+  `next-page`, into `branches`, the resource `id` becoming `name` and `commit-sha` becoming
+  `branches[].commit_sha`. Set synthetic `id` to
   `"<connection_id>/<owner>/<repo>"`.
 - No create/update/delete - data source.
 - **Provider-capability caveat:** providers without branch listing return **501 Not Implemented**; the
   native client surfaces it as an error, not an empty list.
-- **Envelope:** plain JSON (`{ "data": [...], "meta": {...} }`). Native client owns marshalling.
+- **Envelope:** JSON:API collection of `vcs-branches` with the provider page block. Native client owns
+  marshalling.
 
 ## Acceptance criteria (these ARE the test)
 
@@ -84,5 +87,5 @@ is directly usable as `vcs_branch` on `stackweaver_ansible_playbook` (or `ref` o
 
 ## Divergences from upstream / TFE
 
-Native data source - no TFE equivalent. Plain-JSON envelope. Nested `commit.sha` is flattened to a
-top-level `commit_sha` in the Terraform schema for ergonomics; document the mapping.
+Native data source - no TFE equivalent. The `commit-sha` attribute surfaces as `commit_sha` in the
+Terraform schema; `commit-url` is not exposed.

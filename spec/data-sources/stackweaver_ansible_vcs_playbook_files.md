@@ -24,8 +24,8 @@ Handler: `backend/internal/api/v2/handlers/ansible/playbook_discovery.go` (`List
 
 `native-client`. Not in `go-tfe`; served by a new `internal/stackweaver` `AnsiblePlaybooks` service
 (or a `Discovery` sub-service) with a `ListVCSPlaybookFiles(ctx, org, opts)` read method calling
-`GET /organizations/:org/ansible/vcs-playbook-files` over HTTP. The endpoint returns a plain-JSON
-envelope (`{"data": [ ... ]}`), **not** JSON:API - the native client marshals accordingly. This is a
+`GET /organizations/:org/ansible/vcs-playbook-files` over HTTP. The endpoint answers a JSON:API
+collection of `ansible-playbook-files` resources (see the wire contract below). This is a
 discovery/observability helper, read-only: no create/update/delete.
 
 ## Schema
@@ -93,6 +93,6 @@ real-world effect is enabling a `for_each` over discovered playbooks to drive
 
 ## Divergences from upstream / TFE
 
-Native data source - no TFE equivalent. Plain-JSON envelope (not JSON:API). Read-only discovery
+Native data source - no TFE equivalent. Read-only discovery
 surface with no lifecycle. `branch` is deliberately required (no silent default) so the listing,
 annotation, and any subsequent import all refer to the same branch.

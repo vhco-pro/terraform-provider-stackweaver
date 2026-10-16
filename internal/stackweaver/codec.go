@@ -9,13 +9,13 @@ import (
 	"fmt"
 )
 
-// The native Ansible API speaks JSON:API (a
+// The native API speaks JSON:API (a
 // { "data": { "type", "id", "attributes", "relationships" } } envelope, with
-// dash-cased attribute keys). The VCS listings in vcs.go are still plain JSON,
-// and a caller that needs a whole document (its meta beside its data, as
-// runner.go does) decodes it with the plain codec, so the client provides BOTH
-// codecs and each service method declares which one it uses, per that
-// resource's spec wire contract.
+// dash-cased attribute keys). The JSON:API codec unwraps data only, so a caller
+// that needs a whole document (its meta beside its data, as the paged listings
+// in runner.go and vcs.go do) decodes it with the plain codec. The client
+// therefore provides BOTH codecs and each service method declares which one it
+// uses, per that resource's spec wire contract.
 
 // jsonAPICodec encodes/decodes the JSON:API envelope used by most native
 // Ansible resources.

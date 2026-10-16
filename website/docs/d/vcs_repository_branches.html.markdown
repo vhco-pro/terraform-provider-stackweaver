@@ -45,5 +45,5 @@ In addition to all arguments above, the following attributes are exported:
 The `branches` block contains:
 
 * `name` - Branch name.
-* `commit_sha` - Head commit SHA (flattened from `commit.sha`).
+* `commit_sha` - Head commit SHA.
 * `protected` - Whether the branch is protected.
