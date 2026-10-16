@@ -5,6 +5,10 @@ package stackweaver
 
 import (
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
 	"testing"
 )
 
@@ -101,5 +105,80 @@ func TestNewAPIErrorParsesEnvelope(t *testing.T) {
 	}
 	if err.StatusCode != 422 {
 		t.Errorf("StatusCode = %d, want 422", err.StatusCode)
+	}
+}
+
+// The service table tests replay documents recorded by the Stackweaver server's
+// golden write harness (backend/internal/api/v2/routes/testdata/golden/ in the
+// monorepo). The recordings carry "<uuid>", "<timestamp>" and "<secret>"
+// placeholders; the literals in the tests replace each with a concrete,
+// distinct value so that an id decoded into the wrong field is caught.
+
+// recordedRequest is what the test server saw of the one request a case makes.
+type recordedRequest struct {
+	Method      string
+	Path        string
+	Query       string
+	ContentType string
+	Body        []byte
+}
+
+// newRecordingClient returns a Client pointed at a test server that records the
+// request into the returned recordedRequest and answers status with response.
+func newRecordingClient(t *testing.T, status int, response string) (*Client, *recordedRequest) {
+	t.Helper()
+	got := &recordedRequest{}
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("read request body: %v", err)
+		}
+		got.Method = r.Method
+		got.Path = r.URL.Path
+		got.Query = r.URL.RawQuery
+		got.ContentType = r.Header.Get("Content-Type")
+		got.Body = body
+		w.Header().Set("Content-Type", "application/vnd.api+json")
+		w.WriteHeader(status)
+		_, _ = io.WriteString(w, response)
+	}))
+	t.Cleanup(srv.Close)
+
+	c, err := NewClient(Config{BaseURL: srv.URL, Token: "test-token", HTTPClient: srv.Client()})
+	if err != nil {
+		t.Fatalf("NewClient: %v", err)
+	}
+	return c, got
+}
+
+// assertRequest checks the method, path and body of the recorded request. An
+// empty wantBody asserts that no body was sent; otherwise the body must be the
+// same JSON document as wantBody (member order and whitespace aside).
+func assertRequest(t *testing.T, got *recordedRequest, wantMethod, wantPath, wantBody string) {
+	t.Helper()
+	if got.Method != wantMethod {
+		t.Errorf("method = %s, want %s", got.Method, wantMethod)
+	}
+	if got.Path != wantPath {
+		t.Errorf("path = %s, want %s", got.Path, wantPath)
+	}
+	if wantBody == "" {
+		if len(got.Body) != 0 {
+			t.Errorf("sent a body %s, want none", got.Body)
+		}
+		return
+	}
+	if got.ContentType != "application/vnd.api+json" {
+		t.Errorf("Content-Type = %q, want application/vnd.api+json", got.ContentType)
+	}
+	var gotDoc, wantDoc any
+	if err := json.Unmarshal(got.Body, &gotDoc); err != nil {
+		t.Fatalf("sent body is not JSON: %v (%s)", err, got.Body)
+	}
+	if err := json.Unmarshal([]byte(wantBody), &wantDoc); err != nil {
+		t.Fatalf("want body is not JSON: %v", err)
+	}
+	if !reflect.DeepEqual(gotDoc, wantDoc) {
+		t.Errorf("sent body\n%s\nwant\n%s", got.Body, wantBody)
 	}
 }

@@ -55,4 +55,4 @@ The `files` block contains:
 * `name` - Base filename.
 * `registered` - Whether a playbook is already registered for this path.
 * `playbook_id` - ID of the registered playbook (present only when registered).
-* `playbook_name` - Name of the registered playbook (present only when registered).
+* `playbook_name` - Always null. The server relates a registered file to its playbook by ID only; read the name through the playbook identified by `playbook_id`.

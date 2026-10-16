@@ -20,18 +20,15 @@ const scheduleResourceType = "schedules"
 // Ansible target (job template / inventory-source sync / playbook sync /
 // workflow). It is built stand-alone via NewAnsibleSchedulesService.
 //
-// Envelope is INCONSISTENT across verbs (confirmed in handlers/ansible/schedules.go):
-//   - Create speaks JSON:API: body under data.attributes with hyphenated keys,
-//     data.type = "schedules"; the response is a JSON:API resource object.
-//   - Read (GET) and Update (PATCH) return the RAW GORM model (c.JSON(200,
-//     schedule)) with underscore json keys - NOT a JSON:API envelope.
-//   - Update's request body is plain JSON ({name, description, cron_expression,
-//     timezone, config}) with underscore keys - NOT JSON:API, and it does NOT
-//     accept target/type/date-window changes (those are ForceNew).
-//
-// The service therefore decodes create responses with the JSON:API codec and
-// read/update responses with the plain-JSON codec, both flattening to the same
-// AnsibleSchedule model.
+// Every verb speaks JSON:API (handlers/ansible/schedules.go):
+//   - Create sends a "schedules" document whose attributes carry the target ids
+//     and the date window.
+//   - Update sends a "schedules" document whose attributes are the in-place
+//     updatable ones (name, description, cron-expression, timezone, config).
+//     Each is optional and an omitted one is left as it is; the type, target and
+//     date window cannot change in place (they are ForceNew).
+//   - Create, Read and Update all answer a "schedules" resource object
+//     (formatScheduleResponse), decoded into the one AnsibleSchedule model.
 //
 // Wire contract (all paths relative to /api/v2):
 //
@@ -128,16 +125,21 @@ type scheduleCreateAttributes struct {
 	Config            map[string]interface{} `json:"config,omitempty"`
 }
 
-// scheduleUpdateRequest is the plain-JSON update body (underscore keys).
-type scheduleUpdateRequest struct {
+// scheduleUpdateAttributes are the attributes of the update document
+// (UpdateScheduleRequest), field for field AnsibleScheduleUpdateOptions so one
+// converts to the other. A nil pointer or nil Config is omitted, which the
+// server reads as "leave this attribute as it is".
+type scheduleUpdateAttributes struct {
 	Name           *string                `json:"name,omitempty"`
 	Description    *string                `json:"description,omitempty"`
-	CronExpression *string                `json:"cron_expression,omitempty"`
+	CronExpression *string                `json:"cron-expression,omitempty"`
 	Timezone       *string                `json:"timezone,omitempty"`
 	Config         map[string]interface{} `json:"config,omitempty"`
 }
 
-// scheduleJSONAPIResource mirrors the JSON:API resource object returned by Create.
+// scheduleJSONAPIResource mirrors the "schedules" resource object every verb
+// answers with (formatScheduleResponse). The server relates no workflow, so a
+// workflow target is not echoed back.
 type scheduleJSONAPIResource struct {
 	ID         string `json:"id"`
 	Type       string `json:"type"`
@@ -200,55 +202,6 @@ func (r *scheduleJSONAPIResource) toModel() *AnsibleSchedule {
 	return s
 }
 
-// scheduleRawModel mirrors the RAW GORM model returned by Read and Update.
-type scheduleRawModel struct {
-	ID                string                 `json:"id"`
-	OrganizationID    string                 `json:"organization_id"`
-	Name              string                 `json:"name"`
-	Description       string                 `json:"description"`
-	Type              string                 `json:"type"`
-	Status            string                 `json:"status"`
-	JobTemplateID     string                 `json:"job_template_id"`
-	InventorySourceID string                 `json:"inventory_source_id"`
-	PlaybookID        string                 `json:"playbook_id"`
-	WorkflowID        string                 `json:"workflow_id"`
-	CronExpression    string                 `json:"cron_expression"`
-	Timezone          string                 `json:"timezone"`
-	StartDateTime     string                 `json:"start_date_time"`
-	EndDateTime       string                 `json:"end_date_time"`
-	Config            map[string]interface{} `json:"config"`
-	NextRunAt         string                 `json:"next_run_at"`
-	LastRunAt         string                 `json:"last_run_at"`
-	LastJobID         string                 `json:"last_job_id"`
-	LastRunStatus     string                 `json:"last_run_status"`
-	RunCount          int                    `json:"run_count"`
-}
-
-func (r *scheduleRawModel) toModel() *AnsibleSchedule {
-	return &AnsibleSchedule{
-		ID:                r.ID,
-		OrganizationID:    r.OrganizationID,
-		Name:              r.Name,
-		Description:       r.Description,
-		Type:              r.Type,
-		Status:            r.Status,
-		JobTemplateID:     r.JobTemplateID,
-		InventorySourceID: r.InventorySourceID,
-		PlaybookID:        r.PlaybookID,
-		WorkflowID:        r.WorkflowID,
-		CronExpression:    r.CronExpression,
-		Timezone:          r.Timezone,
-		StartDateTime:     r.StartDateTime,
-		EndDateTime:       r.EndDateTime,
-		Config:            r.Config,
-		NextRunAt:         r.NextRunAt,
-		LastRunAt:         r.LastRunAt,
-		LastJobID:         r.LastJobID,
-		LastRunStatus:     r.LastRunStatus,
-		RunCount:          r.RunCount,
-	}
-}
-
 // Create creates a schedule under options.Organization.
 func (s *AnsibleSchedulesService) Create(ctx context.Context, options AnsibleScheduleCreateOptions) (*AnsibleSchedule, error) {
 	if options.Organization == "" {
@@ -284,14 +237,10 @@ func (s *AnsibleSchedulesService) Create(ctx context.Context, options AnsibleSch
 		return nil, err
 	}
 
-	var resource scheduleJSONAPIResource
-	if err := s.client.jsonapi.Unmarshal(respBody, &resource); err != nil {
-		return nil, err
-	}
-	return resource.toModel(), nil
+	return s.decode(respBody)
 }
 
-// Read returns the schedule identified by id (raw-model envelope).
+// Read returns the schedule identified by id.
 func (s *AnsibleSchedulesService) Read(ctx context.Context, id string) (*AnsibleSchedule, error) {
 	if id == "" {
 		return nil, fmt.Errorf("stackweaver: Read requires an id")
@@ -302,27 +251,16 @@ func (s *AnsibleSchedulesService) Read(ctx context.Context, id string) (*Ansible
 		return nil, err
 	}
 
-	var raw scheduleRawModel
-	if err := s.client.plain.Unmarshal(body, &raw); err != nil {
-		return nil, err
-	}
-	return raw.toModel(), nil
+	return s.decode(body)
 }
 
-// Update applies the in-place-updatable fields to the schedule identified by id
-// (raw-model envelope in the response).
+// Update applies the in-place-updatable fields to the schedule identified by id.
 func (s *AnsibleSchedulesService) Update(ctx context.Context, id string, options AnsibleScheduleUpdateOptions) (*AnsibleSchedule, error) {
 	if id == "" {
 		return nil, fmt.Errorf("stackweaver: Update requires an id")
 	}
 
-	reqBody, err := s.client.plain.Marshal(scheduleUpdateRequest{
-		Name:           options.Name,
-		Description:    options.Description,
-		CronExpression: options.CronExpression,
-		Timezone:       options.Timezone,
-		Config:         options.Config,
-	})
+	reqBody, err := s.client.jsonapi.Marshal(scheduleResourceType, scheduleUpdateAttributes(options))
 	if err != nil {
 		return nil, err
 	}
@@ -333,11 +271,7 @@ func (s *AnsibleSchedulesService) Update(ctx context.Context, id string, options
 		return nil, err
 	}
 
-	var raw scheduleRawModel
-	if err := s.client.plain.Unmarshal(body, &raw); err != nil {
-		return nil, err
-	}
-	return raw.toModel(), nil
+	return s.decode(body)
 }
 
 // Delete removes the schedule identified by id.
@@ -348,4 +282,13 @@ func (s *AnsibleSchedulesService) Delete(ctx context.Context, id string) error {
 	path := fmt.Sprintf("/ansible/schedules/%s", url.PathEscape(id))
 	_, err := s.client.do(ctx, http.MethodDelete, path, nil)
 	return err
+}
+
+// decode unmarshals a single "schedules" resource document into the model.
+func (s *AnsibleSchedulesService) decode(body []byte) (*AnsibleSchedule, error) {
+	var resource scheduleJSONAPIResource
+	if err := s.client.jsonapi.Unmarshal(body, &resource); err != nil {
+		return nil, err
+	}
+	return resource.toModel(), nil
 }

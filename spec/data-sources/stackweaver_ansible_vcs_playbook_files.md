@@ -43,15 +43,16 @@ discovery/observability helper, read-only: no create/update/delete.
 | `files[].name` | string | Computed | - | - | no | base filename |
 | `files[].registered` | bool | Computed | - | - | no | whether a playbook is already registered for this path |
 | `files[].playbook_id` | string (uuid) | Computed | - | - | no | present only when `registered` is true |
-| `files[].playbook_name` | string | Computed | - | - | no | present only when `registered` is true |
+| `files[].playbook_name` | string | Computed | - | - | no | always null: the listing relates a registered file to its playbook by id only |
 
 ## Wire contract
 
 - **Read/lookup:** `AnsiblePlaybooks.ListVCSPlaybookFiles(ctx, org, {vcs_connection_id, repository,
   branch, path?})` → `GET /organizations/:org/ansible/vcs-playbook-files?vcs_connection_id=&repository=&branch=&path=`.
 - **Create/Update/Delete:** n/a - read-only data source.
-- **Envelope:** plain JSON, `{"data": [ {"path", "name", "registered", "playbook_id"?,
-  "playbook_name"?} ]}`. Native client owns marshalling. Filtering excludes conventional
+- **Envelope:** JSON:API, a collection of `ansible-playbook-files` resources: `id` is the path,
+  attributes `name` and `registered`, and a `playbook` relationship (`ansible-playbooks`) when
+  registered; `meta.pagination` states no totals and no next page. Native client owns marshalling. Filtering excludes conventional
   non-playbook directories (`roles/`, `group_vars/`, …) and well-known non-playbook YAML
   (`requirements.yml`, `galaxy.yml`, …); results are sorted for stable output.
 - **Required-input errors:** missing/invalid `repository` (not `owner/repo`) → 400; missing `branch`
@@ -68,7 +69,7 @@ playbook (e.g. the fixture's `site.yml`), on a known branch.
    appears with matching `path`/`name`.
 2. The computed `id` is set (synthesized from the inputs).
 3. For a path already registered via `stackweaver_ansible_playbook`, that entry's `registered` is
-   `true` and `playbook_id`/`playbook_name` match the registered playbook; unregistered candidates
+   `true` and `playbook_id` matches the registered playbook; unregistered candidates
    have `registered = false`.
 4. Setting `path` to a subdirectory scopes `files` to entries under that prefix.
 5. Re-`plan` after apply shows **no drift** (`files`, `id` are Computed-only).

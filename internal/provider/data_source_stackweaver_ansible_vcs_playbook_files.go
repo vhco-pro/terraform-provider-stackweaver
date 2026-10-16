@@ -110,7 +110,7 @@ func (d *dataSourceStackweaverAnsibleVCSPlaybookFiles) Schema(_ context.Context,
 							Computed:    true,
 						},
 						"playbook_name": schema.StringAttribute{
-							Description: "Name of the registered playbook (present only when registered).",
+							Description: "Always null: the server relates a registered file to its playbook by id only. Read the name through the playbook identified by playbook_id.",
 							Computed:    true,
 						},
 					},
@@ -180,7 +180,7 @@ func (d *dataSourceStackweaverAnsibleVCSPlaybookFiles) Read(ctx context.Context,
 			"name":          types.StringValue(f.Name),
 			"registered":    types.BoolValue(f.Registered),
 			"playbook_id":   types.StringValue(f.PlaybookID),
-			"playbook_name": types.StringValue(f.PlaybookName),
+			"playbook_name": types.StringNull(),
 		})
 		resp.Diagnostics.Append(diags...)
 		if resp.Diagnostics.HasError() {

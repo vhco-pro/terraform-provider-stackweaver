@@ -9,13 +9,13 @@ import (
 	"fmt"
 )
 
-// The native API envelope is mixed: most Ansible resources speak JSON:API (a
+// The native Ansible API speaks JSON:API (a
 // { "data": { "type", "id", "attributes", "relationships" } } envelope, with
-// dash-cased attribute keys), while a handful of endpoints (ansible_config,
-// notification template/attachment, the VCS listing + playbook-file discovery
-// endpoints) are plain JSON. The client therefore provides BOTH codecs and each
-// service method declares which one it uses, per that resource's spec wire
-// contract.
+// dash-cased attribute keys). The VCS listings in vcs.go are still plain JSON,
+// and a caller that needs a whole document (its meta beside its data, as
+// runner.go does) decodes it with the plain codec, so the client provides BOTH
+// codecs and each service method declares which one it uses, per that
+// resource's spec wire contract.
 
 // jsonAPICodec encodes/decodes the JSON:API envelope used by most native
 // Ansible resources.
@@ -38,6 +38,20 @@ func (c *jsonAPICodec) Marshal(resourceType string, attributes any) ([]byte, err
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, fmt.Errorf("stackweaver: encode json:api request: %w", err)
+	}
+	return body, nil
+}
+
+// MarshalIdentifier encodes a JSON:API resource identifier document,
+//
+//	{"data":{"type":<resourceType>,"id":<id>}}
+//
+// the body of endpoints that take an existing resource by identity alone (e.g.
+// attaching a credential to a job template).
+func (c *jsonAPICodec) MarshalIdentifier(resourceType, id string) ([]byte, error) {
+	body, err := json.Marshal(jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: resourceType, ID: id}})
+	if err != nil {
+		return nil, fmt.Errorf("stackweaver: encode json:api identifier: %w", err)
 	}
 	return body, nil
 }

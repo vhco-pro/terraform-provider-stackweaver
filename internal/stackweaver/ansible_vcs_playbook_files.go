@@ -17,8 +17,11 @@ import (
 //
 // Unlike the reference AnsiblePlaybooks service (a Client field), this service
 // is self-contained: the data source constructs it on demand via
-// NewAnsibleVCSPlaybookFilesService(cc.Stackweaver). Its endpoint is
-// plain-JSON, not JSON:API. Wire contract (path relative to /api/v2):
+// NewAnsibleVCSPlaybookFilesService(cc.Stackweaver). Its endpoint answers a
+// collection of "ansible-playbook-files" resources: the id is the file path,
+// the attributes are name and registered, and a registered file relates to its
+// playbook. The listing is the provider's whole file tree in one response, so
+// it is not paged. Wire contract (path relative to /api/v2):
 //
 //	List: GET /organizations/:org/ansible/vcs-playbook-files?vcs_connection_id=&repository=&branch=&path=
 type AnsibleVCSPlaybookFilesService struct {
@@ -30,14 +33,14 @@ func NewAnsibleVCSPlaybookFilesService(c *Client) *AnsibleVCSPlaybookFilesServic
 	return &AnsibleVCSPlaybookFilesService{client: c}
 }
 
-// VCSPlaybookFile is one discovered playbook candidate. PlaybookID/PlaybookName
-// are populated only when Registered is true.
+// VCSPlaybookFile is one discovered playbook candidate. PlaybookID is populated
+// only when Registered is true. The server relates a registered file to its
+// playbook by id alone, so the playbook's name is not part of the listing.
 type VCSPlaybookFile struct {
-	Path         string
-	Name         string
-	Registered   bool
-	PlaybookID   string
-	PlaybookName string
+	Path       string
+	Name       string
+	Registered bool
+	PlaybookID string
 }
 
 // VCSPlaybookFilesListOptions are the required (and optional) inputs for List.
@@ -48,13 +51,29 @@ type VCSPlaybookFilesListOptions struct {
 	Path            string // optional scope prefix
 }
 
-// vcsPlaybookFileWire mirrors one entry of the plain-JSON {"data":[...]} envelope.
-type vcsPlaybookFileWire struct {
-	Path         string `json:"path"`
-	Name         string `json:"name"`
-	Registered   bool   `json:"registered"`
-	PlaybookID   string `json:"playbook_id"`
-	PlaybookName string `json:"playbook_name"`
+// playbookFileResource mirrors one "ansible-playbook-files" resource object.
+type playbookFileResource struct {
+	ID         string `json:"id"`
+	Type       string `json:"type"`
+	Attributes struct {
+		Name       string `json:"name"`
+		Registered bool   `json:"registered"`
+	} `json:"attributes"`
+	Relationships struct {
+		Playbook jsonAPIRelationship `json:"playbook"`
+	} `json:"relationships"`
+}
+
+func (r *playbookFileResource) toModel() *VCSPlaybookFile {
+	f := &VCSPlaybookFile{
+		Path:       r.ID,
+		Name:       r.Attributes.Name,
+		Registered: r.Attributes.Registered,
+	}
+	if r.Relationships.Playbook.Data != nil {
+		f.PlaybookID = r.Relationships.Playbook.Data.ID
+	}
+	return f
 }
 
 // List returns the playbook candidate files in the repository at the branch.
@@ -86,23 +105,14 @@ func (s *AnsibleVCSPlaybookFilesService) List(ctx context.Context, org string, o
 		return nil, err
 	}
 
-	// Plain-JSON envelope: {"data":[ {path,name,registered,...} ]}.
-	var env struct {
-		Data []vcsPlaybookFileWire `json:"data"`
-	}
-	if err := s.client.plain.Unmarshal(body, &env); err != nil {
+	var resources []playbookFileResource
+	if err := s.client.jsonapi.Unmarshal(body, &resources); err != nil {
 		return nil, err
 	}
 
-	files := make([]*VCSPlaybookFile, len(env.Data))
-	for i, f := range env.Data {
-		files[i] = &VCSPlaybookFile{
-			Path:         f.Path,
-			Name:         f.Name,
-			Registered:   f.Registered,
-			PlaybookID:   f.PlaybookID,
-			PlaybookName: f.PlaybookName,
-		}
+	files := make([]*VCSPlaybookFile, len(resources))
+	for i := range resources {
+		files[i] = resources[i].toModel()
 	}
 	return files, nil
 }
