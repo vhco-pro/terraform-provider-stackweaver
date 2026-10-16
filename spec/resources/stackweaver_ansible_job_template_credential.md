@@ -28,10 +28,11 @@ any change replaces the association.
 service (Attach/List/Detach) calling the Stackweaver Ansible API over HTTP. Handler:
 `backend/internal/api/v2/handlers/ansible/template_credentials.go`.
 
-**Mixed envelope.** The attach **request** is plain JSON - `{"credential_id": "<uuid>"}` - while the
-**response** is JSON:API-shaped: `{data:{id, type:"ansible-credentials", attributes:{name,
-credential-type, vault-id, username}}}`. The client marshals a plain-JSON request and parses a
-JSON:API response (confirm exact keys against `formatTemplateCredential` at implement time).
+**Envelope: JSON:API.** The attach **request** is a resource identifier document naming the
+credential, `{"data":{"type":"ansible-credentials","id":"<uuid>"}}` (`CredentialIdentifierRequest`),
+and the **response** is an `ansible-credentials` resource object, `{data:{id,
+type:"ansible-credentials", attributes:{name, credential-type, vault-id, username}}}`
+(`formatTemplateCredential`). The client encodes the identifier with `jsonAPICodec.MarshalIdentifier`.
 
 ## Schema
 
@@ -47,12 +48,12 @@ There is no updatable attribute - every field is either ForceNew or Computed.
 
 ## Wire contract
 
-- **Create (attach):** `POST /ansible/job-templates/:id/credentials` with plain-JSON body
-  `{"credential_id":"<uuid>"}`. Returns `201` with the attached credential
+- **Create (attach):** `POST /ansible/job-templates/:id/credentials` with the identifier document
+  `{"data":{"type":"ansible-credentials","id":"<uuid>"}}`. Returns `201` with the attached credential
   (`type:"ansible-credentials"`, attributes `name`/`credential-type`/`vault-id`/`username`).
   Enforces the AWX rule (at most one credential per type; multiple vaults require distinct vault
-  IDs) → conflicting attach returns `409`. A credential outside the template's org returns `400`; a
-  missing credential returns `404`.
+  IDs) → conflicting attach returns `409`. A credential outside the template's org and a credential
+  that does not exist get the same answer, `400`.
 - **Read:** no per-association GET; `GET /ansible/job-templates/:id/credentials` lists the set, and
   the provider selects the row whose id equals `credential_id`. Absence of the row ⇒ resource gone
   (trigger recreate/removal).

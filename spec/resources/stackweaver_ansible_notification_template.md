@@ -23,10 +23,12 @@ basic-auth password / SMTP password) is a **write-only** encrypted `secret`. Mod
 ## Client approach
 
 `native-client`. Not in `go-tfe`; served by a new `internal/stackweaver` `AnsibleNotificationTemplates`
-service. The endpoints use **plain JSON** bodies (`{name, description, type, config, secret}`), not
-JSON:API - confirm the exact envelope from
-`backend/internal/api/v2/handlers/ansible/notifications.go` (`notificationTemplateRequest`) at
-implement time.
+service. The endpoints speak **JSON:API**: create and update send an
+`ansible-notification-templates` document whose attributes are `name`, `description`,
+`notification-type`, `config` and `secret` (`NotificationTemplateRequest` in
+`backend/internal/api/v2/handlers/ansible/notifications.go`), and every answer is a resource of that
+type with the attributes `name`, `description`, `notification-type`, `config`, `has-secret` and
+`created-at` (`formatNotificationTemplate`).
 
 **Read gap (IMPORTANT):** there is **no GET-by-id endpoint** for notification templates. The only read
 surface is the org-scoped **List** (`GET /organizations/:org/ansible/notification-templates`). The
@@ -53,16 +55,20 @@ resource `Read` must not assume a by-id fetch.
 
 ## Wire contract
 
-- **Create:** `POST /organizations/:org/ansible/notification-templates` - plain-JSON body:
-  `name`, `description?`, `type`, `config`, `secret?`.
+- **Create:** `POST /organizations/:org/ansible/notification-templates` - document
+  `{"data":{"type":"ansible-notification-templates","attributes":{...}}}` with `name`,
+  `description?`, `notification-type`, `config`, `secret?`.
 - **Read:** **no GET-by-id.** `GET /organizations/:org/ansible/notification-templates` (List) → filter
   by `id` client-side. A missing id means deleted.
-- **Update:** `PATCH /ansible/notification-templates/:id` - name/description/config/secret in place.
+- **Update:** `PATCH /ansible/notification-templates/:id` - the same document, name/description/
+  config/secret in place (`notification-type` is not updatable and is omitted). The server ignores an
+  empty name, always sets the description, keeps the config and the secret when they are absent, and
+  clears the secret when it is the empty string.
 - **Delete:** `DELETE /ansible/notification-templates/:id`.
 - **Action (not part of CRUD):** `POST /ansible/notification-templates/:id/test` - sends a test message
   through the channel. Exposed as an optional action, never a lifecycle step.
-- **JSON:API type:** n/a - plain JSON (`json:` tags). `secret` is `json:"-"` (write-only, never
-  serialized back). Native client owns marshalling.
+- **JSON:API type:** `ansible-notification-templates`. `secret` is write-only: the answer carries
+  only `has-secret`, never the value. Native client owns marshalling.
 
 ## Acceptance criteria (these ARE the test)
 

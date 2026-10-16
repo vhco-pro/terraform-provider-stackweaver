@@ -23,10 +23,12 @@ channel fires. It has **create + delete only, no update**: every attribute is Fo
 ## Client approach
 
 `native-client`. Not in `go-tfe`; served by the `internal/stackweaver`
-`AnsibleNotificationTemplates` (or a dedicated `Attachments`) service. Endpoints use **plain JSON**
-bodies (`{notification_template_id, job_template_id|workflow_id, on_started, on_success, on_failure}`),
-not JSON:API - confirm from `backend/internal/api/v2/handlers/ansible/notifications.go` (`attachRequest`)
-at implement time.
+`AnsibleNotificationTemplates` (or a dedicated `Attachments`) service. Endpoints speak **JSON:API**:
+the create request is an `ansible-notification-attachments` document whose attributes are the trigger
+flags (`on-started`, `on-success`, `on-failure`) and whose relationships name the
+`notification-template` and exactly one of `job-template` or `workflow`
+(`NotificationAttachmentRequest` in `backend/internal/api/v2/handlers/ansible/notifications.go`); the
+answer is a resource of the same type related the same way (`formatAttachment`).
 
 **Read surface (IMPORTANT):** there is no GET-by-attachment-id endpoint. Attachments are read through
 the **target's** notifications list:
@@ -53,15 +55,20 @@ There is **no PATCH** - changing any trigger flag or target recreates the attach
 
 ## Wire contract
 
-- **Create:** `POST /organizations/:org/ansible/notification-attachments` - plain-JSON body:
-  `notification_template_id`, exactly one of `job_template_id`/`workflow_id`, `on_started?`,
-  `on_success?`, `on_failure?`. Server rejects zero-or-both targets (`exactly one of ... is required`).
+- **Create:** `POST /organizations/:org/ansible/notification-attachments` - document
+  `{"data":{"type":"ansible-notification-attachments","attributes":{"on-started","on-success","on-failure"},
+  "relationships":{"notification-template":{"data":{"type":"ansible-notification-templates","id"}},
+  "job-template":{"data":{"type":"ansible-job-templates","id"}}}}}`, with a `workflow` relationship
+  (`ansible-workflows`) in place of `job-template` for a workflow target. The server defaults an omitted
+  `on-started` to false and omitted `on-success`/`on-failure` to true; the client always sends all
+  three. Server rejects zero-or-both targets (`exactly one of the job-template or workflow
+  relationships is required`).
 - **Read:** no by-id GET. `GET /ansible/job-templates/:id/notifications` (job-template target) →
   filter by attachment `id`; workflow target read via the workflow notifications listing. A missing id
   means deleted.
 - **Update:** **none** - all attributes ForceNew (recreate).
 - **Delete:** `DELETE /organizations/:org/ansible/notification-attachments/:attachment_id`.
-- **JSON:API type:** n/a - plain JSON. Native client owns marshalling.
+- **JSON:API type:** `ansible-notification-attachments`. Native client owns marshalling.
 
 ## Acceptance criteria (these ARE the test)
 
