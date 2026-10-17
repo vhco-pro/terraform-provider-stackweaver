@@ -43,6 +43,20 @@ Migrating from `terraform-provider-tfe`? Point the `tfe` provider's `source` at
 Stackweaver-native resources (no TFE equivalent, e.g. the Ansible surface) are exposed under
 `stackweaver_*` only.
 
+## Compatibility
+
+Provider v0.4.0 and later require Stackweaver 5.97.0 or later. From that server release every
+native endpoint the provider calls accepts and returns JSON:API documents, and the provider sends
+and reads only that shape. The resources and data sources this concerns are
+`stackweaver_ansible_schedule`, `stackweaver_ansible_notification_template`,
+`stackweaver_ansible_notification_attachment`, `stackweaver_ansible_job_template_credential`,
+`stackweaver_vcs_repositories`, `stackweaver_vcs_repository_branches`, `stackweaver_vcs_yaml_files`
+and `stackweaver_ansible_vcs_playbook_files`.
+
+Against a Stackweaver server older than 5.97.0, pin the provider to `~> 0.3.0`. Provider v0.3.0 and
+earlier send the plain JSON bodies those endpoints took before 5.97.0, so a 5.97.0 or later server
+refuses them; use v0.4.0 or later with it.
+
 ## Documentation
 
 Per-resource docs and examples live under [`website/docs/`](./website/docs/) and

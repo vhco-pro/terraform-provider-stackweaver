@@ -114,6 +114,11 @@ the out-of-v0.1 list below until their backing API was completed (monorepo #709,
 shipped in v0.3.0 as registration of the upstream code, with the acceptance fixture
 `test/fixtures/organization/` (tracked in michielvha/stackweaver#940).
 
+v0.4.0 moves the native client of four Ansible resources and four VCS and playbook discovery data
+sources to the JSON:API documents Stackweaver 5.97.0 speaks on those endpoints (michielvha/stackweaver#858),
+with one table test per converted service in `internal/stackweaver/`. It needs Stackweaver 5.97.0 or
+later.
+
 ## Explicitly out of v0.1 (tracked, not built)
 
 `tfe_team_member`, `tfe_github_app_installation`, `tfe_registry_module`
