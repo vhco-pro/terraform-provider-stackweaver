@@ -15,9 +15,8 @@ import (
 // runner fleet. Runners self-register and heartbeat out of band; the provider
 // never mutates the fleet, so this service exposes only reads.
 //
-// Envelope note: unlike the plain-JSON VCS endpoints in this package, the
-// runners endpoints emit a JSON:API-shaped body whose attribute keys are
-// dash-cased (agent-pool-id, runner-type, last-heartbeat-at, ...), with a
+// Envelope note: the runners endpoints emit a JSON:API body whose attribute
+// keys are dash-cased (agent-pool-id, runner-type, last-heartbeat-at, ...), with a
 // meta.pagination block (current-page, page-size, total-count, total-pages).
 // Wire contract (paths relative to /api/v2):
 //

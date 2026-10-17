@@ -20,7 +20,7 @@ import (
 // that lists playbook candidate files in a connected VCS repository at a branch,
 // each annotated with whether it is already registered as a
 // stackweaver_ansible_playbook. Served by the native internal/stackweaver
-// client (plain-JSON endpoint), registered only under its primary
+// client (a JSON:API listing), registered only under its primary
 // stackweaver_ansible_vcs_playbook_files name (native = no tfe_ alias).
 var (
 	_ datasource.DataSource              = &dataSourceStackweaverAnsibleVCSPlaybookFiles{}
@@ -110,7 +110,7 @@ func (d *dataSourceStackweaverAnsibleVCSPlaybookFiles) Schema(_ context.Context,
 							Computed:    true,
 						},
 						"playbook_name": schema.StringAttribute{
-							Description: "Name of the registered playbook (present only when registered).",
+							Description: "Always null: the server relates a registered file to its playbook by id only. Read the name through the playbook identified by playbook_id.",
 							Computed:    true,
 						},
 					},
@@ -180,7 +180,7 @@ func (d *dataSourceStackweaverAnsibleVCSPlaybookFiles) Read(ctx context.Context,
 			"name":          types.StringValue(f.Name),
 			"registered":    types.BoolValue(f.Registered),
 			"playbook_id":   types.StringValue(f.PlaybookID),
-			"playbook_name": types.StringValue(f.PlaybookName),
+			"playbook_name": types.StringNull(),
 		})
 		resp.Diagnostics.Append(diags...)
 		if resp.Diagnostics.HasError() {

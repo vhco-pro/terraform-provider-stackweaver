@@ -371,7 +371,8 @@ func (r *resourceStackweaverAnsibleSchedule) stateFromSchedule(s *stackweaver.An
 		LastJobID:      stringOrNull(s.LastJobID),
 		RunCount:       types.Int64Value(int64(s.RunCount)),
 		// Target ids and the date window are ForceNew and not always echoed by the
-		// raw-model read; preserve the configured values.
+		// read (no workflow relationship, RFC 3339 reformatting of the window);
+		// preserve the configured values.
 		JobTemplateID:     prior.JobTemplateID,
 		InventorySourceID: prior.InventorySourceID,
 		PlaybookID:        prior.PlaybookID,

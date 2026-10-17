@@ -10,9 +10,9 @@ import (
 	"net/url"
 )
 
-// notificationTemplateResourceType is the JSON:API `type` member the backend
-// stamps on a notification-template resource object
-// (handlers/ansible/notifications.go formatNotificationTemplate).
+// notificationTemplateResourceType is the JSON:API `type` member of a
+// notification-template resource object and of the create and update documents
+// the backend accepts (handlers/ansible/notifications.go).
 const notificationTemplateResourceType = "ansible-notification-templates"
 
 // AnsibleNotificationTemplatesService is a native service for org-scoped Ansible
@@ -20,11 +20,12 @@ const notificationTemplateResourceType = "ansible-notification-templates"
 // stand-alone via NewAnsibleNotificationTemplatesService rather than hung off the
 // Client struct.
 //
-// Envelope is MIXED: requests are plain JSON ({name, description, type, config,
-// secret}); responses are a JSON:API-ish envelope ({"data":{id,type,attributes}})
-// whose attribute keys are hyphenated (notification-type, has-secret). The
-// sensitive secret is write-only - the backend returns only has-secret, never the
-// value.
+// Every verb speaks JSON:API: create and update send an
+// "ansible-notification-templates" document whose attributes are name,
+// description, notification-type, config and secret (NotificationTemplateRequest),
+// and the answers are resource objects of the same type with hyphenated keys
+// (notification-type, has-secret). The sensitive secret is write-only - the
+// backend returns only has-secret, never the value.
 //
 // Read gap: there is NO GET-by-id route. The only read surface is the org-scoped
 // List; Read lists and filters client-side by id.
@@ -77,13 +78,17 @@ type AnsibleNotificationTemplateUpdateOptions struct {
 	Secret *string
 }
 
-// notificationTemplateRequestBody is the plain-JSON request body.
-type notificationTemplateRequestBody struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Type        string                 `json:"type,omitempty"`
-	Config      map[string]interface{} `json:"config,omitempty"`
-	Secret      *string                `json:"secret,omitempty"`
+// notificationTemplateAttributes are the attributes of the create and update
+// document. On update the server keeps the name when it is empty, always sets
+// the description, keeps the config when it is absent, and keeps the secret when
+// it is absent (an empty secret clears it); notification-type is not updatable
+// and is omitted there.
+type notificationTemplateAttributes struct {
+	Name             string                 `json:"name"`
+	Description      string                 `json:"description"`
+	NotificationType string                 `json:"notification-type,omitempty"`
+	Config           map[string]interface{} `json:"config,omitempty"`
+	Secret           *string                `json:"secret,omitempty"`
 }
 
 // notificationTemplateResource mirrors the JSON:API resource object returned by
@@ -117,12 +122,12 @@ func (s *AnsibleNotificationTemplatesService) Create(ctx context.Context, option
 		return nil, fmt.Errorf("stackweaver: Create requires an Organization")
 	}
 
-	reqBody, err := s.client.plain.Marshal(notificationTemplateRequestBody{
-		Name:        options.Name,
-		Description: options.Description,
-		Type:        options.Type,
-		Config:      options.Config,
-		Secret:      options.Secret,
+	reqBody, err := s.client.jsonapi.Marshal(notificationTemplateResourceType, notificationTemplateAttributes{
+		Name:             options.Name,
+		Description:      options.Description,
+		NotificationType: options.Type,
+		Config:           options.Config,
+		Secret:           options.Secret,
 	})
 	if err != nil {
 		return nil, err
@@ -183,18 +188,18 @@ func (s *AnsibleNotificationTemplatesService) Update(ctx context.Context, id str
 		return nil, fmt.Errorf("stackweaver: Update requires an id")
 	}
 
-	body := notificationTemplateRequestBody{
+	attributes := notificationTemplateAttributes{
 		Config: options.Config,
 		Secret: options.Secret,
 	}
 	if options.Name != nil {
-		body.Name = *options.Name
+		attributes.Name = *options.Name
 	}
 	if options.Description != nil {
-		body.Description = *options.Description
+		attributes.Description = *options.Description
 	}
 
-	reqBody, err := s.client.plain.Marshal(body)
+	reqBody, err := s.client.jsonapi.Marshal(notificationTemplateResourceType, attributes)
 	if err != nil {
 		return nil, err
 	}

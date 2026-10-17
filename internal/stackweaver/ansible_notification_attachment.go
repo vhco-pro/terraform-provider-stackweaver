@@ -15,10 +15,12 @@ import (
 // workflow - with per-trigger flags. It is a create/delete-only relationship
 // resource: there is no update path (every field is ForceNew).
 //
-// Envelope is MIXED: the create request is plain JSON
-// ({notification_template_id, job_template_id|workflow_id, on_started,
-// on_success, on_failure}); responses are a JSON:API envelope
-// ({"data":{id,type,attributes,relationships}}) with hyphenated attribute keys.
+// Every verb speaks JSON:API: the create request is an
+// "ansible-notification-attachments" document whose attributes are the three
+// trigger flags (on-started, on-success, on-failure) and whose relationships name
+// the notification-template and exactly one of job-template or workflow
+// (NotificationAttachmentRequest); the answers are resource objects of the same
+// type, related the same way.
 //
 // Read gap: there is NO GET-by-attachment-id route. Attachments are read through
 // the TARGET's notifications listing. Only the job-template read path exists
@@ -65,14 +67,36 @@ type AnsibleNotificationAttachmentCreateOptions struct {
 	OnFailure              bool
 }
 
-// attachRequestBody is the plain-JSON create body (matches handler attachRequest).
-type attachRequestBody struct {
-	NotificationTemplateID string `json:"notification_template_id"`
-	JobTemplateID          string `json:"job_template_id,omitempty"`
-	WorkflowID             string `json:"workflow_id,omitempty"`
-	OnStarted              bool   `json:"on_started"`
-	OnSuccess              bool   `json:"on_success"`
-	OnFailure              bool   `json:"on_failure"`
+// The JSON:API resource types the attach document names that no other service
+// declares (the job template and notification template types live with their
+// services).
+const (
+	notificationAttachmentResourceType = "ansible-notification-attachments"
+	workflowResourceType               = "ansible-workflows"
+)
+
+// attachRequest builds the attach document. The three flags are always sent,
+// so the server's defaults (on-success and on-failure on when omitted) never
+// override what the caller chose.
+func attachRequest(options AnsibleNotificationAttachmentCreateOptions) jsonAPIRequest {
+	relationships := map[string]jsonAPIRelationship{
+		"notification-template": {Data: &jsonAPIResourceRef{Type: notificationTemplateResourceType, ID: options.NotificationTemplateID}},
+	}
+	if options.JobTemplateID != "" {
+		relationships["job-template"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: jobTemplateResourceType, ID: options.JobTemplateID}}
+	}
+	if options.WorkflowID != "" {
+		relationships["workflow"] = jsonAPIRelationship{Data: &jsonAPIResourceRef{Type: workflowResourceType, ID: options.WorkflowID}}
+	}
+	return jsonAPIRequest{Data: jsonAPIRequestData{
+		Type: notificationAttachmentResourceType,
+		Attributes: map[string]any{
+			"on-started": options.OnStarted,
+			"on-success": options.OnSuccess,
+			"on-failure": options.OnFailure,
+		},
+		Relationships: relationships,
+	}}
 }
 
 // attachmentResource mirrors the JSON:API resource object the backend returns.
@@ -122,14 +146,7 @@ func (s *AnsibleNotificationAttachmentsService) Create(ctx context.Context, opti
 		return nil, fmt.Errorf("stackweaver: exactly one of JobTemplateID or WorkflowID is required")
 	}
 
-	reqBody, err := s.client.plain.Marshal(attachRequestBody{
-		NotificationTemplateID: options.NotificationTemplateID,
-		JobTemplateID:          options.JobTemplateID,
-		WorkflowID:             options.WorkflowID,
-		OnStarted:              options.OnStarted,
-		OnSuccess:              options.OnSuccess,
-		OnFailure:              options.OnFailure,
-	})
+	reqBody, err := s.client.plain.Marshal(attachRequest(options))
 	if err != nil {
 		return nil, err
 	}

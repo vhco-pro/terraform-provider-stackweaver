@@ -13,10 +13,12 @@ import (
 // AnsibleJobTemplateCredentialsService is the native service for the job
 // template multi-credential association (the AWX "one credential per type,
 // multiple vaults with distinct vault IDs" set). It is a pure association:
-// attach = create, detach = delete, no update. The attach request is plain
-// JSON; the response is JSON:API-shaped. Wire contract (relative to /api/v2):
+// attach = create, detach = delete, no update. The attach request is a
+// resource identifier document naming the credential
+// (CredentialIdentifierRequest); the response is an "ansible-credentials"
+// resource object. Wire contract (relative to /api/v2):
 //
-//	Attach: POST   /ansible/job-templates/:id/credentials   {"credential_id":"..."}
+//	Attach: POST   /ansible/job-templates/:id/credentials   {"data":{"type":"ansible-credentials","id":"..."}}
 //	List:   GET    /ansible/job-templates/:id/credentials
 //	Detach: DELETE /ansible/job-templates/:id/credentials/:credential_id
 //
@@ -65,11 +67,6 @@ func (r *templateCredentialResource) toModel() *AnsibleTemplateCredential {
 	}
 }
 
-// attachCredentialRequest is the plain-JSON attach body.
-type attachCredentialRequest struct {
-	CredentialID string `json:"credential_id"`
-}
-
 // Attach attaches credentialID to jobTemplateID's credential set, enforcing the
 // AWX one-per-type rule server-side (a conflicting attach returns a 409 APIError).
 func (s *AnsibleJobTemplateCredentialsService) Attach(ctx context.Context, jobTemplateID, credentialID string) (*AnsibleTemplateCredential, error) {
@@ -80,7 +77,7 @@ func (s *AnsibleJobTemplateCredentialsService) Attach(ctx context.Context, jobTe
 		return nil, fmt.Errorf("stackweaver: Attach requires a CredentialID")
 	}
 
-	reqBody, err := s.client.plain.Marshal(attachCredentialRequest{CredentialID: credentialID})
+	reqBody, err := s.client.jsonapi.MarshalIdentifier(credentialResourceType, credentialID)
 	if err != nil {
 		return nil, err
 	}

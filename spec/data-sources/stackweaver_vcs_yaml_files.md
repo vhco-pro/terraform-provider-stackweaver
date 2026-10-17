@@ -26,9 +26,10 @@ picker in the UI. Returned value is a flat list of repo-relative path strings.
 `native-client`. Not in `go-tfe`; served by the `internal/stackweaver` `VCS` service `Files` (list)
 method calling the Stackweaver VCS-connection API over HTTP. Read-only.
 
-**Envelope:** plain JSON, not JSON:API - and notably **not** paginated. Both endpoints return
-`{ "data": [ "path/one.yml", "path/two.yaml", ... ] }` - `data` is a flat array of path strings, no
-`meta`. The native client unmarshals a `[]string`. Confirm against `ListYamlFiles` /
+**Envelope:** JSON:API, and notably **not** paginated. Both endpoints answer a collection of
+`vcs-files` resources whose `id` is the repository-relative path and which carry no attributes;
+`meta.pagination` states page 1 of the rows returned, with no next page and null totals. The native
+client collects the resource ids as the paths. Confirm against `ListYamlFiles` /
 `ListInventoryFiles` in `backend/internal/api/v2/handlers/vcs_connections.go` (both delegate to
 `provider.ListFiles(..., extensions)`).
 
@@ -65,14 +66,15 @@ choice.
   `GET /vcs-connections/:id/repositories/:owner/:repo/yaml-files?ref=<ref>`. `data` is `[]string` →
   `paths`.
 - **Read (list, inventory mode):** `VCS.ListInventoryFiles(connID, owner, repo, ref)` →
-  `GET /vcs-connections/:id/repositories/:owner/:repo/inventory-files?ref=<ref>`. `data` is `[]string`
-  → `paths`.
+  `GET /vcs-connections/:id/repositories/:owner/:repo/inventory-files?ref=<ref>`. The `vcs-files`
+  resource ids → `paths`.
 - Not paginated - a single response holds the full list. Set synthetic `id` to
   `"<connection_id>/<owner>/<repo>/<file_type>@<ref>"`.
 - No create/update/delete - data source.
 - **Provider-capability caveat:** providers without file listing return **501 Not Implemented**; the
   native client surfaces it as an error, not an empty list.
-- **Envelope:** plain JSON `{ "data": [ "<path>", ... ] }`, no `meta`. Native client owns marshalling.
+- **Envelope:** JSON:API collection of `vcs-files` keyed by path, unpaged block. Native client owns
+  marshalling.
 
 ## Acceptance criteria (these ARE the test)
 
@@ -106,7 +108,7 @@ usable as `playbook_path` on `stackweaver_ansible_playbook` (playbook mode) or a
 
 ## Divergences from upstream / TFE
 
-Native data source - no TFE equivalent. Plain-JSON, unpaginated `[]string` envelope. The
+Native data source - no TFE equivalent. Unpaginated `vcs-files` listing. The
 `inventory-files` variant is folded into this data source via `file_type` rather than shipped as a
 separate `stackweaver_vcs_inventory_files` data source (documented choice; revisit if the two endpoints'
 inputs ever diverge). Backing routes are nested under `/repositories/:owner/:repo/`, correcting the

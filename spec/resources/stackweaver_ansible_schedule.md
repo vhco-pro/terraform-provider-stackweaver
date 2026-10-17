@@ -23,10 +23,10 @@ Model: `core/models/ansible_schedule.go` (`AnsibleSchedule`).
 ## Client approach
 
 `native-client`. Not in `go-tfe`; served by a new `internal/stackweaver` `AnsibleSchedules` service
-(List/Create/Read/Update/Delete). Unlike the plain-`json` playbook endpoints, the schedule endpoints
-speak **JSON:API** with hyphenated attribute keys (`schedule-type`, `job-template-id`,
-`cron-expression`, `start-date-time`, …) - confirm the exact envelope from
-`backend/internal/api/v2/handlers/ansible/schedules.go` (`CreateScheduleRequest`) at implement time.
+(List/Create/Read/Update/Delete). Every schedule endpoint speaks **JSON:API** with the resource type
+`schedules` and hyphenated attribute keys (`schedule-type`, `job-template-id`, `cron-expression`,
+`start-date-time`, …): see `CreateScheduleRequest`, `UpdateScheduleRequest` and
+`formatScheduleResponse` in `backend/internal/api/v2/handlers/ansible/schedules.go`.
 The enable/disable/run-now actions are exposed as separate action calls, not lifecycle CRUD.
 
 ## Schema
@@ -44,8 +44,8 @@ The enable/disable/run-now actions are exposed as separate action calls, not lif
 | `workflow_id` | string (uuid) | Optional | yes | - | no | set iff `type = workflow` |
 | `cron_expression` | string | Required | no | - | no | standard 5-field cron (`minute hour day month weekday`) |
 | `timezone` | string | Required | no | `UTC` | no | IANA tz (e.g. `America/New_York`); server default `UTC` |
-| `start_date_time` | string (RFC3339) | Optional | no | - | no | schedule active after this instant |
-| `end_date_time` | string (RFC3339) | Optional | no | - | no | schedule stops after this instant |
+| `start_date_time` | string (RFC3339) | Optional | yes | - | no | schedule active after this instant; the update document carries no window |
+| `end_date_time` | string (RFC3339) | Optional | yes | - | no | schedule stops after this instant; the update document carries no window |
 | `config` | map/json (jsonb) | Optional | no | `{}` | no | extra config (e.g. `extra_vars` override for job-template schedules) |
 | `status` | string | Optional+Computed | no | `enabled` | no | `enabled` \| `disabled`; manage via `type`-appropriate value or the enable/disable actions |
 | `next_run_at` / `last_run_at` / `last_run_status` / `last_job_id` / `run_count` | (various) | Computed | - | - | no | execution-tracking readback |
@@ -55,9 +55,16 @@ The enable/disable/run-now actions are exposed as separate action calls, not lif
 - **Create:** `POST /organizations/:org/ansible/schedules` - JSON:API body under `data.attributes`:
   `name`, `description?`, `schedule-type`, one of `job-template-id`/`inventory-source-id`/`playbook-id`/`workflow-id`,
   `cron-expression`, `timezone`, `start-date-time?`, `end-date-time?`, `config?`.
-- **Read:** `GET /ansible/schedules/:schedule_id`.
-- **Update:** `PATCH /ansible/schedules/:schedule_id` - name/description/cron/timezone/date-window/config
-  in place. Changing `type` or the target id forces recreate (ForceNew).
+- **Read:** `GET /ansible/schedules/:schedule_id` - answers a `schedules` resource: the attributes
+  `name`, `description`, `schedule-type`, `status`, `cron-expression`, `timezone`, `config`, the
+  timestamps and the run tracking, and the relationships `organization`, `job-template`,
+  `inventory-source`, `playbook`, `last-job` and `created-by` when set (there is no `workflow`
+  relationship).
+- **Update:** `PATCH /ansible/schedules/:schedule_id` - document
+  `{"data":{"type":"schedules","attributes":{"name","description","cron-expression","timezone","config"}}}`,
+  each attribute optional and an omitted one left as it is. The date window, `type` and the target id
+  cannot change in place, so changing them forces recreate (ForceNew). Answers the `schedules`
+  resource.
 - **Delete:** `DELETE /ansible/schedules/:schedule_id`.
 - **Actions (ephemeral - NOT part of CRUD state):**
   `POST /ansible/schedules/:schedule_id/actions/enable`,

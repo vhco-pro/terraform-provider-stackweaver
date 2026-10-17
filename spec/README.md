@@ -136,6 +136,18 @@ passed its acceptance fixture (`test/fixtures/organization/run.sh`) against the 
 | `tfe_organization` | data source | none; `two_factor_conformant` always false ([spec](./data-sources/tfe_organization.md)) | implemented (v0.3.0) |
 | `tfe_organizations` | data source | none; `admin = true` unsupported ([spec](./data-sources/tfe_organizations.md)) | implemented (v0.3.0) |
 
+## Native endpoints on JSON:API documents (v0.4.0)
+
+Stackweaver 5.97.0 (monorepo #858) moved every native endpoint that still took or returned plain
+JSON onto JSON:API documents and refuses a plain body on them. v0.4.0 moves the native client to
+match: `stackweaver_ansible_schedule`, `stackweaver_ansible_notification_template`,
+`stackweaver_ansible_notification_attachment` and `stackweaver_ansible_job_template_credential` send
+and read documents, and `stackweaver_vcs_repositories`, `stackweaver_vcs_repository_branches`,
+`stackweaver_vcs_yaml_files` and `stackweaver_ansible_vcs_playbook_files` read typed resources. Each
+spec's envelope section describes the shape. v0.4.0 therefore needs Stackweaver 5.97.0 or later,
+and v0.3.0 and earlier do not work with those resources against it. All eight passed an apply,
+update, refresh and destroy procedure against a 5.97.0 server.
+
 ## Partial / blocked (NOT in v0.1 - backing API not fully green)
 
 | Resource | Backing API | Wire divergence | Disposition |
@@ -180,7 +192,9 @@ endpoint at implement time. Confirmed genuine deviations from strict JSON:API:
   paths), not typed resources - fine as read-only data-source helpers (they back the UI pickers).
 
 The native client handles both shapes, but the envelope column across the native specs needs a clean
-per-endpoint audit before native implement (it must be right - fixtures depend on it).
+per-endpoint audit before native implement (it must be right - fixtures depend on it). Both
+deviations are gone as of Stackweaver 5.97.0, which answers typed resources on every native
+endpoint; see the v0.4.0 section above.
 
 ### Native resources (17)
 

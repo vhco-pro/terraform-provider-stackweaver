@@ -89,7 +89,7 @@ func (d *dataSourceStackweaverVCSRepositoryBranches) Schema(_ context.Context, _
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name":       schema.StringAttribute{Description: "Branch name.", Computed: true},
-						"commit_sha": schema.StringAttribute{Description: "Head commit SHA (flattened from commit.sha).", Computed: true},
+						"commit_sha": schema.StringAttribute{Description: "Head commit SHA.", Computed: true},
 						"protected":  schema.BoolAttribute{Description: "Whether the branch is protected.", Computed: true},
 					},
 				},

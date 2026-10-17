@@ -26,11 +26,13 @@ is the Terraform-side counterpart to the repo picker in the UI (`VcsRepoBranchPi
 `native-client`. Not in `go-tfe`; served by a new `internal/stackweaver` `VCS` service `Repositories`
 (list) method calling the Stackweaver VCS-connection API over HTTP. Read-only.
 
-**Envelope:** plain JSON, not JSON:API. The handler returns `{ "data": [ <Repository>, ... ], "meta": {
-"pagination": { "page", "per_page" } } }`, where each `Repository` uses snake_case `json:` tags
-(`id`, `name`, `full_name`, `description`, `private`, `default_branch`, `url`, `clone_url`, `ssh_url`).
-The native client unmarshals this plain shape directly. Confirm keys against `ListRepositories` in
-`backend/internal/api/v2/handlers/vcs_connections.go` and the `Repository` struct at implement time.
+**Envelope:** JSON:API. The handler answers a collection of `vcs-repositories` resources whose `id` is
+the provider's numeric repository id as a string and whose attributes are `name`, `full-name`,
+`description`, `private`, `default-branch`, `url`, `clone-url` and `ssh-url`. `meta.pagination` is the provider page block: `total-pages` and `total-count` are null (the provider
+reports no total) and `next-page` is set only when the page came back full, so the native client
+follows `next-page` until it is null. Confirm
+against `ListRepositories` in `backend/internal/api/v2/handlers/vcs_connections.go` and
+`VCSRepositoryAttributes`.
 
 ## Schema
 
@@ -51,15 +53,16 @@ The native client unmarshals this plain shape directly. Confirm keys against `Li
 ## Wire contract
 
 - **Read (list):** `VCS.ListRepositories(connID, opts)` → `GET /vcs-connections/:id/repositories`.
-  Optional `?project=` for Azure DevOps scoping; pagination via `?page[...]`/`?per_page` (server default
-  30, cap 100). Response `data` is a plain array of `Repository`; accumulate all pages into
-  `repositories`. Set synthetic `id` to `vcs_connection_id`.
+  Optional `?project=` for Azure DevOps scoping; pagination via `?page[number]`/`?page[size]` (server
+  default 30, cap 100; the client asks for 100). Accumulate every page, following `next-page`, into
+  `repositories`, parsing each resource `id` back to the numeric repository id. Set synthetic `id` to
+  `vcs_connection_id`.
 - No create/update/delete - data source.
 - **Provider-capability caveat:** a provider that cannot list repositories returns **501 Not
   Implemented**; an unmaterialized Azure DevOps identity returns **403**. The native client must surface
   these as clear errors, not swallow them into an empty list.
-- **Envelope:** plain JSON (`{ "data": [...], "meta": {...} }`), snake_case keys. Native client owns
-  marshalling.
+- **Envelope:** JSON:API collection of `vcs-repositories` with the provider page block. Native client
+  owns marshalling.
 
 ## Acceptance criteria (these ARE the test)
 
@@ -90,5 +93,5 @@ returns is directly usable as the `owner`/`repo` inputs of `stackweaver_vcs_repo
 ## Divergences from upstream / TFE
 
 Native data source - no TFE equivalent (TFE has no VCS-connection repository-listing surface;
-`tfe_oauth_client` never enumerates repos). Plain-JSON envelope. `project` argument only meaningful for
+`tfe_oauth_client` never enumerates repos). `project` argument only meaningful for
 Azure DevOps.

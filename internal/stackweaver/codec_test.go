@@ -5,6 +5,10 @@ package stackweaver
 
 import (
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
 	"testing"
 )
 
@@ -101,5 +105,108 @@ func TestNewAPIErrorParsesEnvelope(t *testing.T) {
 	}
 	if err.StatusCode != 422 {
 		t.Errorf("StatusCode = %d, want 422", err.StatusCode)
+	}
+}
+
+// The service table tests replay documents recorded by the Stackweaver server's
+// golden write harness (backend/internal/api/v2/routes/testdata/golden/ in the
+// monorepo). The recordings carry "<uuid>", "<timestamp>" and "<secret>"
+// placeholders; the literals in the tests replace each with a concrete,
+// distinct value so that an id decoded into the wrong field is caught.
+
+// recordedRequest is what the test server saw of the one request a case makes.
+type recordedRequest struct {
+	Method      string
+	Path        string
+	Query       string
+	ContentType string
+	Body        []byte
+}
+
+// newRecordingClient returns a Client pointed at a test server that records the
+// one request a case makes into the returned recordedRequest and answers status
+// with response.
+func newRecordingClient(t *testing.T, status int, response string) (*Client, *recordedRequest) {
+	t.Helper()
+	got := &recordedRequest{}
+	c := newTestServerClient(t, status, []string{response}, func(r recordedRequest) { *got = r })
+	return c, got
+}
+
+// newReplayClient returns a Client pointed at a test server that answers the
+// n-th request with responses[n] and records every request, in order, into the
+// returned slice.
+func newReplayClient(t *testing.T, status int, responses ...string) (*Client, *[]recordedRequest) {
+	t.Helper()
+	var got []recordedRequest
+	c := newTestServerClient(t, status, responses, func(r recordedRequest) { got = append(got, r) })
+	return c, &got
+}
+
+// newTestServerClient serves responses in order with status, hands each request
+// to record, and fails the test on a request beyond the last response.
+func newTestServerClient(t *testing.T, status int, responses []string, record func(recordedRequest)) *Client {
+	t.Helper()
+	served := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("read request body: %v", err)
+		}
+		record(recordedRequest{
+			Method:      r.Method,
+			Path:        r.URL.Path,
+			Query:       r.URL.RawQuery,
+			ContentType: r.Header.Get("Content-Type"),
+			Body:        body,
+		})
+		if served == len(responses) {
+			t.Errorf("request %d (%s %s) has no recorded response", served+1, r.Method, r.URL)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/vnd.api+json")
+		w.WriteHeader(status)
+		_, _ = io.WriteString(w, responses[served])
+		served++
+	}))
+	t.Cleanup(srv.Close)
+
+	c, err := NewClient(Config{BaseURL: srv.URL, Token: "test-token", HTTPClient: srv.Client()})
+	if err != nil {
+		t.Fatalf("NewClient: %v", err)
+	}
+	return c
+}
+
+// assertRequest checks the method, path and body of the recorded request. An
+// empty wantBody asserts that no body was sent; otherwise the body must be the
+// same JSON document as wantBody (member order and whitespace aside).
+func assertRequest(t *testing.T, got *recordedRequest, wantMethod, wantPath, wantBody string) {
+	t.Helper()
+	if got.Method != wantMethod {
+		t.Errorf("method = %s, want %s", got.Method, wantMethod)
+	}
+	if got.Path != wantPath {
+		t.Errorf("path = %s, want %s", got.Path, wantPath)
+	}
+	if wantBody == "" {
+		if len(got.Body) != 0 {
+			t.Errorf("sent a body %s, want none", got.Body)
+		}
+		return
+	}
+	if got.ContentType != "application/vnd.api+json" {
+		t.Errorf("Content-Type = %q, want application/vnd.api+json", got.ContentType)
+	}
+	var gotDoc, wantDoc any
+	if err := json.Unmarshal(got.Body, &gotDoc); err != nil {
+		t.Fatalf("sent body is not JSON: %v (%s)", err, got.Body)
+	}
+	if err := json.Unmarshal([]byte(wantBody), &wantDoc); err != nil {
+		t.Fatalf("want body is not JSON: %v", err)
+	}
+	if !reflect.DeepEqual(gotDoc, wantDoc) {
+		t.Errorf("sent body\n%s\nwant\n%s", got.Body, wantBody)
 	}
 }
