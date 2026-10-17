@@ -127,13 +127,14 @@ backing API and are **not** in v0.1.
 
 The organization family was blocked in v0.1: its list response was not JSON:API and about ten
 settings were hardcoded. The Stackweaver API closed both on 2026-08-26 (monorepo #709) and proved the
-surface end to end with the stock provider, so these are now spec'd from the same forked code.
+surface end to end with the stock provider, so these are now spec'd from the same forked code. Each
+passed its acceptance fixture (`test/fixtures/organization/run.sh`) against the dev stack.
 
 | Name | Kind | Wire divergence (→ spec) | Status |
 |---|---|---|---|
-| `tfe_organization` | resource | none on the wire; declined attributes echoed null/empty/false, user token required to create ([spec](./resources/tfe_organization.md)) | spec'd |
-| `tfe_organization` | data source | none; `two_factor_conformant` always false ([spec](./data-sources/tfe_organization.md)) | spec'd |
-| `tfe_organizations` | data source | none; `admin = true` unsupported ([spec](./data-sources/tfe_organizations.md)) | spec'd |
+| `tfe_organization` | resource | none on the wire; declined attributes echoed null/empty/false, user token required to create ([spec](./resources/tfe_organization.md)) | implemented (v0.3.0) |
+| `tfe_organization` | data source | none; `two_factor_conformant` always false ([spec](./data-sources/tfe_organization.md)) | implemented (v0.3.0) |
+| `tfe_organizations` | data source | none; `admin = true` unsupported ([spec](./data-sources/tfe_organizations.md)) | implemented (v0.3.0) |
 
 ## Partial / blocked (NOT in v0.1 - backing API not fully green)
 

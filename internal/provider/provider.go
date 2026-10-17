@@ -118,7 +118,9 @@ func Provider() *schema.Provider {
 		// upstream syncs still diff cleanly - see plan.md §2-3).
 		DataSourcesMap: addStackweaverAliases(map[string]*schema.Resource{
 			"tfe_agent_pool":              dataSourceTFEAgentPool(),
+			"tfe_organization":            dataSourceTFEOrganization(),
 			"tfe_organization_membership": dataSourceTFEOrganizationMembership(),
+			"tfe_organizations":           dataSourceTFEOrganizations(),
 			"tfe_team":                    dataSourceTFETeam(),
 			"tfe_teams":                   dataSourceTFETeams(),
 			"tfe_team_access":             dataSourceTFETeamAccess(),
@@ -141,6 +143,7 @@ func Provider() *schema.Provider {
 			"tfe_agent_pool_allowed_workspaces":  resourceTFEAgentPoolAllowedWorkspaces(),
 			"tfe_agent_pool_excluded_workspaces": resourceTFEAgentPoolExcludedWorkspaces(),
 			"tfe_agent_token":                    resourceTFEAgentToken(),
+			"tfe_organization":                   resourceTFEOrganization(),
 			"tfe_organization_membership":        resourceTFEOrganizationMembership(),
 			"tfe_organization_token":             resourceTFEOrganizationToken(),
 			"tfe_project_variable_set":           resourceTFEProjectVariableSet(),

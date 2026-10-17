@@ -7,7 +7,7 @@ family: organizations
 origin: forked
 backing_api: implemented
 client_approach: go-tfe-clean
-status: spec'd
+status: implemented
 upstream_file: internal/provider/resource_tfe_organization.go
 go_tfe_type: Organization
 compat_doc: docs/internal/tfe-compatibility/resources/organizations/tfe_organization.md
