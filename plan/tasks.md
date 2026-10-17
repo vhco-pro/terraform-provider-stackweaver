@@ -107,9 +107,16 @@ sync ones read an existing connection/inventory).
 Per-native-task contract = the same as the forked per-task contract **plus** writing the resource's Go
 implementation against the native client (the forked tasks skip that - their code is upstream's).
 
+## Added after v0.1
+
+`tfe_organization` (resource) and the `tfe_organization` and `tfe_organizations` data sources were in
+the out-of-v0.1 list below until their backing API was completed (monorepo #709, 2026-08-26). They
+shipped in v0.3.0 as registration of the upstream code, with the acceptance fixture
+`test/fixtures/organization/` (tracked in michielvha/stackweaver#940).
+
 ## Explicitly out of v0.1 (tracked, not built)
 
-`tfe_organization`, `tfe_team_member`, `tfe_github_app_installation`, `tfe_registry_module`
+`tfe_team_member`, `tfe_github_app_installation`, `tfe_registry_module`
 (partial/blocked - backing API not green), and the whole `dropped` set. The native surface (Ansible,
 runners, VCS connections, …) is Phase 5 via the same `spec → plan → tasks → implement` path.
 

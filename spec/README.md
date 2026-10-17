@@ -123,11 +123,23 @@ backing API and are **not** in v0.1.
 | `tfe_registry_providers` | none | spec'd |
 | `tfe_registry_gpg_keys` | none | spec'd |
 
+## Added after v0.1 (backing API completed later)
+
+The organization family was blocked in v0.1: its list response was not JSON:API and about ten
+settings were hardcoded. The Stackweaver API closed both on 2026-08-26 (monorepo #709) and proved the
+surface end to end with the stock provider, so these are now spec'd from the same forked code. Each
+passed its acceptance fixture (`test/fixtures/organization/run.sh`) against the dev stack.
+
+| Name | Kind | Wire divergence (→ spec) | Status |
+|---|---|---|---|
+| `tfe_organization` | resource | none on the wire; declined attributes echoed null/empty/false, user token required to create ([spec](./resources/tfe_organization.md)) | implemented (v0.3.0) |
+| `tfe_organization` | data source | none; `two_factor_conformant` always false ([spec](./data-sources/tfe_organization.md)) | implemented (v0.3.0) |
+| `tfe_organizations` | data source | none; `admin = true` unsupported ([spec](./data-sources/tfe_organizations.md)) | implemented (v0.3.0) |
+
 ## Partial / blocked (NOT in v0.1 - backing API not fully green)
 
 | Resource | Backing API | Wire divergence | Disposition |
 |---|---|---|---|
-| `tfe_organization` | partial (~10 settings return defaults) | YES - non-JSON:API-shaped list response + hardcoded settings | `blocked` - route gaps to `/tfe-compat` before shipping |
 | `tfe_team_member` | partial | YES - identifies member by org-membership id, not username | `blocked` |
 | `tfe_registry_module` | partial (internal registry only) | none | `later` - CRUD-shippable, scope TBD |
 | `tfe_github_app_installation` | partial (UI flow) | YES - different API surface (`/github-app/...`), constructed/omitted urls | `blocked` - likely stays a divergence |

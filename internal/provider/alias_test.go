@@ -48,6 +48,7 @@ func TestSDKv2DualPrefixRegistration(t *testing.T) {
 		"tfe_workspace", "stackweaver_workspace",
 		"tfe_agent_pool", "stackweaver_agent_pool",
 		"tfe_team", "stackweaver_team",
+		"tfe_organization", "stackweaver_organization", // added after v0.1, once its backing API was complete
 	}
 	for _, name := range present {
 		if _, ok := p.ResourcesMap[name]; !ok {
@@ -58,6 +59,8 @@ func TestSDKv2DualPrefixRegistration(t *testing.T) {
 	presentDS := []string{
 		"tfe_workspace", "stackweaver_workspace",
 		"tfe_variable_set", "stackweaver_variable_set",
+		"tfe_organization", "stackweaver_organization",
+		"tfe_organizations", "stackweaver_organizations",
 	}
 	for _, name := range presentDS {
 		if _, ok := p.DataSourcesMap[name]; !ok {
@@ -70,7 +73,6 @@ func TestSDKv2DualPrefixRegistration(t *testing.T) {
 		"tfe_policy_set", "stackweaver_policy_set",
 		"tfe_oauth_client", "stackweaver_oauth_client",
 		"tfe_sentinel_policy", "stackweaver_sentinel_policy",
-		"tfe_organization", "stackweaver_organization", // partial/blocked
 		"tfe_team_member", "stackweaver_team_member", // partial/blocked
 	}
 	for _, name := range absent {
@@ -144,8 +146,10 @@ func TestFrameworkDualPrefixRegistration(t *testing.T) {
 	}
 }
 
-// TestKeptSurfaceCounts guards the exact v0.1 forked surface: 39 resources and
-// 22 data sources, each under both prefixes across the two muxed halves.
+// TestKeptSurfaceCounts guards the exact forked surface: the v0.1 set of 39 resources and
+// 22 data sources, plus the organization resource and the organization and organizations data
+// sources added once their backing API was complete. Each is under both prefixes across the two
+// muxed halves.
 func TestKeptSurfaceCounts(t *testing.T) {
 	p := Provider()
 	fwResources := frameworkResourceTypeNames(t)
@@ -187,11 +191,11 @@ func TestKeptSurfaceCounts(t *testing.T) {
 	totalResources := sdkResourceTFE + fwResTFE
 	totalDataSources := sdkDSTFE + fwDSTFE
 
-	if totalResources != 39 {
-		t.Errorf("expected 39 kept resources (tfe_ names), got %d (sdk=%d, framework=%d)", totalResources, sdkResourceTFE, fwResTFE)
+	if totalResources != 40 {
+		t.Errorf("expected 40 kept resources (tfe_ names), got %d (sdk=%d, framework=%d)", totalResources, sdkResourceTFE, fwResTFE)
 	}
-	if totalDataSources != 22 {
-		t.Errorf("expected 22 kept data sources (tfe_ names), got %d (sdk=%d, framework=%d)", totalDataSources, sdkDSTFE, fwDSTFE)
+	if totalDataSources != 24 {
+		t.Errorf("expected 24 kept data sources (tfe_ names), got %d (sdk=%d, framework=%d)", totalDataSources, sdkDSTFE, fwDSTFE)
 	}
 
 	// Every tfe_ name must have a stackweaver_ twin in the SDKv2 maps.
