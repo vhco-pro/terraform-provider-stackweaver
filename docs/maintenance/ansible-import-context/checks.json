@@ -1,0 +1,63 @@
+{
+  "target": "d66a24a62ca76abe64daef8a62e6bba8757dad9c",
+  "task_base": "024673286aad926d1acb3e828bc9cf74f2fd8186",
+  "model": "unknown",
+  "isolation": "procedural",
+  "preservation": {
+    "review_clone_source_index_head_refs_status_equal": true,
+    "original_worktree_full_interval_snapshot": "not captured by this reviewer; no commands wrote to it"
+  },
+  "observed_checks": [
+    {
+      "command": "go test ./internal/provider -run DualPrefix|KeptSurface|AnsibleImportOrganizationContext -count=1 -v",
+      "exit": 0,
+      "log": "provider-tests-retry.log"
+    },
+    {
+      "command": "go test ./internal/stackweaver -count=1",
+      "exit": 0,
+      "log": "native-client-tests.log"
+    },
+    {
+      "command": "go build ./...",
+      "exit": 0,
+      "log": "build-retry.log"
+    },
+    {
+      "command": "go vet ./...",
+      "exit": 0,
+      "log": "vet-retry.log"
+    },
+    {
+      "command": "actionlint .github/workflows/ci.yml",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check base HEAD",
+      "exit": 0
+    },
+    {
+      "command": "gofmt -l affected Go files",
+      "exit": 0,
+      "output": "empty"
+    },
+    {
+      "command": "go test ./internal/provider -run ^TestAnsibleImportOrganizationContext$ -count=1 -v on original exported source plus the exact new test",
+      "exit": 1,
+      "expected": "missing organization and accepted missing context",
+      "log": "baseline-red.log"
+    }
+  ],
+  "retained_environment_failures": [
+    "provider-tests.log: read-only default Go build cache",
+    "build.log: read-only default Go build cache"
+  ],
+  "not_independently_executed": [
+    "private native import plan",
+    "provider acceptance tests",
+    "production adoption",
+    "provider release",
+    "hosted CI"
+  ],
+  "source_findings": []
+}

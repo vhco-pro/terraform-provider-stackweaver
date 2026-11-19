@@ -26,8 +26,19 @@ The broader non-acceptance unit run passed with `-skip '^TestAcc|^TestConfigureE
 
 ## Reviews
 
-Independent review pending.
+### R-1
+
+Target: `d66a24a62ca76abe64daef8a62e6bba8757dad9c`.
+Model: unknown. Isolation: procedural.
+
+```text
+NO FINDINGS
+```
+
+The exact returned message is retained in `ansible-import-context/returned.txt`.
+The reviewer independently reproduced the original regression in an exported scratch source, then passed the fixed 18 import cases, CI-selected provider tests, native client tests, build, vet, formatting, diff and actionlint checks. Initial default-cache permission failures and successful retries remain in its local execution record.
+The clone's tracked source, index, HEAD, refs and status were unchanged. The reviewer did not capture an original-worktree full-interval snapshot; its commands did not write there. The private native import plan was author proof, not independently executed adoption.
 
 ## State
 
-Review pending. No provider release or deployment authorized by this record.
+Locally verified and independently reviewed. Provider merge/release and deployment remain pending owner review; no production provider was substituted.
