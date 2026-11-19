@@ -43,4 +43,4 @@ jobs:
       # Upstream TestAcc* need a live stack + TFE_TOKEN (they build a client before the
       # TF_ACC skip), so they run locally via dev_overrides, not in CI.
       - run: go test ./internal/stackweaver/ -count=1
-      - run: go test ./internal/provider/ -run 'DualPrefix|KeptSurface' -count=1
+      - run: go test ./internal/provider/ -run 'DualPrefix|KeptSurface|AnsibleImportOrganizationContext' -count=1

@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -502,8 +501,8 @@ func (r *resourceStackweaverAnsibleInventory) Delete(ctx context.Context, req re
 }
 
 // ImportState implements resource.ResourceWithImportState (import by id). The
-// organization name and project id are not recoverable from the API and remain
-// null after import until set in configuration.
+// organization name comes from the qualified import ID or provider configuration.
+// The optional project ID is not returned by the native API.
 func (r *resourceStackweaverAnsibleInventory) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	importAnsibleOrganization(ctx, req, resp, r.config.Organization)
 }

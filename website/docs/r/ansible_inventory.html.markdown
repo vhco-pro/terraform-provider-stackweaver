@@ -113,11 +113,25 @@ In addition to all arguments above, the following attributes are exported:
 
 ## Import
 
+The required organization name is not returned by the native read API. Import
+using `<organization>/<resource-id>`, or set `organization` in the provider
+configuration before importing by resource ID. This preserves the immutable
+organization during import instead of planning to replace the existing object.
+For example:
+
+```hcl
+provider "stackweaver" {
+  hostname     = "stackweaver.example.com"
+  organization = "my-org"
+}
+```
+
+
 Ansible inventories can be imported using their ID. For example:
 
 ```shell
 terraform import stackweaver_ansible_inventory.production 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
 ```
 
-The `organization` and `project_id` values are not recoverable from the API and
-remain null after import until set in configuration.
+The optional `project_id` is not returned by the native API; set it only when
+it matches the intended project scope and review any proposed replacement.
