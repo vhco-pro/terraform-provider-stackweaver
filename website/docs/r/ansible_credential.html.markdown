@@ -122,6 +122,20 @@ In addition to all arguments above, the following attributes are exported:
 
 ## Import
 
+The required organization name is not returned by the native read API. Import
+using `<organization>/<resource-id>`, or set `organization` in the provider
+configuration before importing by resource ID. This preserves the immutable
+organization during import instead of planning to replace the existing object.
+For example:
+
+```hcl
+provider "stackweaver" {
+  hostname     = "stackweaver.example.com"
+  organization = "my-org"
+}
+```
+
+
 Ansible credentials can be imported using their ID. Secret attributes cannot be imported (the API
 never returns them); set them in configuration after import. For example:
 

@@ -103,6 +103,20 @@ In addition to all arguments above, the following attributes are exported:
 
 ## Import
 
+The required organization name is not returned by the native read API. Import
+using `<organization>/<resource-id>`, or set `organization` in the provider
+configuration before importing by resource ID. This preserves the immutable
+organization during import instead of planning to replace the existing object.
+For example:
+
+```hcl
+provider "stackweaver" {
+  hostname     = "stackweaver.example.com"
+  organization = "my-org"
+}
+```
+
+
 Ansible job templates can be imported; use the job template ID as the import ID. For example:
 
 ```shell
