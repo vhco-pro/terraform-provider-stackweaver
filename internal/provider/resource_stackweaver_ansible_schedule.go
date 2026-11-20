@@ -384,6 +384,16 @@ func (r *resourceStackweaverAnsibleSchedule) stateFromSchedule(s *stackweaver.An
 		m.Config = planJSONState(prior.Config, s.Config)
 	} else {
 		m.Config = refreshJSONState(prior.Config, s.Config)
+		// Import begins with only an ID. Read the target and window from the
+		// service so a matching configuration does not replace the schedule.
+		if prior.JobTemplateID.IsNull() && prior.InventorySourceID.IsNull() &&
+			prior.PlaybookID.IsNull() && prior.WorkflowID.IsNull() {
+			m.JobTemplateID = stringOrNull(s.JobTemplateID)
+			m.InventorySourceID = stringOrNull(s.InventorySourceID)
+			m.PlaybookID = stringOrNull(s.PlaybookID)
+			m.StartDateTime = stringOrNull(s.StartDateTime)
+			m.EndDateTime = stringOrNull(s.EndDateTime)
+		}
 	}
 	return m
 }
