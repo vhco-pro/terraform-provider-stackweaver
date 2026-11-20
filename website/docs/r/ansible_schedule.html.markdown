@@ -91,3 +91,7 @@ Ansible schedules can be imported using their ID. For example:
 ```shell
 terraform import stackweaver_ansible_schedule.nightly 5d3b7f9c-2a1e-4d8b-9c0f-6e7a8b1c2d34
 ```
+
+Match the existing target and date window in configuration and review the plan.
+Current schedule responses expose job template, inventory source and playbook
+targets. A workflow target omitted by the API cannot be recovered on import.
