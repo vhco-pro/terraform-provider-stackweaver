@@ -44,6 +44,17 @@ resource "stackweaver_ansible_group" "nginx" {
 }
 ```
 
+## VCS and constructed inventories
+
+A VCS inventory takes its groups from its repository file. On a VCS inventory the API refuses
+creating a group, renaming it, and changing its `parent_id`, so a plan that does any of these
+fails with the API's `409 Conflict` message. Its description and variables can still change. A
+constructed inventory refuses creating a group or changing its `parent_id`, because its build
+derives every group.
+
+Keep the groups of a VCS inventory in its repository file, not in Terraform, and manage groups
+with this resource in static or dynamic inventories.
+
 ## Argument Reference
 
 The following arguments are supported:

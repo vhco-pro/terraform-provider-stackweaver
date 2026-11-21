@@ -98,7 +98,7 @@ func (r *resourceStackweaverAnsibleHost) Metadata(_ context.Context, req resourc
 // Schema implements resource.Resource.
 func (r *resourceStackweaverAnsibleHost) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages a single host within a stackweaver_ansible_inventory: a named target with an optional distinct hostname/IP, SSH port, per-host variables, and an enabled flag.",
+		Description: "Manages a single host within a stackweaver_ansible_inventory: a named target with an optional distinct hostname/IP, SSH port, per-host variables, and an enabled flag. On a VCS inventory the API refuses creating a host, renaming it and changing its hostname or variables; a constructed inventory refuses creating one. Hosts of a VCS inventory belong in its repository file, not in Terraform.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Service-generated identifier for the host.",
