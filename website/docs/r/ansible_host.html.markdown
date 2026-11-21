@@ -36,6 +36,17 @@ resource "stackweaver_ansible_host" "web" {
 }
 ```
 
+## VCS and constructed inventories
+
+A VCS inventory takes its hosts from its repository file. On a VCS inventory the API refuses
+creating a host, renaming it, and changing its `hostname` or `variables`, so a plan that does
+any of these fails with the API's `409 Conflict` message. Its description, port and enabled
+state can still change. A constructed inventory refuses creating a host, because its build
+derives every host.
+
+Keep the hosts of a VCS inventory in its repository file, not in Terraform, and manage hosts
+with this resource in static or dynamic inventories.
+
 ## Argument Reference
 
 The following arguments are supported:

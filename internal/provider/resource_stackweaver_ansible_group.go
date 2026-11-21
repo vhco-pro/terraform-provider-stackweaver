@@ -97,7 +97,7 @@ func (r *resourceStackweaverAnsibleGroup) Metadata(_ context.Context, req resour
 // Schema implements resource.Resource.
 func (r *resourceStackweaverAnsibleGroup) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages a group within a stackweaver_ansible_inventory: a named grouping of hosts with group-level variables, optionally nested under a parent group.",
+		Description: "Manages a group within a stackweaver_ansible_inventory: a named grouping of hosts with group-level variables, optionally nested under a parent group. On a VCS inventory the API refuses creating a group, renaming it and changing its parent_id; a constructed inventory refuses creating one or changing its parent_id. Groups of a VCS inventory belong in its repository file, not in Terraform.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Service-generated identifier for the group.",
